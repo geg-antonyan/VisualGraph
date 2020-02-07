@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
-using Antonyan.Graphs.Desk.Geometry;
+using Antonyan.Graphs.Backend.Geometry;
 using Antonyan.Graphs.Util;
 
-namespace Antonyan.Graphs.Desk
+namespace Antonyan.Graphs.Data
 {
 
     public class FieldVertexEventArgs<TVertex> : EventArgs
@@ -44,69 +44,56 @@ namespace Antonyan.Graphs.Desk
 
     public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge };
 
-    class Field<TVertex, TWeight>
+    public class Field<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public static event EventHandler<FieldVertexEventArgs<TVertex>> VertexUpdate;
-        public static event EventHandler<FieldEdgeEventArgs<TVertex, TWeight>> EdgeUpdate;
-        
-        public static Field<TVertex, TWeight> instance;
-        public static Field<TVertex, TWeight> Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    Graph = new Graph<TVertex, TWeight>(IsOrgarph == null ? false : IsOrgarph.Value, IsWeight == null ? false : IsWeight.Value);
-                    instance = new Field<TVertex, TWeight>();
-                    return instance;
-                }
-                return instance;
-            }
-        }
+        public  event EventHandler<FieldVertexEventArgs<TVertex>> VertexUpdate;
+        public event EventHandler<FieldEdgeEventArgs<TVertex, TWeight>> EdgeUpdate;
 
-        public static UserInterface UI { get; private set; }
-        public static bool? IsOrgarph { get { return IsOrgarph; } set { if (IsOrgarph == null) IsOrgarph = value; } }
-        public static bool? IsWeight { get { return IsWeight; } set { if (IsWeight == null) IsWeight = value; } }
-        
-        public static void AddObserved(UserInterface ui)
+        public SortedDictionary<TVertex, Vec2> Coords { get; private set; }
+        public Graph<TVertex, TWeight> Graph { get; private set; }
+
+        public Field(bool oriented, bool weighted, UserInterface ui)
         {
             UI = ui;
+            Coords = new SortedDictionary<TVertex, Vec2>();
+            Graph = new Graph<TVertex, TWeight>(oriented, weighted);
             VertexUpdate += UI.FieldUpdate;
             EdgeUpdate += UI.FieldUpdate;
         }
-        public static SortedDictionary<TVertex, Vec2> Coords { get; private set; }
-        public static Graph<TVertex, TWeight> Graph { get; private set; }
-       
-        public static void AddVertexAndCoord(TVertex v, Vec2 coord)
+        public  UserInterface UI { get; private set; }
+        public bool IsOrgarph { get { return Graph.IsOrgraph; } }
+        public bool IsWeight { get { return Graph.IsWeighted; } }
+        
+        public void AddVertex(TVertex v, Vec2 coord)
         {
             var res = Graph.AddVertex(v);
-            if (res == Graph<TVertex, TWeight>.RetrunValue.Succsess)
+            if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Coords.Add(v, coord);
-                VertexUpdate?.Invoke(Instance, new FieldVertexEventArgs<TVertex>(FieldEvents.AddVertex, v, coord));
+                VertexUpdate?.Invoke(this, new FieldVertexEventArgs<TVertex>(FieldEvents.AddVertex, v, coord));
             }
             else
                 throw new Exception(res.ToString());
         }
-        public static void AddEdge(TVertex v, TVertex e, TWeight w)
+        public void AddEdge(TVertex v, TVertex e, TWeight w)
         {
             var res = Graph.AddEdge(v, e, w);
-            if (res != Graph<TVertex, TWeight>.RetrunValue.Succsess)
+            if (res != Graph<TVertex, TWeight>.ReturnValue.Succsess)
                 throw new Exception(res.ToString());
             else
-                EdgeUpdate?.Invoke(Instance, new FieldEdgeEventArgs<TVertex, TWeight>(FieldEvents.AddEdge, v, e, w));
+                EdgeUpdate?.Invoke(this, new FieldEdgeEventArgs<TVertex, TWeight>(FieldEvents.AddEdge, v, e, w));
         }
-        public static void RemoveVertex(TVertex v)
+        public void RemoveVertex(TVertex v)
         {
             var res = Graph.RemoveVertex(v);
-            if (res == Graph<TVertex, TWeight>.RetrunValue.Succsess)
+            if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Vec2 c;
                 Coords.TryGetValue(v, out c);
                 Coords.Remove(v);
-                VertexUpdate?.Invoke(Instance, new FieldVertexEventArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
+                VertexUpdate?.Invoke(this, new FieldVertexEventArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
             }
             else
             {
@@ -114,12 +101,17 @@ namespace Antonyan.Graphs.Desk
             }
         }
 
-        public static void RemoveEdge(TVertex v, TVertex e)
+        public void RemoveEdge(TVertex v, TVertex e)
         {
             var res = Graph.RemoveEdge(v, e);
-            if (res == Graph<TVertex, TWeight>.RetrunValue.Succsess)
+            if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
-
+                Graph.RemoveEdge(v, e);
+                EdgeUpdate?.Invoke(this, new FieldEdgeEventArgs<TVertex, TWeight>(FieldEvents.RemoveEdge, v, e));
+            }
+            else
+            {
+                throw new Exception(res.ToString());
             }
         }
     }

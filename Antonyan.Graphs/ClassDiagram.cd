@@ -70,7 +70,7 @@
   <Class Name="Antonyan.Graphs.Desk.Field&lt;TVertex, TWeight&gt;">
     <Position X="7.75" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AIAEAAAAAAAAAAAACAAIAQABAABAAAgBQABQAAAAEAA=</HashCode>
+      <HashCode>AIAEAAAAAAAAAAAACAAIAQABAAAAAAgBQABAAAAAEAA=</HashCode>
       <FileName>Desk\Field.cs</FileName>
     </TypeIdentifier>
   </Class>

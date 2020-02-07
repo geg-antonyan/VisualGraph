@@ -7,7 +7,7 @@ namespace Antonyan.Graphs.Data
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public enum RetrunValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess };
+        public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess };
         private readonly SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> data;
         public bool IsOrgraph { get; private set; }
         public bool IsWeighted { get; private set; }
@@ -77,43 +77,43 @@ namespace Antonyan.Graphs.Data
         {
             get { return new Graph<TVertex, TWeight>(this).data; }
         }
-        public RetrunValue AddVertex(TVertex v)
+        public ReturnValue AddVertex(TVertex v)
         {
             if (data.ContainsKey(v))
-                return RetrunValue.VertexExist;
+                return ReturnValue.VertexExist;
             data.Add(v, new List<Tuple<TVertex, TWeight>>());
-            return RetrunValue.Succsess;
+            return ReturnValue.Succsess;
         }
-        public RetrunValue AddEdge(TVertex v, TVertex e, TWeight w)
+        public ReturnValue AddEdge(TVertex v, TVertex e, TWeight w)
         {
             if (!IsWeighted) w = new TWeight();
             bool find_v = data.ContainsKey(v);
             bool find_e = data.ContainsKey(e);
             if (!find_v || !find_e)
-                return RetrunValue.VertexDontExist;
+                return ReturnValue.VertexDontExist;
             foreach (var adj in data[v])
             {
                 if (adj.Item1.Equals(e))
-                    return RetrunValue.EdgeExist;
+                    return ReturnValue.EdgeExist;
             }
             if (IsOrgraph)
             {
                 data[v].Add(new Tuple<TVertex, TWeight>(e, w));
-                return RetrunValue.Succsess;
+                return ReturnValue.Succsess;
             }
             else
             {
                 data[v].Add(new Tuple<TVertex, TWeight>(e, w));
                 if (!v.Equals(e)) // если не петля
                     data[e].Add(new Tuple<TVertex, TWeight>(v, w));
-                return RetrunValue.Succsess;
+                return ReturnValue.Succsess;
             }
 
         }
-        public RetrunValue RemoveVertex(TVertex v)
+        public ReturnValue RemoveVertex(TVertex v)
         {
             if (!data.ContainsKey(v))
-                return RetrunValue.VertexDontExist;
+                return ReturnValue.VertexDontExist;
             data.Remove(v);
             foreach (var adjs in data)
                 foreach (var pair in adjs.Value)
@@ -124,23 +124,23 @@ namespace Antonyan.Graphs.Data
                         break;
                     }
                 }
-            return RetrunValue.Succsess;
+            return ReturnValue.Succsess;
         }
-        public RetrunValue RemoveEdge(TVertex v, TVertex e)
+        public ReturnValue RemoveEdge(TVertex v, TVertex e)
         {
             bool find_v = data.ContainsKey(v);
             bool find_e = data.ContainsKey(e);
             if (!find_v || !find_e)
-                return RetrunValue.VertexDontExist;
-            RetrunValue value = RetrunValue.EdgeDontExist;
+                return ReturnValue.VertexDontExist;
+            ReturnValue value = ReturnValue.EdgeDontExist;
             foreach (var adj in data[v])
                 if (adj.Item1.Equals(e))
                 {
-                    value = RetrunValue.EdgeExist;
+                    value = ReturnValue.EdgeExist;
                     data[v].Remove(adj);
                     break;
                 }
-            if (value == RetrunValue.EdgeDontExist)
+            if (value == ReturnValue.EdgeDontExist)
                 return value;
             if (!IsOrgraph)
             {
@@ -151,7 +151,7 @@ namespace Antonyan.Graphs.Data
                         break;
                     }
             }
-            return RetrunValue.Succsess;
+            return ReturnValue.Succsess;
         }
     }
 }

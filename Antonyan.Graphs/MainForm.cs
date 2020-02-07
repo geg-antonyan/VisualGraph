@@ -24,12 +24,17 @@ namespace Antonyan.Graphs
 
         public void FieldUpdate(object obj, EventArgs e)
         {
-            throw new NotImplementedException();
+            throw new Exception(e.ToString());
         }
 
-        public void PassCommand(string message)
+        public void PostMessage(string message)
         {
-            throw new NotImplementedException();
+            testbutton.Text = message;
+        }
+
+        private void testbutton_Click(object sender, EventArgs e)
+        {
+            CommandEnterd.Invoke(this, new UICommandEventArgs("AddVertex 2 50 45"));
         }
     }
 }

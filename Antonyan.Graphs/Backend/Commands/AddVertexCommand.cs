@@ -6,47 +6,30 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Data;
-using Antonyan.Graphs.Desk.Geometry;
+using Antonyan.Graphs.Backend.CommandArgs;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
-    public class AddVertexEventArgs<TVertex> : EventArgs
+    
+    public class AddVertexCommand<TVertex, TWeight> : ICommand
         where TVertex : AVertex, new()
+        where TWeight : AWeight, new()
     {
-        public TVertex Vertex { get; private set; }
-        public Vec2 Coord { get; private set; }
-        public AddVertexEventArgs(UICommandEventArgs args)
-        {
-            string[] arr = args.Message.Split(' ');
-            if (arr.Length != 3)
-                throw new Exception("Некорректные количесто аргументов для AddVertexEventArgs");
-            TVertex v = new TVertex();
-            v.SetFromString(arr[0]);
-            float x, y;
-            bool x_exec = float.TryParse(arr[1], out x);
-            bool y_exec = float.TryParse(arr[2], out y);
-            if (!x_exec || !y_exec)
-                throw new Exception("Некорректные аргументы координатов для AddVertexEventArgs");
-        }
-    }
-    public class AddVertexCommand<TVertex> : ICommand
-        where TVertex : AVertex, new()
-    {
-        private AddVertexEventArgs<TVertex> args;
-
+        private AddVertexEventArgs<TVertex, TWeight> args;
+        public static string Name { get { return "AddVertex"; } }
         public AddVertexCommand() { }
-        public AddVertexCommand(AddVertexEventArgs<TVertex> args)
+        public AddVertexCommand(AddVertexEventArgs<TVertex, TWeight> args = null)
         {
             this.args = args;
         }
         public ICommand Clone(EventArgs args)
         {
-            return new AddVertexCommand<TVertex>((AddVertexEventArgs<TVertex>)args);
+            return new AddVertexCommand<TVertex, TWeight>((AddVertexEventArgs<TVertex, TWeight>)args);
         }
 
         public void Execute()
         {
-            throw new NotImplementedException();
+            args.Field.AddVertex(args.Vertex, args.Coord);
         }
 
         public string HelpMessage()
@@ -56,7 +39,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Undo()
         {
-            throw new NotImplementedException();
+            args.Field.RemoveVertex(args.Vertex);
         }
     }
 }

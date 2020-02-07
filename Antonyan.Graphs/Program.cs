@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Antonyan.Graphs.Util;
+using Antonyan.Graphs.Backend.Commands;
+using Antonyan.Graphs.Data;
+using Antonyan.Graphs.Backend;
 
 namespace Antonyan.Graphs
 {
@@ -16,12 +18,17 @@ namespace Antonyan.Graphs
         [STAThread]
         static void Main()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            var GUI = new MainForm();
+            CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
+            Field<Vertex, Weight> field = new Field<Vertex, Weight>(false, false, GUI);
+            CommandDispetcher cd = new CommandDispetcher(GUI);
            // UserInterface ui = new UI();
            // Observer ob = new Observer(ui);
            // ui.PassCommand("Hello");
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            
+            Application.Run(GUI);
         }
     }
 }

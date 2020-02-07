@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Antonyan.Graphs.Backend.Commands
+namespace Antonyan.Graphs.Backend
 {
     public interface ICommand
     {

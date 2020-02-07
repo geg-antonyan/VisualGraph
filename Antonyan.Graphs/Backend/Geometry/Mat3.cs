@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Antonyan.Graphs.Desk.Geometry
+namespace Antonyan.Graphs.Backend.Geometry
 {
     public class Mat3
     {

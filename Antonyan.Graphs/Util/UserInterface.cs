@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
-using Antonyan.Graphs.Desk.Geometry;
+using Antonyan.Graphs.Backend.Geometry;
 
 namespace Antonyan.Graphs.Util
 {
@@ -21,9 +21,9 @@ namespace Antonyan.Graphs.Util
     public interface UserInterface
     {
         event EventHandler<UICommandEventArgs> CommandEnterd;
-        void PassCommand(string message);
+        void PostMessage(string message);
         void FieldUpdate(object obj, EventArgs e);
-        
+
     }
 
 }

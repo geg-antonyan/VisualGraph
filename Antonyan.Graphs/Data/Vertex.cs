@@ -8,7 +8,8 @@ namespace Antonyan.Graphs.Data
     public class Vertex : AVertex
     {
         private int data;
-
+        public Vertex() : base() { }
+        public Vertex(string str) : base(str) { }
         protected override int CompareToImpl(AType other)
         {
             return data.CompareTo(((Vertex)other).data);

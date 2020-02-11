@@ -8,23 +8,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Antonyan.Graphs.Backend.Geometry;
+using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Data;
+
+using Antonyan.Graphs.Gui;
 
 namespace Antonyan.Graphs
 {
     public partial class MainForm : Form, UserInterface
-    {  
+    {
         private readonly float R = 20;
         private float left = 30f, right = 100f, top = 30f, bottom = 50f;
-        private Vec2 min = new Vec2(), max = new Vec2();
-        private Vec2 Wc = new Vec2();
-        private Vec2 W = new Vec2();
+        private vec2 min = new vec2(), max = new vec2();
+        private vec2 Wc = new vec2();
+        private vec2 W = new vec2();
         private Field<Vertex, Weight> field;
+        private Vertex source, stock;
+
         private int i = 0;
 
-        private readonly Vec2[] circle;
+        private readonly vec3[] circle;
 
         private void RetCalc()
         {
@@ -36,11 +40,11 @@ namespace Antonyan.Graphs
             W.y = max.y - top;
         }
 
-        private Vec2[] GenerateCircle(float r, float dx)
+        private vec3[] GenerateCircle(float r, float dx)
         {
-            var res = new Vec2[(int)(r / dx * 4f + 2)];
+            var res = new vec3[(int)(r / dx * 4f + 2)];
             float x = -r, y = 0f;
-            res[0] = new Vec2(x, y);
+            res[0] = new vec3(x, y);
             int j = 1;
             x += dx;
             while (x <= r)
@@ -48,7 +52,7 @@ namespace Antonyan.Graphs
                 float y2 = r * r - x * x;
                 if (y2 < 0) break;
                 y = (float)Math.Sqrt(y2);
-                res[j++] = new Vec2(x, y);
+                res[j++] = new vec3(x, y);
                 x += dx;
             }
             x -= dx;
@@ -57,17 +61,31 @@ namespace Antonyan.Graphs
                 float y2 = r * r - x * x;
                 if (y2 < 0) break;
                 y = -(float)Math.Sqrt(y2);
-                res[j++] = new Vec2(x, y);
+                res[j++] = new vec3(x, y);
                 x -= dx;
             }
             return res;
         }
 
-        
+        private void DrawCircle(float cx, float cy, Pen pen, Graphics g)
+        {
+            mat3 translate = Transforms.Translate(cx, cy);
+            vec3 A = translate * circle[0];
+            for (int i = 1; i < circle.Length; i++)
+            {
+                vec3 B = translate * circle[i];
+                vec2 a = (vec2)A, b = new vec2(B);
+                if (Clip.RectangleClip(ref a, ref b, min, max))
+                    g.DrawLine(pen, a.x, a.y, b.x, b.y);
+                A = B;
+            }
+        }
+
+
         public MainForm()
         {
             circle = GenerateCircle(R, 1f);
-            
+
             InitializeComponent();
         }
 
@@ -76,30 +94,47 @@ namespace Antonyan.Graphs
             RetCalc();
         }
 
+        private readonly Pen bluePen = new Pen(Color.Blue, 2f);
+        private readonly Pen redPen = new Pen(Color.Red, 2f);
+        private readonly Pen darkRedPen = new Pen(Color.DarkRed, 2f);
+        private readonly SolidBrush darkGreenBrush = new SolidBrush(Color.DarkGreen);
+        private readonly SolidBrush blackBrush = new SolidBrush(Color.Black);
+        private readonly SolidBrush greenBrush = new SolidBrush(Color.Green);
+        private readonly Font monospace = new Font(FontFamily.GenericMonospace, 16f);
+        private readonly Font seintSerif = new Font(FontFamily.GenericSansSerif, 12f);
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
-            Pen bluePen2 = new Pen(Color.Blue, 2f);
-            Font fontVertex = new Font(FontFamily.GenericSansSerif, 12f);
-            SolidBrush brushVertex = new SolidBrush(Color.Black);
+            var g = e.Graphics; 
             if (field != null)
             {
                 foreach (var v in field.Coords)
                 {
-                   // if (!Clip.SimpleClip(v.Value, max, min, R)) continue;
-                   // float xstr = (v.Key.ToString().Length < 2) ? R / 2f : R / 1.1f;
-                   // g.DrawString(v.Key.ToString(), fontVertex, brushVertex, v.Value.x - xstr, v.Value.y - R / 1.5f);
-                    Vec2 A = new Vec2(circle[0].x + v.Value.x, circle[0].y + v.Value.y);
-                    for (int i = 1; i < circle.Length; i++)
+                    Pen pen; SolidBrush brush; Font font = monospace;
+                    if (v.Key == source)
                     {
-                        Vec2 B = new Vec2(circle[i].x + v.Value.x, circle[i].y + v.Value.y);
-                        if (Clip.RectangleClip(ref A, ref B, min, max))
-                            g.DrawLine(bluePen2, A.x, A.y, B.x, B.y);
-                        A = new Vec2(circle[i].x + v.Value.x, circle[i].y + v.Value.y);
+                        brush = greenBrush;
+                        pen = redPen;
                     }
+                    else if (v.Key == stock)
+                    {
+                        pen = darkRedPen;
+                        brush = darkGreenBrush;
+                    }
+                    else
+                    {
+                        brush = blackBrush;
+                        pen = bluePen;
+                        font = seintSerif;
+                    }
+                    string str = v.Key.ToString();
+                    vec2 pos = v.Value;
+                    float xstr = str.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f;
+                    float ystr = pos.y - R / 2f;
+                    g.DrawString(str, seintSerif, brush, new RectangleF(xstr, ystr, R * 2f, R * 2f));
+                    DrawCircle(pos.x, pos.y, pen, g);
                 }
             }
-            
+
             Pen rectPen = new Pen(Color.Black, 2);
             g.DrawRectangle(rectPen, left, top, W.x, W.y);
         }
@@ -108,33 +143,63 @@ namespace Antonyan.Graphs
             RetCalc();
             Refresh();
         }
+
+        private void createGraph_file_Click(object sender, EventArgs e)
+        {
+            
+            CreateGraphGUI crt = new CreateGraphGUI();
+            crt.Owner = this;
+            crt.ShowDialog();
+            if (crt.Ok)
+            {
+                string orientd = crt.Oriented ? "oriented" : "noOriented";
+                string weighted = crt.Weighted ? "weighted" : "noWeighted";
+                CommandEntered?.Invoke(this, new UICommandEventArgs($"CreateField {orientd} {weighted}"));
+                createGraph_file.Enabled = false;
+            }
+        }
+
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
+            if (field == null) return;
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     {
-                        if (field != null)
-                            if (!field.HasAFreePlace(new Vec2(e.X, e.Y), R + R + R / 2))
-                                return;
-                        if (max.x - (float)e.X < R || (float)e.X - left < R || max.y - (float)e.Y < R || e.Y - top < R) return;
-                        string v = i++.ToString();
-                        string x = e.X.ToString();
-                        string y = e.Y.ToString();
-                        string command = $"AddVertex {v} {x} {y}";
-                        CommandEnterd?.Invoke(this, new UICommandEventArgs(command));
-                    break;
+                        vec2 pos = new vec2((float)e.X, (float)e.Y);
+                        if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
+                        {
+                            source = stock = null;
+                        }
+                        else if (!field.HasAFreePlace(pos, R))
+                        {
+                            if (source == null)
+                                source = field.GetVertex(pos, R);
+                            else if (stock == null)
+                                stock = field.GetVertex(pos, R);
+                            else source = stock = null;
+                        }
+                        else if (field.HasAFreePlace(new vec2(e.X, e.Y), R + R + R / 2))
+                        {
+                            source = stock = null;
+                            string v = i++.ToString();
+                            string x = e.X.ToString();
+                            string y = e.Y.ToString();
+                            string command = $"AddVertex {v} {x} {y}";
+                            CommandEntered?.Invoke(this, new UICommandEventArgs(command));
+                        }
+                        else source = stock = null;
+                        Refresh();   
+                        break;
                     }
                 default: break;
             }
         }
 
-        public event EventHandler<UICommandEventArgs> CommandEnterd;
+        public event EventHandler<UICommandEventArgs> CommandEntered;
 
         public void FieldUpdate(object obj, EventArgs e)
         {
-            if (field == null)
-                field = (Field<Vertex, Weight>)obj;
             Refresh();
         }
 
@@ -142,6 +207,9 @@ namespace Antonyan.Graphs
         {
         }
 
-       
+        public void AttachField(object field)
+        {
+            this.field = (Field<Vertex, Weight>)field;
+        }
     }
 }

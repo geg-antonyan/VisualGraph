@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Backend.CommandArgs;
-using Antonyan.Graphs.Backend.Geometry;
+using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
@@ -25,12 +25,12 @@ namespace Antonyan.Graphs.Data
     public class FieldUpdateVertexArgs<TVertex> : FieldUpdateArgs<TVertex>
         where TVertex : AVertex, new()
     {
-        public FieldUpdateVertexArgs(FieldEvents e, TVertex v, Vec2 coord)
+        public FieldUpdateVertexArgs(FieldEvents e, TVertex v, vec2 coord)
             : base(e, v)
         {
             Coord = coord;
         }
-        public Vec2 Coord { get; private set; }
+        public vec2 Coord { get; private set; }
     }
 
 
@@ -57,22 +57,32 @@ namespace Antonyan.Graphs.Data
         public event EventHandler<FieldUpdateArgs<TVertex>> VertexUpdate;
         public event EventHandler<FieldUpdateEdgeArgs<TVertex, TWeight>> EdgeUpdate;
 
-        public SortedDictionary<TVertex, Vec2> Coords { get; private set; }
+        public SortedDictionary<TVertex, vec2> Coords { get; private set; }
         public Graph<TVertex, TWeight> Graph { get; private set; }
 
         public Field(bool oriented, bool weighted, UserInterface ui)
         {
             UI = ui;
-            Coords = new SortedDictionary<TVertex, Vec2>();
+            Coords = new SortedDictionary<TVertex, vec2>();
             Graph = new Graph<TVertex, TWeight>(oriented, weighted);
             VertexUpdate += UI.FieldUpdate;
             EdgeUpdate += UI.FieldUpdate;
+            
         }
         public  UserInterface UI { get; private set; }
         public bool IsOrgarph { get { return Graph.IsOrgraph; } }
         public bool IsWeight { get { return Graph.IsWeighted; } }
-        
-        public void AddVertex(TVertex v, Vec2 coord)
+        public TVertex GetVertex(vec2 coord, float R)
+        {
+            foreach (var v in Coords)
+            {
+                vec2 c = v.Value;
+                if (Math.Pow(coord.x - c.x, 2f) + Math.Pow(coord.y - c.y, 2f) <= R * R)
+                    return v.Key;
+            }
+            return null;
+        }
+        public void AddVertex(TVertex v, vec2 coord)
         {
             var res = Graph.AddVertex(v);
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
@@ -96,7 +106,7 @@ namespace Antonyan.Graphs.Data
             var res = Graph.RemoveVertex(v);
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
-                Vec2 c;
+                vec2 c;
                 Coords.TryGetValue(v, out c);
                 Coords.Remove(v);
                 VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
@@ -121,7 +131,7 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-        public bool HasAFreePlace(Vec2 coord, float r)
+        public bool HasAFreePlace(vec2 coord, float r)
         {
             foreach (var c in Coords)
             {

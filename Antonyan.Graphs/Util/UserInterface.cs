@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using Antonyan.Graphs.Data;
-using Antonyan.Graphs.Backend.Geometry;
 
 namespace Antonyan.Graphs.Util
 {
@@ -20,10 +14,10 @@ namespace Antonyan.Graphs.Util
     }
     public interface UserInterface
     {
-        event EventHandler<UICommandEventArgs> CommandEnterd;
+        event EventHandler<UICommandEventArgs> CommandEntered;
         void PostMessage(string message);
         void FieldUpdate(object obj, EventArgs e);
-
+        void AttachField(object field);
     }
 
 }

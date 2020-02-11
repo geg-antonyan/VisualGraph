@@ -15,16 +15,16 @@ namespace Antonyan.Graphs.Backend.Commands
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private AddVertexEventArgs<TVertex, TWeight> args;
+        private AddVertexArgs<TVertex, TWeight> args;
         public static string Name { get { return "AddVertex"; } }
         public AddVertexCommand() { }
-        public AddVertexCommand(AddVertexEventArgs<TVertex, TWeight> args = null)
+        public AddVertexCommand(AddVertexArgs<TVertex, TWeight> args = null)
         {
             this.args = args;
         }
         public ICommand Clone(EventArgs args)
         {
-            return new AddVertexCommand<TVertex, TWeight>((AddVertexEventArgs<TVertex, TWeight>)args);
+            return new AddVertexCommand<TVertex, TWeight>((AddVertexArgs<TVertex, TWeight>)args);
         }
 
         public void Execute()

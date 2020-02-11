@@ -22,12 +22,10 @@ namespace Antonyan.Graphs
             Application.SetCompatibleTextRenderingDefault(false);
             var GUI = new MainForm();
             CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
-            Field<Vertex, Weight> field = new Field<Vertex, Weight>(false, false, GUI);
-            CommandDispetcher cd = new CommandDispetcher(GUI);
-           // UserInterface ui = new UI();
-           // Observer ob = new Observer(ui);
-           // ui.PassCommand("Hello");
-            
+            CommandRepository.AddCommand(CreateFieldCommand<Vertex, Weight>.Name, new CreateFieldCommand<Vertex, Weight>());
+            var field = new Field<Vertex, Weight>(false, false, GUI);
+            CommandDispetcher<Vertex, Weight> cd = new CommandDispetcher<Vertex, Weight>(GUI);
+
             Application.Run(GUI);
         }
     }

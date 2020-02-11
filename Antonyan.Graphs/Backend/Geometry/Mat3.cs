@@ -64,5 +64,10 @@ namespace Antonyan.Graphs.Backend.Geometry
                 res[i] = a * trans[i];
             return res;
         }
+
+        public static Mat3 Translate(float x, float y)
+        {
+            return null;
+        }
     }
 }

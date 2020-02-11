@@ -4,52 +4,58 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Antonyan.Graphs.Data;
+using Antonyan.Graphs.Backend.CommandArgs;
 using Antonyan.Graphs.Backend.Geometry;
 using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
 {
-
-    public class FieldVertexEventArgs<TVertex> : EventArgs
+    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge };
+    public class FieldUpdateArgs<TVertex> : VertexEventArgs<TVertex>
         where TVertex : AVertex, new()
     {
-        public FieldEvents Event { get; private set; }
-        public TVertex Vertex { get; private set; }
-        public Vec2 Coord { get; private set; }
-        public FieldVertexEventArgs(FieldEvents e, TVertex v, Vec2 coord)
+        public FieldUpdateArgs(FieldEvents e, TVertex v) 
+            : base(v)
         {
             Event = e;
-            Vertex = v;
-            Coord = coord;
         }
+        public FieldEvents Event { get; private set; }
     }
 
-    public class FieldEdgeEventArgs<TVertex, TWeight> : EventArgs
+    public class FieldUpdateVertexArgs<TVertex> : FieldUpdateArgs<TVertex>
+        where TVertex : AVertex, new()
+    {
+        public FieldUpdateVertexArgs(FieldEvents e, TVertex v, Vec2 coord)
+            : base(e, v)
+        {
+            Coord = coord;
+        }
+        public Vec2 Coord { get; private set; }
+    }
+
+
+    public class FieldUpdateEdgeArgs<TVertex, TWeight> : FieldUpdateArgs<TVertex>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public FieldEvents Event { get; private set; }
-        public TVertex Vertex1 { get; private set; }
-        public TVertex Vertex2 { get; private set; }
-        public TWeight Weight { get; private set; }
-        public FieldEdgeEventArgs(FieldEvents e, TVertex v1, TVertex v2, TWeight w = null)
+        public FieldUpdateEdgeArgs(FieldEvents e, TVertex v, TVertex edge, TWeight w = null) 
+            : base(e, v)
         {
-            Event = e;
-            Vertex1 = v1;
-            Vertex2 = v2;
+            Edge = edge;
             Weight = w;
         }
+        public TVertex Edge { get; private set; }
+        public TWeight Weight { get; private set; }
     }
 
-    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge };
+   
 
     public class Field<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public  event EventHandler<FieldVertexEventArgs<TVertex>> VertexUpdate;
-        public event EventHandler<FieldEdgeEventArgs<TVertex, TWeight>> EdgeUpdate;
+        public event EventHandler<FieldUpdateArgs<TVertex>> VertexUpdate;
+        public event EventHandler<FieldUpdateEdgeArgs<TVertex, TWeight>> EdgeUpdate;
 
         public SortedDictionary<TVertex, Vec2> Coords { get; private set; }
         public Graph<TVertex, TWeight> Graph { get; private set; }
@@ -72,7 +78,7 @@ namespace Antonyan.Graphs.Data
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Coords.Add(v, coord);
-                VertexUpdate?.Invoke(this, new FieldVertexEventArgs<TVertex>(FieldEvents.AddVertex, v, coord));
+                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs<TVertex>(FieldEvents.AddVertex, v, coord));
             }
             else
                 throw new Exception(res.ToString());
@@ -83,7 +89,7 @@ namespace Antonyan.Graphs.Data
             if (res != Graph<TVertex, TWeight>.ReturnValue.Succsess)
                 throw new Exception(res.ToString());
             else
-                EdgeUpdate?.Invoke(this, new FieldEdgeEventArgs<TVertex, TWeight>(FieldEvents.AddEdge, v, e, w));
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs<TVertex, TWeight>(FieldEvents.AddEdge, v, e, w));
         }
         public void RemoveVertex(TVertex v)
         {
@@ -93,7 +99,7 @@ namespace Antonyan.Graphs.Data
                 Vec2 c;
                 Coords.TryGetValue(v, out c);
                 Coords.Remove(v);
-                VertexUpdate?.Invoke(this, new FieldVertexEventArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
+                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
             }
             else
             {
@@ -107,12 +113,23 @@ namespace Antonyan.Graphs.Data
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Graph.RemoveEdge(v, e);
-                EdgeUpdate?.Invoke(this, new FieldEdgeEventArgs<TVertex, TWeight>(FieldEvents.RemoveEdge, v, e));
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs<TVertex, TWeight>(FieldEvents.RemoveEdge, v, e));
             }
             else
             {
                 throw new Exception(res.ToString());
             }
+        }
+
+        public bool HasAFreePlace(Vec2 coord, float r)
+        {
+            foreach (var c in Coords)
+            {
+                //var res = 
+                if (Math.Pow(coord.x - c.Value.x, 2.0) + Math.Pow(coord.y - c.Value.y, 2.0) <= r * r)
+                    return false;
+            }
+            return true;
         }
     }
 }

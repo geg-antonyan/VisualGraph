@@ -75,7 +75,7 @@ namespace Antonyan.Graphs.Data
         }
         public SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> AdjList
         {
-            get { return new Graph<TVertex, TWeight>(this).data; }
+            get { return data;/*return new Graph<TVertex, TWeight>(this).data;*/ }
         }
         public ReturnValue AddVertex(TVertex v)
         {

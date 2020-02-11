@@ -12,6 +12,11 @@ namespace Antonyan.Graphs.Backend.Geometry
         {
 
         }
+
+        public Vec2(Vec2 other) : this(other.x, other.y)
+        {
+            
+        }
         public Vec2(float x, float y)
         {
             this.x = x;

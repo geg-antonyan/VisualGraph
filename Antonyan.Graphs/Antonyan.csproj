@@ -50,7 +50,9 @@
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
-    <Compile Include="Backend\CommadArgs\AddVertexEventArgs.cs" />
+    <Compile Include="Backend\CommadArgs\VertexEventArgs.cs" />
+    <Compile Include="Backend\Geometry.cs" />
+    <Compile Include="Backend\Geometry\Clip.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Data\AType.cs" />
     <Compile Include="Data\AVertex.cs" />

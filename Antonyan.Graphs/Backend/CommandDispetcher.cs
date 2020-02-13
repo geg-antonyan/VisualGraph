@@ -65,10 +65,22 @@ namespace Antonyan.Graphs.Backend
             else if (cmdName == CreateFieldCommand<TVertex, TWeight>.Name)
             {
                 if (splits.Length != 3)
-                    throw new Exception($"Некорректная количество аргументов для команды {AddVertexCommand<TVertex, TWeight>.Name}");
+                    throw new Exception($"Некорректная количество аргументов для команды {CreateFieldCommand<TVertex, TWeight>.Name}");
                 bool oriented = splits[1].ToLower() == "oriented" ? true : false;
                 bool weighted = splits[2].ToLower() == "weighted" ? true : false;
                 return CommandRepository.AllocateCommand(cmdName, new CreatFieldArgs<TVertex, TWeight>(ui, this, oriented, weighted));
+            }
+            else if (cmdName == AddEdgeCommand<TVertex, TWeight>.Name)
+            {
+                if (splits.Length < 3 || splits.Length > 4)
+                    throw new Exception($"Некорректная количество аргументов для команды {AddEdgeCommand<TVertex, TWeight>.Name}");
+                TVertex source = new TVertex(), stock = new TVertex();
+                source.SetFromString(splits[1]);
+                stock.SetFromString(splits[2]);
+                TWeight weight = new TWeight();
+                if (splits.Length == 4)
+                    weight.SetFromString(splits[3]);
+                return CommandRepository.AllocateCommand(cmdName, new AddEdgeArgs<TVertex, TWeight>(source, stock, weight, field));
             }
             else throw new Exception($"Некорректная имя комманды -- \"{message}\""); ;
 

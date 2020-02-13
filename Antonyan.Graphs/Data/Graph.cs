@@ -73,6 +73,8 @@ namespace Antonyan.Graphs.Data
                     data[pair.Key].Add(new Tuple<TVertex, TWeight>(adj.Item1, adj.Item2));
             }
         }
+
+        public int Counut { get { return AdjList.Count; } }
         public SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> AdjList
         {
             get { return data;/*return new Graph<TVertex, TWeight>(this).data;*/ }
@@ -86,7 +88,7 @@ namespace Antonyan.Graphs.Data
         }
         public ReturnValue AddEdge(TVertex v, TVertex e, TWeight w)
         {
-            if (!IsWeighted) w = new TWeight();
+            if (!IsWeighted) w = null;
             bool find_v = data.ContainsKey(v);
             bool find_e = data.ContainsKey(e);
             if (!find_v || !find_e)

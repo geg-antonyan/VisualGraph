@@ -24,6 +24,11 @@ namespace Antonyan.Graphs.Backend
             y = v.y;
         }
 
+        public static vec2 operator -(vec2 a, vec2 b)
+        {
+            return new vec2(a.x - b.x, a.y - b.y);
+        }
+
         public static vec2 operator +(vec2 a, vec2 b)
         {
             return new vec2(a.x + b.x, a.y + b.y);
@@ -33,7 +38,11 @@ namespace Antonyan.Graphs.Backend
         {
             return new vec2(a.x * b.x, a.y * b.y);
         }
-
+        
+        public static vec2 operator *(vec2 v, float s)
+        {
+            return new vec2(v.x * s, v.y * s);
+        }
         public float this[int i]
         {
             get { return i == 0 ? x : y; }
@@ -54,6 +63,17 @@ namespace Antonyan.Graphs.Backend
         public static explicit operator vec2(vec3 v)
         {
             return new vec2(v.x, v.y);
+        }
+
+        public float Length()
+        {
+            return (float)Math.Sqrt(x * x + y * y);
+        }
+
+        public vec2 Norm()
+        {
+            float m = this.Length();
+            return new vec2(x / m, y / m);
         }
     }
 

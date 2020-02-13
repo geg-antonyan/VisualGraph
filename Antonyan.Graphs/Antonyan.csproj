@@ -46,12 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\CommadArgs\CreatFieldArgs.cs" />
+    <Compile Include="Backend\CommandArgs\EdgeArgs.cs" />
+    <Compile Include="Backend\CommandArgs\CreatFieldArgs.cs" />
+    <Compile Include="Backend\Commands\AddEdgeCommand.cs" />
     <Compile Include="Backend\Commands\AddVertexCommand.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
-    <Compile Include="Backend\CommadArgs\VertexEventArgs.cs" />
+    <Compile Include="Backend\CommandArgs\VertexEventArgs.cs" />
     <Compile Include="Backend\Commands\CreateFieldCommand.cs" />
     <Compile Include="Backend\Geometry.cs" />
     <Compile Include="Backend\ICommand.cs" />
@@ -68,6 +70,13 @@
     <Compile Include="Gui\CreateGraphGUI.Designer.cs">
       <DependentUpon>CreateGraphGUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\Edge.cs" />
+    <Compile Include="Gui\WeightGui.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\WeightGui.Designer.cs">
+      <DependentUpon>WeightGui.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +89,9 @@
     <EmbeddedResource Include="Gui\CreateGraphGUI.resx">
       <DependentUpon>CreateGraphGUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Gui\WeightGui.resx">
+      <DependentUpon>WeightGui.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,6 +103,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="ClassDiagram.cd" />
     <None Include="Properties\Settings.settings">
@@ -108,6 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Backend\Algorithms\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\plus.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\arrow.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

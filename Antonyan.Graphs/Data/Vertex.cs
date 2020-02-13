@@ -9,7 +9,10 @@ namespace Antonyan.Graphs.Data
     {
         private int data;
         public Vertex() : base() { }
-        public Vertex(string str) : base(str) { }
+        public Vertex(string str) : base(str) 
+        {
+            Key = data;
+        }
         protected override int CompareToImpl(AType other)
         {
             return data.CompareTo(((Vertex)other).data);
@@ -29,6 +32,7 @@ namespace Antonyan.Graphs.Data
         {
             if (!int.TryParse(str, out data))
                 throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
+            Key = data;
         }
 
         protected override string ToStringImpl()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +17,17 @@ using Antonyan.Graphs.Gui;
 
 namespace Antonyan.Graphs
 {
-    public partial class MainForm : Form, UserInterface
+    public partial class MainForm<TVertex, TWeight> : Form, UserInterface
+        where TVertex : AVertex, new()
+        where TWeight : AWeight, new()
     {
         private readonly float R = 20;
-        private float left = 30f, right = 100f, top = 30f, bottom = 50f;
+        private float left = 30f, right = 30f, top = 50f, bottom = 50f;
         private vec2 min = new vec2(), max = new vec2();
         private vec2 Wc = new vec2();
         private vec2 W = new vec2();
-        private Field<Vertex, Weight> field;
-        private Vertex source, stock;
+        private Field<TVertex, TWeight> field;
+        private TVertex source, stock;
 
         private int i = 0;
 
@@ -80,6 +83,71 @@ namespace Antonyan.Graphs
                 A = B;
             }
         }
+        private readonly Matrix mirrorX = new Matrix(-1f, 0f, 0f, 1f, 0f, 0f);
+        private readonly Matrix mirrorY = new Matrix(1f, 0f, 0f, -1f, 0f, 0f);
+        private void DrawEdge(vec2 a, vec2 b, bool oriented, Graphics g, Pen pen, TWeight weight = null, SolidBrush brush = null, Font font = null)
+        {
+            if (oriented)
+            {
+
+            }
+            else
+            {
+                if (a.y > b.y)
+                    Clip.Swap(ref a, ref b);
+                vec2 v = b - a;
+                vec2 norm = v.Norm();
+                vec2 incr = norm * R;
+                vec2 start = a + incr;
+                vec2 end = b - incr;
+
+                if (Clip.RectangleClip(ref start, ref end, min, max))
+                    g.DrawLine(pen, start.x, start.y, end.x, end.y);
+                if (weight != null)
+                {
+
+                    float tmp = v.x / v.Length();
+                    float angle = (float)Math.Acos(tmp) * 180f / (float)Math.PI;
+                    float length = (end - start).Length();
+                    float koef = (angle > 90f) ? 1.8f : 2.2f;
+                    float center = length / koef;
+                    vec2 dl = norm * center;
+                    vec2 pos = start + dl;
+                    if (Clip.SimpleClip(new vec2(pos.x + 5, pos.y + 5), max, min, R))
+                    {
+                        
+                        Matrix matrix = new Matrix();
+                        vec2 A = v;
+                        vec2 B = new vec2(10f, 0f);
+                        B.y = -(A.x * A.y) / B.x;
+                        B = B.Norm();
+                        B *= 23f;
+                        StringFormat stringFormat = new StringFormat();
+                        matrix.Translate(pos.x, pos.y);
+                        matrix.Rotate(angle);
+                        if (angle > 90f)
+                        {
+                            B *= -1f;
+                            matrix.Multiply(mirrorY);
+                            matrix.Multiply(mirrorX);
+                        }
+                        if (angle == 90f) B = new vec2(0f, 0f);
+                        g.MultiplyTransform(matrix);
+                        g.DrawString(weight.ToString(), font, brush, B.x, B.y, stringFormat);
+                        matrix.Reset();
+                        if (angle > 90f)
+                        {
+                            matrix.Multiply(mirrorX);
+                            matrix.Multiply(mirrorY);
+                        }
+                        matrix.Rotate(-angle);
+                        matrix.Translate(-pos.x, -pos.y);
+                        g.MultiplyTransform(matrix);
+                    }
+
+                }
+            }
+        }
 
 
         public MainForm()
@@ -92,6 +160,7 @@ namespace Antonyan.Graphs
         private void MainForm_Load(object sender, EventArgs e)
         {
             RetCalc();
+            tlbtnAddEdge.Enabled = false;
         }
 
         private readonly Pen bluePen = new Pen(Color.Blue, 2f);
@@ -104,10 +173,11 @@ namespace Antonyan.Graphs
         private readonly Font seintSerif = new Font(FontFamily.GenericSansSerif, 12f);
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics; 
+            tlbtnAddEdge.Enabled = (source != null && stock != null) ? true : false;
+            var g = e.Graphics;
             if (field != null)
             {
-                foreach (var v in field.Coords)
+                foreach (var v in field.Positions)
                 {
                     Pen pen; SolidBrush brush; Font font = monospace;
                     if (v.Key == source)
@@ -133,6 +203,21 @@ namespace Antonyan.Graphs
                     g.DrawString(str, seintSerif, brush, new RectangleF(xstr, ystr, R * 2f, R * 2f));
                     DrawCircle(pos.x, pos.y, pen, g);
                 }
+                bool[] vertices = new bool[field.Graph.Counut];
+                foreach (var v in field.Graph.AdjList)
+                {
+                    if (v.Value.Count > 0)
+                    {
+                        vec2 src = field.GetPos(v.Key);
+                        foreach (var edge in v.Value)
+                        {
+                            if (vertices[edge.Item1.Key] == true) continue;
+                            vec2 stc = field.GetPos(edge.Item1);
+                            DrawEdge(src, stc, field.IsOrgarph, g, redPen, edge.Item2, greenBrush, monospace);
+                        }
+                    }
+                    vertices[v.Key.Key] = true;
+                }
             }
 
             Pen rectPen = new Pen(Color.Black, 2);
@@ -144,19 +229,42 @@ namespace Antonyan.Graphs
             Refresh();
         }
 
-        private void createGraph_file_Click(object sender, EventArgs e)
+        private void tlbtnCrtGraph_Click(object sender, EventArgs e)
         {
-            
-            CreateGraphGUI crt = new CreateGraphGUI();
-            crt.Owner = this;
-            crt.ShowDialog();
-            if (crt.Ok)
+            CreateGraphGUI window = new CreateGraphGUI();
+            window.Owner = this;
+            window.ShowDialog();
+            if (window.Ok)
             {
-                string orientd = crt.Oriented ? "oriented" : "noOriented";
-                string weighted = crt.Weighted ? "weighted" : "noWeighted";
+                string orientd = window.Oriented ? "oriented" : "noOriented";
+                string weighted = window.Weighted ? "weighted" : "noWeighted";
                 CommandEntered?.Invoke(this, new UICommandEventArgs($"CreateField {orientd} {weighted}"));
-                createGraph_file.Enabled = false;
+                tlbtnCrtGraph.Enabled = false;
             }
+        }
+
+        private void tlbtnAddEdge_Click(object sender, EventArgs e)
+        {
+            if (source == null || stock == null) return;
+            string src = source.ToString();
+            string stc = stock.ToString();
+            source = stock = null;
+            if (field.IsWeighted)
+            {
+                WeightGui window = new WeightGui();
+                window.Owner = this;
+                window.ShowDialog();
+                if (window.Ok)
+                {
+                    CommandEntered?.Invoke(this, new UICommandEventArgs($"AddEdge {src} {stc} {window.Weight}"));
+                }
+            }
+            else
+            {
+
+                CommandEntered?.Invoke(this, new UICommandEventArgs($"AddEdge {src} {stc}"));
+            }
+
         }
 
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
@@ -189,7 +297,7 @@ namespace Antonyan.Graphs
                             CommandEntered?.Invoke(this, new UICommandEventArgs(command));
                         }
                         else source = stock = null;
-                        Refresh();   
+                        Refresh();
                         break;
                     }
                 default: break;
@@ -205,11 +313,12 @@ namespace Antonyan.Graphs
 
         public void PostMessage(string message)
         {
+            MessageBox.Show(message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         public void AttachField(object field)
         {
-            this.field = (Field<Vertex, Weight>)field;
+            this.field = (Field<TVertex, TWeight>)field;
         }
     }
 }

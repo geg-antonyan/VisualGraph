@@ -20,9 +20,12 @@ namespace Antonyan.Graphs
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var GUI = new MainForm();
+            var GUI = new MainForm<Vertex, Weight>();
+           
             CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
             CommandRepository.AddCommand(CreateFieldCommand<Vertex, Weight>.Name, new CreateFieldCommand<Vertex, Weight>());
+            CommandRepository.AddCommand(AddEdgeCommand<Vertex, Weight>.Name, new AddEdgeCommand<Vertex, Weight>());
+
             var field = new Field<Vertex, Weight>(false, false, GUI);
             CommandDispetcher<Vertex, Weight> cd = new CommandDispetcher<Vertex, Weight>(GUI);
 

@@ -34,8 +34,8 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         public AddVertexArgs(TVertex v, vec2 coord, Field<TVertex, TWeight> field)
             : base(v, field)
         {
-            Coord = coord;
+            Pos = coord;
         }
-        public vec2 Coord { get; private set; }
+        public vec2 Pos { get; private set; }
     } 
 }

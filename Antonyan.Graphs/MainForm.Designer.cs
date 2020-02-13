@@ -1,6 +1,8 @@
-﻿namespace Antonyan.Graphs
+﻿using Antonyan.Graphs.Data;
+
+namespace Antonyan.Graphs
 {
-    partial class MainForm
+    partial class MainForm<TVertex, TWeight>
     {
         /// <summary>
         /// Required designer variable.
@@ -28,46 +30,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.file_menu = new System.Windows.Forms.ToolStripMenuItem();
-            this.createGraph_file = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1.SuspendLayout();
+            this.toolStripMain = new System.Windows.Forms.ToolStrip();
+            this.tlbtnCrtGraph = new System.Windows.Forms.ToolStripButton();
+            this.tlbtnAddEdge = new System.Windows.Forms.ToolStripButton();
+            this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // menuStrip1
+            // toolStripMain
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.file_menu});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 28);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tlbtnCrtGraph,
+            this.tlbtnAddEdge});
+            this.toolStripMain.Location = new System.Drawing.Point(0, 0);
+            this.toolStripMain.Name = "toolStripMain";
+            this.toolStripMain.Size = new System.Drawing.Size(800, 27);
+            this.toolStripMain.TabIndex = 0;
+            this.toolStripMain.Text = "toolStrip4";
             // 
-            // file_menu
+            // tlbtnCrtGraph
             // 
-            this.file_menu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.createGraph_file});
-            this.file_menu.Name = "file_menu";
-            this.file_menu.Size = new System.Drawing.Size(59, 24);
-            this.file_menu.Text = "Файл";
+            this.tlbtnCrtGraph.Image = global::Antonyan.Graphs.Properties.Resources.plus;
+            this.tlbtnCrtGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tlbtnCrtGraph.Name = "tlbtnCrtGraph";
+            this.tlbtnCrtGraph.Size = new System.Drawing.Size(125, 24);
+            this.tlbtnCrtGraph.Text = "Создать граф";
+            this.tlbtnCrtGraph.Click += new System.EventHandler(this.tlbtnCrtGraph_Click);
             // 
-            // createGraph_file
+            // tlbtnAddEdge
             // 
-            this.createGraph_file.Name = "createGraph_file";
-            this.createGraph_file.Size = new System.Drawing.Size(224, 26);
-            this.createGraph_file.Text = "Создать Граф";
-            this.createGraph_file.Click += new System.EventHandler(this.createGraph_file_Click);
+            this.tlbtnAddEdge.Image = global::Antonyan.Graphs.Properties.Resources.arrow;
+            this.tlbtnAddEdge.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tlbtnAddEdge.Name = "tlbtnAddEdge";
+            this.tlbtnAddEdge.Size = new System.Drawing.Size(178, 24);
+            this.tlbtnAddEdge.Text = "Соединить вершины";
+            this.tlbtnAddEdge.Click += new System.EventHandler(this.tlbtnAddEdge_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.toolStripMain);
             this.DoubleBuffered = true;
-            this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MainForm";
             this.Text = "Form1";
@@ -75,18 +80,19 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.toolStripMain.ResumeLayout(false);
+            this.toolStripMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem file_menu;
-        private System.Windows.Forms.ToolStripMenuItem createGraph_file;
+       
+        private System.Windows.Forms.ToolStrip toolStripMain;
+        private System.Windows.Forms.ToolStripButton tlbtnCrtGraph;
+        private System.Windows.Forms.ToolStripButton tlbtnCreatEdge;
+        private System.Windows.Forms.ToolStripButton tlbtnAddEdge;
     }
 }
 

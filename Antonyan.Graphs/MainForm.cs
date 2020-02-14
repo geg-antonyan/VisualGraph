@@ -16,22 +16,44 @@ using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Gui;
 using Antonyan.Graphs.Gui.Models;
 
+
+
 namespace Antonyan.Graphs
 {
+
+
     public partial class MainForm<TVertex, TWeight> : Form, UserInterface
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        SortedDictionary<string, Model> models;
+        private Models models;
         private readonly float R = 20;
-        private float left = 30f, right = 30f, top = 50f, bottom = 50f;
-        private vec2 min = new vec2(), max = new vec2();
-        private vec2 Wc = new vec2();
-        private vec2 W = new vec2();
+        private readonly float left = 30f;
+        private readonly float right = 30f;
+        private readonly float top = 50f;
+        private readonly float bottom = 50f;
+        private readonly vec2 max, min;
+        private readonly vec2 Wc, W;
         private Field<TVertex, TWeight> field;
-        private TVertex source, stock;
+        private string source = null, stock = null;
 
         private int i = 0;
+
+
+
+        public MainForm()
+        {
+            min = new vec2(); max = new vec2();
+            Wc = new vec2(); W = new vec2();
+            Circle.GenerateCircle(R, 1f);
+            models = new Models(new Pen(Color.Red), new Pen(Color.Blue), new Pen(Color.Green), new Pen(Color.DarkGray, 2f),
+                new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f), 
+                new Font(FontFamily.GenericMonospace, 12f),
+                new Font(FontFamily.GenericMonospace, 10f),
+                new SolidBrush(Color.Red), new SolidBrush(Color.Blue), new SolidBrush(Color.Green), new SolidBrush(Color.DarkGray));
+            InitializeComponent();
+        }
+
         private void RetCalc()
         {
             max.x = ClientRectangle.Width - right;
@@ -41,13 +63,8 @@ namespace Antonyan.Graphs
             W.x = max.x - left;
             W.y = max.y - top;
         }
-       
 
-        public MainForm()
-        {
-            Circle.GenerateCircle(R, 1f);
-            InitializeComponent();
-        }
+
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -55,67 +72,11 @@ namespace Antonyan.Graphs
             tlbtnAddEdge.Enabled = false;
         }
 
-        private readonly Pen bluePen = new Pen(Color.Blue, 2f);
-        private readonly Pen redPen = new Pen(Color.Red, 2f);
-        private readonly Pen darkRedPen = new Pen(Color.DarkRed, 2f);
-        private readonly SolidBrush darkGreenBrush = new SolidBrush(Color.DarkGreen);
-        private readonly SolidBrush blackBrush = new SolidBrush(Color.Black);
-        private readonly SolidBrush greenBrush = new SolidBrush(Color.Green);
-        private readonly Font monospace = new Font(FontFamily.GenericMonospace, 16f);
-        private readonly Font seintSerif = new Font(FontFamily.GenericSansSerif, 12f);
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-            tlbtnAddEdge.Enabled = (source != null && stock != null) ? true : false;
+            tlbtnAddEdge.Enabled = models.MarkedCircleCount == 2 ? true : false;
             var g = e.Graphics;
-            if (field != null)
-            {
-                foreach (var v in field.Positions)
-                {
-                    Pen pen; SolidBrush brush; Font font = monospace;
-                    if (v.Key == source)
-                    {
-                        brush = greenBrush;
-                        pen = redPen;
-                    }
-                    else if (v.Key == stock)
-                    {
-                        pen = darkRedPen;
-                        brush = darkGreenBrush;
-                    }
-                    else
-                    {
-                        brush = blackBrush;
-                        pen = bluePen;
-                        font = seintSerif;
-                    }
-                    string str = v.Key.ToString();
-                    vec2 pos = v.Value;
-                    //float xstr = str.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f;
-                    //float ystr = pos.y - R / 2f;
-                    //g.DrawString(str, seintSerif, brush, new RectangleF(xstr, ystr, R * 2f, R * 2f));
-                    Circle circle = new Circle(g, pen, brush, seintSerif, pos, str);
-                    circle.Draw(min, max);
-                    //DrawCircle(pos.x, pos.y, pen, g);
-                }
-                bool[] vertices = new bool[field.Graph.Counut];
-                foreach (var v in field.Graph.AdjList)
-                {
-                    if (v.Value.Count > 0)
-                    {
-                        vec2 src = field.GetPos(v.Key);
-                        foreach (var edge in v.Value)
-                        {
-                            if (vertices[edge.Item1.Key] == true) continue;
-                            vec2 stc = field.GetPos(edge.Item1);
-                            Edge ed = new Edge(g, redPen, greenBrush, monospace, src, stc, R, edge.Item2.ToString());
-                           ed.Draw(min, max);
-                           // DrawEdge(src, stc, field.IsOrgarph, g, redPen, edge.Item2, greenBrush, monospace);
-                        }
-                    }
-                    vertices[v.Key.Key] = true;
-                }
-            }
-
+            models.Draw(g, min, max);
             Pen rectPen = new Pen(Color.Black, 2);
             g.DrawRectangle(rectPen, left, top, W.x, W.y);
         }
@@ -142,8 +103,9 @@ namespace Antonyan.Graphs
         private void tlbtnAddEdge_Click(object sender, EventArgs e)
         {
             if (source == null || stock == null) return;
-            string src = source.ToString();
-            string stc = stock.ToString();
+            models.UnmarkAll();
+            string src = source;
+            string stc = stock;
             source = stock = null;
             if (field.IsWeighted)
             {
@@ -171,39 +133,76 @@ namespace Antonyan.Graphs
                 case MouseButtons.Left:
                     {
                         vec2 pos = new vec2((float)e.X, (float)e.Y);
+                        int edgehashCode = models.GetEdgeHashCode(pos);
                         if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
                         {
-                            source = stock = null;
+                            models.UnmarkAll();
                         }
                         else if (!field.HasAFreePlace(pos, R))
                         {
-                            if (source == null)
-                                source = field.GetVertex(pos, R);
-                            else if (stock == null)
-                                stock = field.GetVertex(pos, R);
-                            else source = stock = null;
+                            string mark = field.GetVertex(pos, R).ToString();
+                            int hasCode = mark.GetHashCode();
+                            models.Mark(hasCode);
+                            if (models.MarkedCircleCount == 1)
+                                source = mark;
+                            else if (models.MarkedCircleCount == 2)
+                                stock = mark;
+                        }
+                        else if (edgehashCode != 0)
+                        {
+                            models.Mark(edgehashCode);
                         }
                         else if (field.HasAFreePlace(new vec2(e.X, e.Y), R + R + R / 2))
                         {
-                            source = stock = null;
+                            if (models.MarkedCircleCount > 0 || models.MarkedEdgeCount > 0)
+                            {
+                                models.UnmarkAll();
+                                break;
+                            }
                             string v = i++.ToString();
                             string x = e.X.ToString();
                             string y = e.Y.ToString();
                             string command = $"AddVertex {v} {x} {y}";
                             CommandEntered?.Invoke(this, new UICommandEventArgs(command));
                         }
-                        else source = stock = null;
-                        Refresh();
+                        else models.UnmarkAll();
                         break;
                     }
                 default: break;
             }
+            Refresh();
         }
 
         public event EventHandler<UICommandEventArgs> CommandEntered;
 
         public void FieldUpdate(object obj, EventArgs e)
         {
+            var fieldEvent = (FieldUpdateArgs)e;
+            switch (fieldEvent.Event)
+            {
+                case FieldEvents.AddVertex:
+                    {
+                        var args = (FieldUpdateVertexArgs)fieldEvent;
+                        Circle circle = new Circle(args.Pos, args.Vertex);
+                        models.AddDrawModel(args.GetHashCode(), circle);
+                        break;
+                    }
+                case FieldEvents.AddEdge:
+                    {
+                        var args = (FieldUpdateEdgeArgs)fieldEvent;
+                        Edge edge = new Edge(args.PosSource, args.PosStock, R, args.Weight);
+                        models.AddDrawModel(args.GetHashCode(), edge);
+                        break;
+                    }
+                case FieldEvents.RemoveVertex:
+                    {
+                        break;
+                    }
+                case FieldEvents.RemoveEdge:
+                    {
+                        break;
+                    }
+            }
             Refresh();
         }
 

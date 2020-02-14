@@ -11,41 +11,53 @@ using Antonyan.Graphs.Util;
 namespace Antonyan.Graphs.Data
 {
     public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge };
-    public class FieldUpdateArgs<TVertex> : VertexEventArgs<TVertex>
-        where TVertex : AVertex, new()
+    public class FieldUpdateArgs : EventArgs
     {
-        public FieldUpdateArgs(FieldEvents e, TVertex v) 
-            : base(v)
+        protected int hashCode;
+        public FieldUpdateArgs(FieldEvents e) 
         {
             Event = e;
         }
         public FieldEvents Event { get; private set; }
-    }
-
-    public class FieldUpdateVertexArgs<TVertex> : FieldUpdateArgs<TVertex>
-        where TVertex : AVertex, new()
-    {
-        public FieldUpdateVertexArgs(FieldEvents e, TVertex v, vec2 coord)
-            : base(e, v)
+        public override int GetHashCode()
         {
-            Coord = coord;
+            return hashCode;
         }
-        public vec2 Coord { get; private set; }
+    }
+
+    public class FieldUpdateVertexArgs : FieldUpdateArgs
+    {
+        public FieldUpdateVertexArgs(FieldEvents e, string vertex, vec2 coord)
+            : base(e)
+        {
+            Pos = coord;
+            Vertex = vertex;
+            hashCode = Vertex.GetHashCode();
+        }
+        public vec2 Pos { get; private set; }
+        public string Vertex { get; private set; }
+        
     }
 
 
-    public class FieldUpdateEdgeArgs<TVertex, TWeight> : FieldUpdateArgs<TVertex>
-        where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
+    public class FieldUpdateEdgeArgs : FieldUpdateArgs
     {
-        public FieldUpdateEdgeArgs(FieldEvents e, TVertex v, TVertex edge, TWeight w = null) 
-            : base(e, v)
+        public FieldUpdateEdgeArgs(FieldEvents e, vec2 posSource, vec2 posStock, string source, string stock, string w) 
+            : base(e)
         {
-            Edge = edge;
+            PosSource = posSource;
+            PosStock = posStock;
+            Source = source;
+            Stock = stock;
             Weight = w;
+            hashCode = (PosSource.x.ToString() + PosSource.y.ToString() +
+                PosStock.x.ToString() + PosStock.y.ToString() + Weight).GetHashCode();
         }
-        public TVertex Edge { get; private set; }
-        public TWeight Weight { get; private set; }
+        public vec2 PosSource { get; private set; }
+        public vec2 PosStock { get; private set; }
+        public string Source { get; private set; }
+        public string Stock { get; private set; }
+        public string Weight { get; private set; }
     }
 
 
@@ -54,8 +66,8 @@ namespace Antonyan.Graphs.Data
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public event EventHandler<FieldUpdateArgs<TVertex>> VertexUpdate;
-        public event EventHandler<FieldUpdateEdgeArgs<TVertex, TWeight>> EdgeUpdate;
+        public event EventHandler<FieldUpdateArgs> VertexUpdate;
+        public event EventHandler<FieldUpdateEdgeArgs> EdgeUpdate;
 
         public SortedDictionary<TVertex, vec2> Positions { get; private set; }
         public Graph<TVertex, TWeight> Graph { get; private set; }
@@ -96,7 +108,7 @@ namespace Antonyan.Graphs.Data
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Positions.Add(v, coord);
-                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs<TVertex>(FieldEvents.AddVertex, v, coord));
+                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.AddVertex, v.ToString(), coord));
             }
             else
                 throw new Exception(res.ToString());
@@ -107,7 +119,11 @@ namespace Antonyan.Graphs.Data
             if (res != Graph<TVertex, TWeight>.ReturnValue.Succsess)
                 throw new Exception(res.ToString());
             else
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs<TVertex, TWeight>(FieldEvents.AddEdge, v, e, w));
+            {
+                vec2 source = GetPos(v);
+                vec2 stock = GetPos(e);
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.AddEdge, source, stock, v.ToString(), e.ToString(), w.ToString()));
+            }
         }
         public void RemoveVertex(TVertex v)
         {
@@ -117,7 +133,7 @@ namespace Antonyan.Graphs.Data
                 vec2 c;
                 Positions.TryGetValue(v, out c);
                 Positions.Remove(v);
-                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs<TVertex>(FieldEvents.RemoveVertex, v, c));
+                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.RemoveVertex, v.ToString(), c));
             }
             else
             {
@@ -127,11 +143,12 @@ namespace Antonyan.Graphs.Data
 
         public void RemoveEdge(TVertex v, TVertex e)
         {
-            var res = Graph.RemoveEdge(v, e);
+            var res = Graph.RemoveEdge(v, e, out TWeight w);
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
-                Graph.RemoveEdge(v, e);
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs<TVertex, TWeight>(FieldEvents.RemoveEdge, v, e));
+                vec2 source = GetPos(v);
+                vec2 stock = GetPos(e);
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.RemoveEdge, source, stock, v.ToString(), e.ToString(), w.ToString()));
             }
             else
             {
@@ -143,7 +160,6 @@ namespace Antonyan.Graphs.Data
         {
             foreach (var c in Positions)
             {
-                //var res = 
                 if (Math.Pow(coord.x - c.Value.x, 2.0) + Math.Pow(coord.y - c.Value.y, 2.0) <= r * r)
                     return false;
             }

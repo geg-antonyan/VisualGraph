@@ -128,22 +128,28 @@ namespace Antonyan.Graphs.Data
                 }
             return ReturnValue.Succsess;
         }
-        public ReturnValue RemoveEdge(TVertex v, TVertex e)
+        public ReturnValue RemoveEdge(TVertex v, TVertex e, out TWeight w)
         {
+            w = null;
             bool find_v = data.ContainsKey(v);
             bool find_e = data.ContainsKey(e);
             if (!find_v || !find_e)
+            {
                 return ReturnValue.VertexDontExist;
+            }
             ReturnValue value = ReturnValue.EdgeDontExist;
             foreach (var adj in data[v])
                 if (adj.Item1.Equals(e))
                 {
                     value = ReturnValue.EdgeExist;
+                    w = adj.Item2;
                     data[v].Remove(adj);
                     break;
                 }
             if (value == ReturnValue.EdgeDontExist)
+            {
                 return value;
+            }
             if (!IsOrgraph)
             {
                 foreach (var adj in data[e])

@@ -9,7 +9,7 @@ using Antonyan.Graphs.Backend;
 
 namespace Antonyan.Graphs.Gui.Models
 {
-    class Circle : DrawObject, Model
+    public class Circle :  DrawModel
     {
 
         private readonly string mark;
@@ -17,14 +17,13 @@ namespace Antonyan.Graphs.Gui.Models
         private static float R;
         private readonly mat3 translate;
         private static vec3[] circle;
-        public Circle(Graphics graphic, Pen pen, Brush brush, Font font, vec2 pos, string mark)
-            : base(graphic, pen, brush, font)
+        public Circle(vec2 pos, string mark)
         {
             this.mark = mark;
             translate = Transforms.Translate(pos.x, pos.y);
             posMark = new vec2(mark.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f,  pos.y - R / 2f);
         }
-        public void Draw(vec2 min, vec2 max)
+        public void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
         {
             graphic.DrawString(mark, font, brush, new RectangleF(posMark.x, posMark.y, R * 2f, R * 2f));
             vec3 A = translate * circle[0];

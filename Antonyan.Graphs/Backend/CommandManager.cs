@@ -16,26 +16,42 @@ namespace Antonyan.Graphs.Backend
             undoStore = new Stack<ICommand>();
             redoStore = new Stack<ICommand>();
         }
-        public void Undo()
+
+        private bool[] CheckPosiible()
         {
-            if (undoStore.Count == 0) return;
-            ICommand cmd = undoStore.Pop();
-            cmd.Undo();
-            redoStore.Push(cmd);
+            bool[] res = new bool[2];
+            res[0] = undoStore.Count > 0 ? true : false;
+            res[1] = redoStore.Count > 0 ? true : false;
+            return res;
         }
-        public void Redo()
+        public bool[] Undo()
         {
-            if (redoStore.Count == 0) return;
-            ICommand cmd = redoStore.Pop();
-            cmd.Execute();
-            undoStore.Push(cmd);
+
+            if (undoStore.Count > 0)
+            {
+                ICommand cmd = undoStore.Pop();
+                cmd.Undo();
+                redoStore.Push(cmd);
+            }
+            return CheckPosiible();
         }
-        public void CommandExecute(ICommand command)
+        public bool[] Redo()
+        {
+            if (redoStore.Count > 0)
+            {
+                ICommand cmd = redoStore.Pop();
+                cmd.Execute();
+                undoStore.Push(cmd);
+            }
+            return CheckPosiible();
+        }
+        public bool[] CommandExecute(ICommand command)
         {
             command.Execute();
             undoStore.Push(command);
             if (!(redoStore.Count == 0))
                 redoStore.Clear();
+            return CheckPosiible();
         }
     }
 }

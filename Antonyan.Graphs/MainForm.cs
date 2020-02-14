@@ -215,5 +215,10 @@ namespace Antonyan.Graphs
         {
             this.field = (Field<TVertex, TWeight>)field;
         }
+
+        public void CheckUndoRedo(bool undoPossible, bool redoPossible)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

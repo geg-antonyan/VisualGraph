@@ -1,6 +1,6 @@
 ﻿using System;
 
-
+using Antonyan.Graphs.Backend;
 namespace Antonyan.Graphs.Util
 {
 
@@ -17,6 +17,7 @@ namespace Antonyan.Graphs.Util
         event EventHandler<UICommandEventArgs> CommandEntered;
         void PostMessage(string message);
         void FieldUpdate(object obj, EventArgs e);
+        void CheckUndoRedo(bool undoPossible, bool redoPossible);
         void AttachField(object field);
     }
 

@@ -31,9 +31,17 @@ namespace Antonyan.Graphs.Backend
         {
             try
             {
-                var cmd = GenerateCommand(args);
-                
-                cm.CommandExecute(cmd);
+                bool[] undoRedoPossible;
+                if (args.Message.ToLower() == "undo")
+                    undoRedoPossible = cm.Undo();
+                else if (args.Message.ToLower() == "redo")
+                    undoRedoPossible = cm.Redo();
+                else
+                {
+                    var cmd = GenerateCommand(args);
+                    undoRedoPossible = cm.CommandExecute(cmd);
+                }
+                ui.CheckUndoRedo(undoRedoPossible[0], undoRedoPossible[1]);
             }
             catch (Exception ex)
             {

@@ -2,7 +2,7 @@
 
 namespace Antonyan.Graphs
 {
-    partial class MainForm<TVertex, TWeight>
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

@@ -60,6 +60,15 @@ namespace Antonyan.Graphs.Gui.Models
             models = new SortedDictionary<int, Model>();
         }
 
+        public string GetVertex(int hashCode)
+        {
+            if (models.TryGetValue(hashCode, out Model model))
+            {
+                if (model.DrawModel is Circle)
+                    return ((Circle)model.DrawModel).Vertex;
+            }
+            return null;
+        }
         public void AddDrawModel(int hashCode, DrawModel drawModel)
         {
             models.Add(hashCode, new Model(drawModel));
@@ -151,6 +160,20 @@ namespace Antonyan.Graphs.Gui.Models
             return res;
         }
 
+        public int GetCircleHashCode(vec2 pos, float r)
+        {
+            foreach (var m in models)
+            {
+                if (m.Value.DrawModel is Circle)
+                {
+                    Circle circle = (Circle)m.Value.DrawModel;
+                    vec2 c = circle.Pos;
+                    if (Math.Pow(pos.x - c.x, 2.0) + Math.Pow(pos.y - c.y, 2.0) <= r * r)
+                        return circle.GetHashCode();
+                }
+            }
+            return 0;
+        }
 
         public int GetEdgeHashCode(vec2 pos)
         {

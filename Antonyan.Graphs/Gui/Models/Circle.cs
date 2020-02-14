@@ -12,20 +12,27 @@ namespace Antonyan.Graphs.Gui.Models
     public class Circle :  DrawModel
     {
 
-        private readonly string mark;
-        private readonly vec2 posMark;
+        public string Vertex { get; private set; } 
+        public vec2 Pos { get; private set; }
+        private vec2 vertexPos;
         private static float R;
         private readonly mat3 translate;
         private static vec3[] circle;
         public Circle(vec2 pos, string mark)
         {
-            this.mark = mark;
+            Pos = pos;
+            this.Vertex = mark;
             translate = Transforms.Translate(pos.x, pos.y);
-            posMark = new vec2(mark.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f,  pos.y - R / 2f);
+            vertexPos = new vec2(mark.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f,  pos.y - R / 2f);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Pos.x.ToString() + Pos.y.ToString() + Vertex).GetHashCode();
         }
         public void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
         {
-            graphic.DrawString(mark, font, brush, new RectangleF(posMark.x, posMark.y, R * 2f, R * 2f));
+            graphic.DrawString(Vertex, font, brush, new RectangleF(vertexPos.x, vertexPos.y, R * 2f, R * 2f));
             vec3 A = translate * circle[0];
             for (int i = 1; i < circle.Length; i++)
             {

@@ -20,7 +20,7 @@ namespace Antonyan.Graphs
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var GUI = new MainForm<Vertex, Weight>();
+            var GUI = new MainForm();
            
             CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
             CommandRepository.AddCommand(CreateFieldCommand<Vertex, Weight>.Name, new CreateFieldCommand<Vertex, Weight>());

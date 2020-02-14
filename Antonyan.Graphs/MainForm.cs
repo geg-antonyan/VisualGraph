@@ -22,9 +22,7 @@ namespace Antonyan.Graphs
 {
 
 
-    public partial class MainForm<TVertex, TWeight> : Form, UserInterface
-        where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
+    public partial class MainForm : Form, UserInterface
     {
         private Models models;
         private readonly float R = 20;
@@ -34,7 +32,8 @@ namespace Antonyan.Graphs
         private readonly float bottom = 50f;
         private readonly vec2 max, min;
         private readonly vec2 Wc, W;
-        private Field<TVertex, TWeight> field;
+        private bool fieldCreated;
+        private bool oriented, weighted;
         private string source = null, stock = null;
 
         private int i = 0;
@@ -93,10 +92,13 @@ namespace Antonyan.Graphs
             window.ShowDialog();
             if (window.Ok)
             {
-                string orientd = window.Oriented ? "oriented" : "noOriented";
-                string weighted = window.Weighted ? "weighted" : "noWeighted";
-                CommandEntered?.Invoke(this, new UICommandEventArgs($"CreateField {orientd} {weighted}"));
+                oriented = window.Oriented;
+                weighted = window.Weighted;
+                string orGraph = oriented ? "oriented" : "noOriented";
+                string weightedGraph = weighted ? "weighted" : "noWeighted";
+                CommandEntered?.Invoke(this, new UICommandEventArgs($"CreateField {orGraph} {weightedGraph}"));
                 tlbtnCrtGraph.Enabled = false;
+                fieldCreated = true;
             }
         }
 
@@ -107,7 +109,7 @@ namespace Antonyan.Graphs
             string src = source;
             string stc = stock;
             source = stock = null;
-            if (field.IsWeighted)
+            if (weighted)
             {
                 WeightGui window = new WeightGui();
                 window.Owner = this;
@@ -127,32 +129,30 @@ namespace Antonyan.Graphs
 
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
-            if (field == null) return;
+            if (!fieldCreated) return;
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     {
                         vec2 pos = new vec2((float)e.X, (float)e.Y);
-                        int edgehashCode = models.GetEdgeHashCode(pos);
+                        int vertexHashCode, edgehashCode;
                         if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
                         {
                             models.UnmarkAll();
                         }
-                        else if (!field.HasAFreePlace(pos, R))
+                        else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0)
                         {
-                            string mark = field.GetVertex(pos, R).ToString();
-                            int hasCode = mark.GetHashCode();
-                            models.Mark(hasCode);
+                            models.Mark(vertexHashCode);
                             if (models.MarkedCircleCount == 1)
-                                source = mark;
+                                source = models.GetVertex(vertexHashCode);
                             else if (models.MarkedCircleCount == 2)
-                                stock = mark;
+                                stock = models.GetVertex(vertexHashCode);
                         }
-                        else if (edgehashCode != 0)
+                        else if ((edgehashCode = models.GetEdgeHashCode(pos)) != 0)
                         {
                             models.Mark(edgehashCode);
                         }
-                        else if (field.HasAFreePlace(new vec2(e.X, e.Y), R + R + R / 2))
+                        else if (models.GetCircleHashCode(new vec2(e.X, e.Y), R + R + R / 2) == 0)
                         {
                             if (models.MarkedCircleCount > 0 || models.MarkedEdgeCount > 0)
                             {
@@ -213,12 +213,12 @@ namespace Antonyan.Graphs
 
         public void AttachField(object field)
         {
-            this.field = (Field<TVertex, TWeight>)field;
+           
         }
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

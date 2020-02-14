@@ -32,7 +32,7 @@ namespace Antonyan.Graphs.Data
         {
             Pos = coord;
             Vertex = vertex;
-            hashCode = Vertex.GetHashCode();
+            hashCode = (Pos.x.ToString() + Pos.y.ToString() + Vertex).GetHashCode();
         }
         public vec2 Pos { get; private set; }
         public string Vertex { get; private set; }

@@ -8,43 +8,37 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Backend;
 
-namespace Antonyan.Graphs.Gui
+namespace Antonyan.Graphs.Gui.Models
 {
-    public class Edge
+    public class Edge : DrawObject, Model
     {
-        private Graphics graphics;
-        private Pen pen;
+        private static readonly Matrix mirrorX = new Matrix(-1f, 0f, 0f, 1f, 0f, 0f);
+        private static readonly Matrix mirrorY = new Matrix(1f, 0f, 0f, -1f, 0f, 0f);
         private vec2 start;
         private vec2 end;
-        private float angle;
-        private string weight;
-        private readonly Matrix mirrorX = new Matrix(-1f, 0f, 0f, 1f, 0f, 0f);
-        private readonly Matrix mirrorY = new Matrix(1f, 0f, 0f, -1f, 0f, 0f);
-        private vec2 pos;
-        private Brush brush;
-        private Font font;
-        private float R;
-        public Edge(vec2 start, vec2 end, Pen pen, Graphics graphics, float r, Brush brush = null, Font font = null, string weight = null)
+        private readonly float angle;
+        private readonly string weight;
+        private readonly vec2 pos;
+        private readonly float r;
+        public Edge(Graphics graphic,  Pen pen, Brush brush, Font font, vec2 start, vec2 end, float r, string weight = null)
+            : base(graphic, pen, brush, font)
         {
+
             if (r != 0)
             {
                 if (start.y > end.y)
                     Clip.Swap(ref start, ref end);
-                vec2 v = end - start;
-                vec2 norm = v.Norm();
+                vec2 deltaV = end - start;
+                vec2 norm = deltaV.Norm();
                 vec2 incr = norm * r;
-                start += incr;
-                end -= incr;
-                this.start = start;
-                this.end = end;
+                this.start = start + incr;
+                this.end = end - incr;
                 this.weight = weight;
-                this.font = font;
-                this.brush = brush;
-                R = r;
+                this.r = r;
                 if (weight != null)
                 {
-                    float tmp = v.x / v.Length();
-                    float angle = (float)Math.Acos(tmp) * 180f / (float)Math.PI;
+                    float tmp = deltaV.x / deltaV.Length();
+                    angle = (float)Math.Acos(tmp) * 180f / (float)Math.PI;
                     float length = (end - start).Length();
                     float koef = (angle > 90f) ? 1.8f : 2.2f;
                     float center = length / koef;
@@ -52,12 +46,21 @@ namespace Antonyan.Graphs.Gui
                     pos = start + dl;
                 }
             }
+            else
+            {
+                this.start = start;
+                this.end = end;
+                this.weight = weight;
+                this.r = r;
+            }
         }
         public void Draw(vec2 min, vec2 max)
         {
+            
+
             if (Clip.RectangleClip(ref start, ref end, min, max))
-                graphics.DrawLine(pen, start.x, start.y, end.x, end.y);
-            if (weight == null || !Clip.SimpleClip(new vec2(pos.x + 5f, pos.y + 5f), max, min, R))
+                graphic.DrawLine(pen, start.x, start.y, end.x, end.y);
+            if (weight == null || !Clip.SimpleClip(new vec2(pos.x + 5f, pos.y + 5f), max, min, r))
                 return;
             Matrix matrix = new Matrix();
             vec2 A = end - start;
@@ -75,8 +78,8 @@ namespace Antonyan.Graphs.Gui
                 matrix.Multiply(mirrorX);
             }
             if (angle == 90f) B = new vec2(0f, 0f);
-            graphics.MultiplyTransform(matrix);
-            graphics.DrawString(weight, font, brush, B.x, B.y, stringFormat);
+            graphic.MultiplyTransform(matrix);
+            graphic.DrawString(weight.ToString(), font, brush, B.x, B.y, stringFormat);
             matrix.Reset();
             if (angle > 90f)
             {
@@ -85,7 +88,7 @@ namespace Antonyan.Graphs.Gui
             }
             matrix.Rotate(-angle);
             matrix.Translate(-pos.x, -pos.y);
-            graphics.MultiplyTransform(matrix);
+            graphic.MultiplyTransform(matrix);
         }
     }
 }

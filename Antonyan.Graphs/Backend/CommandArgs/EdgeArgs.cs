@@ -23,9 +23,9 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         public TVertex Stock { get; private set; }
     }
 
-   class AddEdgeArgs<TVertex, TWeight> : RemoveEdgeArgs<TVertex, TWeight>
-        where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
+    class AddEdgeArgs<TVertex, TWeight> : RemoveEdgeArgs<TVertex, TWeight>
+         where TVertex : AVertex, new()
+         where TWeight : AWeight, new()
     {
         public AddEdgeArgs(TVertex source, TVertex stock, TWeight weight, Field<TVertex, TWeight> field)
             : base(source, stock, field)

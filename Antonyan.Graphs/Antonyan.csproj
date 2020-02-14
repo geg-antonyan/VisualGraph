@@ -70,7 +70,9 @@
     <Compile Include="Gui\CreateGraphGUI.Designer.cs">
       <DependentUpon>CreateGraphGUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gui\Edge.cs" />
+    <Compile Include="Gui\Models\Circle.cs" />
+    <Compile Include="Gui\Models\Edge.cs" />
+    <Compile Include="Gui\Models\Model.cs" />
     <Compile Include="Gui\WeightGui.cs">
       <SubType>Form</SubType>
     </Compile>

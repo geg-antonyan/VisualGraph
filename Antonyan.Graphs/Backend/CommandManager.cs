@@ -17,7 +17,7 @@ namespace Antonyan.Graphs.Backend
             redoStore = new Stack<ICommand>();
         }
 
-        private bool[] CheckPosiible()
+        public bool[] CheckPosiible()
         {
             bool[] res = new bool[2];
             res[0] = undoStore.Count > 0 ? true : false;

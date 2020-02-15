@@ -8,10 +8,9 @@ namespace Antonyan.Graphs.Data
     public class Vertex : AVertex
     {
         private int data;
-        public Vertex() : base() { }
+        public Vertex() : base() { hashCode = data.ToString().GetHashCode(); }
         public Vertex(string str) : base(str) 
         {
-            Key = data;
         }
         protected override int CompareToImpl(AType other)
         {
@@ -33,6 +32,7 @@ namespace Antonyan.Graphs.Data
             if (!int.TryParse(str, out data))
                 throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
             Key = data;
+            hashCode = str.GetHashCode();
         }
 
         protected override string ToStringImpl()

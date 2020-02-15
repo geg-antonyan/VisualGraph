@@ -18,7 +18,12 @@ namespace Antonyan.Graphs.Util
         void PostMessage(string message);
         void FieldUpdate(object obj, EventArgs e);
         void CheckUndoRedo(bool undoPossible, bool redoPossible);
-        void AttachField(object field);
+        void SetFieldStatus(bool status);
+
+        bool MarkModel(int hashCode);
+        bool UnmarkModel(int hashCode);
+
+        void UnmarkAll();
     }
 
 }

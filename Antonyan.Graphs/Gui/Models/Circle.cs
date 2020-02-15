@@ -28,7 +28,7 @@ namespace Antonyan.Graphs.Gui.Models
 
         public override int GetHashCode()
         {
-            return (Pos.x.ToString() + Pos.y.ToString() + Vertex).GetHashCode();
+            return Vertex.GetHashCode();
         }
         public void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
         {

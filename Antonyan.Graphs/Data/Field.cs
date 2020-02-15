@@ -32,7 +32,7 @@ namespace Antonyan.Graphs.Data
         {
             Pos = coord;
             Vertex = vertex;
-            hashCode = (Pos.x.ToString() + Pos.y.ToString() + Vertex).GetHashCode();
+            hashCode = Vertex.GetHashCode();
         }
         public vec2 Pos { get; private set; }
         public string Vertex { get; private set; }
@@ -50,8 +50,7 @@ namespace Antonyan.Graphs.Data
             Source = source;
             Stock = stock;
             Weight = w;
-            hashCode = (PosSource.x.ToString() + PosSource.y.ToString() +
-                PosStock.x.ToString() + PosStock.y.ToString() + Weight).GetHashCode();
+            hashCode = (Source + Stock + Weight).GetHashCode();
         }
         public vec2 PosSource { get; private set; }
         public vec2 PosStock { get; private set; }
@@ -122,7 +121,7 @@ namespace Antonyan.Graphs.Data
             {
                 vec2 source = GetPos(v);
                 vec2 stock = GetPos(e);
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.AddEdge, source, stock, v.ToString(), e.ToString(), w.ToString()));
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.AddEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
             }
         }
         public void RemoveVertex(TVertex v)
@@ -148,7 +147,7 @@ namespace Antonyan.Graphs.Data
             {
                 vec2 source = GetPos(v);
                 vec2 stock = GetPos(e);
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.RemoveEdge, source, stock, v.ToString(), e.ToString(), w.ToString()));
+                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.RemoveEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
             }
             else
             {

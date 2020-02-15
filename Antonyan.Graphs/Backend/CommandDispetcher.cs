@@ -8,7 +8,7 @@ using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Backend.CommandArgs;
 using Antonyan.Graphs.Backend.Commands;
-using Antonyan.Graphs.Backend;
+using Antonyan.Graphs.Backend.Algorithms;
 
 namespace Antonyan.Graphs.Backend
 {
@@ -27,12 +27,24 @@ namespace Antonyan.Graphs.Backend
         }
 
         public void AttachField(Field<TVertex, TWeight> fld) => field = fld;
+        public void DetachField() => field = null;
         private void CommandEntered(object obj, UICommandEventArgs args)
         {
             try
             {
                 bool[] undoRedoPossible;
-                if (args.Message.ToLower() == "undo")
+                if (args.Message.ToLower() == "dfs")
+                {
+                    ui.UnmarkAll();
+                    TVertex vertex = new TVertex();
+                    SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
+                    foreach (var v in field.Graph.AdjList)
+                        visited[v.Key] = false; 
+                    vertex.SetFromString("0");
+                    Detours<TVertex, TWeight>.DFS(field.Graph, vertex, visited, ui);
+                    undoRedoPossible = cm.CheckPosiible();
+                }
+                else if (args.Message.ToLower() == "undo")
                     undoRedoPossible = cm.Undo();
                 else if (args.Message.ToLower() == "redo")
                     undoRedoPossible = cm.Redo();
@@ -85,9 +97,12 @@ namespace Antonyan.Graphs.Backend
                 TVertex source = new TVertex(), stock = new TVertex();
                 source.SetFromString(splits[1]);
                 stock.SetFromString(splits[2]);
-                TWeight weight = new TWeight();
+                TWeight weight = null;
                 if (splits.Length == 4)
+                {
+                    weight = new TWeight();
                     weight.SetFromString(splits[3]);
+                }
                 return CommandRepository.AllocateCommand(cmdName, new AddEdgeArgs<TVertex, TWeight>(source, stock, weight, field));
             }
             else throw new Exception($"Некорректная имя комманды -- \"{message}\""); ;

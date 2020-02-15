@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 using System.Drawing;
 using Antonyan.Graphs.Backend;
+using Antonyan.Graphs;
 
 namespace Antonyan.Graphs.Gui.Models
 {
     public interface DrawModel
     {
-
         void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max);
     }
 
@@ -45,12 +45,15 @@ namespace Antonyan.Graphs.Gui.Models
         private Brush markWeightBrush;
         private Brush unmarkWeightBrush;
 
+        public event EventHandler<EventArgs> Update;
+
         public int MarkedCircleCount { get; private set; } = 0;
         public int MarkedEdgeCount { get; private set; } = 0;
-        public Models(Pen mcp, Pen umcp, Pen me, Pen ume,
+        public Models(MainForm form, Pen mcp, Pen umcp, Pen me, Pen ume,
             Font mv, Font umv, Font mw, Font umw,
             Brush mvb, Brush umvb, Brush mwb, Brush umwb)
         {
+            Update += form.ModelsUpdate;
             markCirclePen = mcp; unmarkCirclePen = umcp;
             markEdgePen = me; unmarkEdgePen = ume;
             markVertexFont = mv; unmarkVertexFont = umv;
@@ -72,6 +75,7 @@ namespace Antonyan.Graphs.Gui.Models
         public void AddDrawModel(int hashCode, DrawModel drawModel)
         {
             models.Add(hashCode, new Model(drawModel));
+            Update?.Invoke(this, null);
         }
 
         public void RemoveDrawModel(int hashCode)
@@ -87,36 +91,41 @@ namespace Antonyan.Graphs.Gui.Models
                 }
 
                 models.Remove(hashCode);
+                Update?.Invoke(this, null);
             }
-            throw new Exception("Некорректный хеш код");
-            
+            else throw new Exception("Некорректный хеш код");
         }
 
-        public void Mark(int hashCode)
+        public bool Mark(int hashCode)
         {
             if (models.TryGetValue(hashCode, out Model model))
             {
-                if (model.Marked) return;
+                if (model.Marked) return false;
                     model.Marked = true;
                 if (model.DrawModel is Circle)
                     MarkedCircleCount++;
                 else if (model.DrawModel is Edge)
                     MarkedEdgeCount++;
+                Update?.Invoke(this, null);
+                return true;
             }
-
+            return false;
         }
 
-        public void Unmark(int hashCode)
+        public bool Unmark(int hashCode)
         {
             if (models.TryGetValue(hashCode, out Model model))
             {
-                if (!model.Marked) return;
+                if (!model.Marked) return false;
                     model.Marked = false;
                 if (model.DrawModel is Circle)
                     MarkedCircleCount--;
                 else if (model.DrawModel is Edge)
                     MarkedEdgeCount--;
+                Update?.Invoke(this, null);
+                return true;
             }
+            return false;
         }
 
         public void UnmarkAll()
@@ -125,6 +134,7 @@ namespace Antonyan.Graphs.Gui.Models
                 m.Value.Marked = false;
             MarkedCircleCount = 0;
             MarkedEdgeCount = 0;
+            Update?.Invoke(this, null);
         }
 
         public bool Marked(int hashCode)
@@ -183,10 +193,23 @@ namespace Antonyan.Graphs.Gui.Models
                     Edge edge = (Edge)(m.Value.DrawModel);
                     vec2 a = edge.SourcePos;
                     vec2 b = edge.StockPos;
+                    float bigX = a.x > b.x ? a.x : b.x;
+                    float bigY = a.y > b.y ? a.y : b.y;
+                    float smallX = b.x < a.x ? b.x : a.x;
+                    float smallY = b.y < a.y ? b.y : a.y;
+                    if (pos.y > bigY + 15f || pos.y < smallY - 15f)
+                        continue;
+                    if (pos.x > bigX + 15f || pos.x < smallX - 15f)
+                        continue;
                     float x = pos.x;
                     float y = pos.y;
+                    float eps = 0.1f;
+                    if (b.y - a.y == 0f) b.y += 1f;
+                    if (b.x - a.x == 0f) b.x += 1f;
+                    if (Math.Abs(b.y - a.y) < 30f) eps = 1.0f;
+                    if (Math.Abs(b.x - a.x) < 30f) eps = 1.0f;
                     float res = ((x - a.x) / (b.x - a.x)) - ((y - a.y) / (b.y - a.y));
-                    if (res <= 0.1 && res >= -0.1)
+                    if (Math.Abs(res) <= eps)
                         return edge.GetHashCode();
                 }
             return 0;
@@ -196,7 +219,6 @@ namespace Antonyan.Graphs.Gui.Models
         {
             foreach (var m in models)
             {
-
                 Pen pen; Brush brush; Font font;
                 if (m.Value.DrawModel is Circle)
                 {

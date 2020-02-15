@@ -74,10 +74,23 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-        public int Counut { get { return AdjList.Count; } }
+  
+        public int Count { get { return AdjList.Count; } }
         public SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> AdjList
         {
             get { return data;/*return new Graph<TVertex, TWeight>(this).data;*/ }
+        }
+
+        public List<Tuple<TVertex, TWeight>> this[TVertex v]
+        {
+            get
+            {
+                return AdjList[v];
+            }
+            set
+            {
+                AdjList[v] = value;
+            }
         }
         public ReturnValue AddVertex(TVertex v)
         {

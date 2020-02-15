@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Algorithms\Detours.cs" />
     <Compile Include="Backend\CommandArgs\EdgeArgs.cs" />
     <Compile Include="Backend\CommandArgs\CreatFieldArgs.cs" />
     <Compile Include="Backend\Commands\AddEdgeCommand.cs" />
@@ -107,6 +108,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="ClassDiagram.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -121,14 +125,18 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Backend\Algorithms\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="icon\plus.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="icon\arrow.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\redo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

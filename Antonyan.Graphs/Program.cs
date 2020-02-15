@@ -25,10 +25,8 @@ namespace Antonyan.Graphs
             CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
             CommandRepository.AddCommand(CreateFieldCommand<Vertex, Weight>.Name, new CreateFieldCommand<Vertex, Weight>());
             CommandRepository.AddCommand(AddEdgeCommand<Vertex, Weight>.Name, new AddEdgeCommand<Vertex, Weight>());
-
-            var field = new Field<Vertex, Weight>(false, false, GUI);
-            CommandDispetcher<Vertex, Weight> cd = new CommandDispetcher<Vertex, Weight>(GUI);
-
+            _ = new Field<Vertex, Weight>(false, false, GUI);
+            _ = new CommandDispetcher<Vertex, Weight>(GUI);
             Application.Run(GUI);
         }
     }

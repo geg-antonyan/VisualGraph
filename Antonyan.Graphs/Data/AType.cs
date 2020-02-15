@@ -9,8 +9,13 @@ namespace Antonyan.Graphs.Data
     {
         public AType() { DefaultInit(); }
         public AType(string str) { StringInit(str); }
-   
 
+        protected int hashCode;
+
+        public override int GetHashCode()
+        {
+            return hashCode;
+        }
         public int CompareTo(AType other)
         {
             return CompareToImpl(other);

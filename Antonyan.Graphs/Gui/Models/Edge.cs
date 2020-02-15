@@ -21,19 +21,23 @@ namespace Antonyan.Graphs.Gui.Models
 
         public override int GetHashCode()
         {
-            return (SourcePos.x.ToString() + SourcePos.y.ToString() +
-                StockPos.x.ToString() + StockPos.y.ToString() + Weight).GetHashCode(); ;
+            return (Source + Stock + Weight).GetHashCode(); ;
         }
         public string Weight { get; private set; }
+
+        public string Source { get; private set; }
+        public string Stock { get; private set; }
         public vec2 SourcePos { get; private set; }
         public vec2 StockPos { get; private set; }
-        public Edge(vec2 soucePos, vec2 stockPos, float r, string weight = null)
+        public Edge(vec2 soucePos, string source, vec2 stockPos, string stock, float r, string weight = null)
         {
+            Source = source;
+            Stock = stock;
+            SourcePos = soucePos;
+            StockPos = stockPos;
             if (r < 0) r = 0;
             if (r != 0)
             {
-                SourcePos = soucePos;
-                StockPos = stockPos;
                 if (soucePos.y > stockPos.y)
                     Clip.Swap(ref soucePos, ref stockPos);
                 vec2 deltaV = stockPos - soucePos;
@@ -74,7 +78,7 @@ namespace Antonyan.Graphs.Gui.Models
             vec2 B = new vec2(10f, 0f);
             B.y = -(A.x * A.y) / B.x;
             B = B.Norm();
-            B *= 23f;
+            B *= 20f;
             StringFormat stringFormat = new StringFormat();
             matrix.Translate(pos.x, pos.y);
             matrix.Rotate(angle);

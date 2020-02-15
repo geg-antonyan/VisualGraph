@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Util;
@@ -37,18 +38,21 @@ namespace Antonyan.Graphs
         private string source = null, stock = null;
 
         private int i = 0;
-
-
+        private bool algorithmProcessing = false;
+        Thread algoThread;
+        Thread curent;
 
         public MainForm()
         {
+            curent = Thread.CurrentThread;
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
             Circle.GenerateCircle(R, 1f);
-            models = new Models(new Pen(Color.Red), new Pen(Color.Blue), new Pen(Color.Green), new Pen(Color.DarkGray, 2f),
-                new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f), 
+            models = new Models(this,
+                new Pen(Color.Red, 2f), new Pen(Color.Blue), new Pen(Color.Green, 3f), new Pen(Color.DarkGray, 2f),
+                new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f),
+                new Font(FontFamily.GenericMonospace, 14f),
                 new Font(FontFamily.GenericMonospace, 12f),
-                new Font(FontFamily.GenericMonospace, 10f),
                 new SolidBrush(Color.Red), new SolidBrush(Color.Blue), new SolidBrush(Color.Green), new SolidBrush(Color.DarkGray));
             InitializeComponent();
         }
@@ -68,12 +72,15 @@ namespace Antonyan.Graphs
         private void MainForm_Load(object sender, EventArgs e)
         {
             RetCalc();
-            tlbtnAddEdge.Enabled = false;
+            tsbtnAddEdge.Enabled = false;
+            tsbtnRedo.Enabled = false;
+            tsbtnUndo.Enabled = false;
         }
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-            tlbtnAddEdge.Enabled = models.MarkedCircleCount == 2 ? true : false;
+
+            tsbtnAddEdge.Enabled = models.MarkedCircleCount == 2 && !algorithmProcessing ? true : false;
             var g = e.Graphics;
             models.Draw(g, min, max);
             Pen rectPen = new Pen(Color.Black, 2);
@@ -105,7 +112,7 @@ namespace Antonyan.Graphs
         private void tlbtnAddEdge_Click(object sender, EventArgs e)
         {
             if (source == null || stock == null) return;
-            models.UnmarkAll();
+
             string src = source;
             string stc = stock;
             source = stock = null;
@@ -121,12 +128,11 @@ namespace Antonyan.Graphs
             }
             else
             {
-
                 CommandEntered?.Invoke(this, new UICommandEventArgs($"AddEdge {src} {stc}"));
             }
+            models.UnmarkAll();
 
         }
-
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
             if (!fieldCreated) return;
@@ -170,10 +176,25 @@ namespace Antonyan.Graphs
                     }
                 default: break;
             }
-            Refresh();
         }
 
         public event EventHandler<UICommandEventArgs> CommandEntered;
+
+        private void tsbtnUndo_Click(object sender, EventArgs e)
+        {
+            CommandEntered?.Invoke(this, new UICommandEventArgs("undo"));
+        }
+
+        public void ModelsUpdate(object obj, EventArgs e)
+        {
+            Refresh();
+
+        }
+
+        private void tsbtnRedo_Click(object sender, EventArgs e)
+        {
+            CommandEntered?.Invoke(this, new UICommandEventArgs("redo"));
+        }
 
         public void FieldUpdate(object obj, EventArgs e)
         {
@@ -190,16 +211,20 @@ namespace Antonyan.Graphs
                 case FieldEvents.AddEdge:
                     {
                         var args = (FieldUpdateEdgeArgs)fieldEvent;
-                        Edge edge = new Edge(args.PosSource, args.PosStock, R, args.Weight);
+                        Edge edge = new Edge(args.PosSource, args.Source, args.PosStock, args.Stock, R, args.Weight);
                         models.AddDrawModel(args.GetHashCode(), edge);
                         break;
                     }
                 case FieldEvents.RemoveVertex:
                     {
+                        var args = (FieldUpdateVertexArgs)fieldEvent;
+                        models.RemoveDrawModel(args.GetHashCode());
                         break;
                     }
                 case FieldEvents.RemoveEdge:
                     {
+                        var args = (FieldUpdateEdgeArgs)fieldEvent;
+                        models.RemoveDrawModel(args.GetHashCode());
                         break;
                     }
             }
@@ -211,14 +236,46 @@ namespace Antonyan.Graphs
             MessageBox.Show(message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        public void AttachField(object field)
+        private void subDetoursBtnDFS_Click(object sender, EventArgs e)
         {
-           
+               algorithmProcessing = true;
+               algoThread = new Thread(() =>
+               {
+                   Invoke((MethodInvoker)(() =>
+                   {
+                       CommandEntered?.Invoke(this, new UICommandEventArgs("dfs"));
+                       algorithmProcessing = false;
+                   }));
+               });
+               algoThread.Start();
+        }
+
+        public void SetFieldStatus(bool status)
+        {
+            if (!status) i = 0;
+            fieldCreated = status;
+            tlbtnCrtGraph.Enabled = !status;
         }
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)
         {
-            
+            tsbtnRedo.Enabled = redoPossible;
+            tsbtnUndo.Enabled = undoPossible;
+        }
+
+        public bool MarkModel(int hashCode)
+        {
+            return models.Mark(hashCode);
+        }
+
+        public bool UnmarkModel(int hashCode)
+        {
+            return models.Unmark(hashCode);
+        }
+
+        public void UnmarkAll()
+        {
+            models.UnmarkAll();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Antonyan.Graphs.Backend.Commands
         public void Execute()
         {
             Field<TVertex, TWeight> field = new Field<TVertex, TWeight>(args.Oriented, args.Weighted, args.UI);
-            args.UI.AttachField(field);
+            args.UI.SetFieldStatus(true);
             args.CommandDispetcher.AttachField(field);
         }
 
@@ -40,8 +40,8 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Undo()
         {
-            args.UI.AttachField(null);
-            args.CommandDispetcher.AttachField(null);
+            args.UI.SetFieldStatus(false);
+            args.CommandDispetcher.DetachField();
         }
     }
 }

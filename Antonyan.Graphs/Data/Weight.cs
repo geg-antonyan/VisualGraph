@@ -8,7 +8,12 @@ namespace Antonyan.Graphs.Data
     public class Weight : AWeight
     {
         private int data;
-        
+        public Weight() : base() { hashCode = data.ToString().GetHashCode(); }
+        public Weight(string str) : base(str)
+        {
+            hashCode = str.GetHashCode();
+        }
+
         protected override int CompareToImpl(AType other)
         {
             return data.CompareTo(((Weight)other).data);

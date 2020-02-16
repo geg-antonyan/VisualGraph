@@ -24,6 +24,10 @@ namespace Antonyan.Graphs.Backend
             y = v.y;
         }
 
+        public override string ToString()
+        {
+            return x.ToString() + " " + y.ToString();
+        }
         public static vec2 operator -(vec2 a, vec2 b)
         {
             return new vec2(a.x - b.x, a.y - b.y);

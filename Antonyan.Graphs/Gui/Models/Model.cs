@@ -63,6 +63,15 @@ namespace Antonyan.Graphs.Gui.Models
             models = new SortedDictionary<int, Model>();
         }
 
+        public List<Model> GetMarkedModels()
+        {
+            List<Model> res = new List<Model>();
+            foreach (var m in models)
+                if (m.Value.Marked)
+                    res.Add(m.Value);
+            return res;
+
+        }
         public string GetVertex(int hashCode)
         {
             if (models.TryGetValue(hashCode, out Model model))

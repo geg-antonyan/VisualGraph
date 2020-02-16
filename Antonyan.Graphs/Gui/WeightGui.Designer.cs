@@ -39,7 +39,7 @@
             this.lblWeight.AutoSize = true;
             this.lblWeight.Location = new System.Drawing.Point(13, 38);
             this.lblWeight.Name = "lblWeight";
-            this.lblWeight.Size = new System.Drawing.Size(134, 17);
+            this.lblWeight.Size = new System.Drawing.Size(133, 16);
             this.lblWeight.TabIndex = 0;
             this.lblWeight.Text = "Укажите вес ребра";
             // 
@@ -47,15 +47,17 @@
             // 
             this.txtWeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtWeight.Location = new System.Drawing.Point(169, 38);
+            this.txtWeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtWeight.Name = "txtWeight";
-            this.txtWeight.Size = new System.Drawing.Size(137, 27);
+            this.txtWeight.Size = new System.Drawing.Size(137, 23);
             this.txtWeight.TabIndex = 1;
             // 
             // btnEnter
             // 
             this.btnEnter.Location = new System.Drawing.Point(59, 95);
+            this.btnEnter.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnEnter.Name = "btnEnter";
-            this.btnEnter.Size = new System.Drawing.Size(98, 31);
+            this.btnEnter.Size = new System.Drawing.Size(99, 31);
             this.btnEnter.TabIndex = 2;
             this.btnEnter.Text = "Создать";
             this.btnEnter.UseVisualStyleBackColor = true;
@@ -64,6 +66,7 @@
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(179, 95);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(88, 31);
             this.btnCancel.TabIndex = 3;
@@ -75,11 +78,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 131);
+            this.ClientSize = new System.Drawing.Size(328, 130);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnEnter);
             this.Controls.Add(this.txtWeight);
             this.Controls.Add(this.lblWeight);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "WeightGui";
             this.Text = "Вес Ребра";
             this.ResumeLayout(false);

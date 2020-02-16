@@ -9,13 +9,13 @@ using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Backend.CommandArgs
 {
-    public class VertexEventArgs<TVertex> : EventArgs
+    public class VertexArgs<TVertex> : EventArgs
         where TVertex : AVertex
     {
-        public VertexEventArgs(TVertex v) { Vertex = v; }
+        public VertexArgs(TVertex v) { Vertex = v; }
         public TVertex Vertex { get; private set; }
     }
-    public class RemoveVertexEventArgs<TVertex, TWeight> : VertexEventArgs<TVertex>
+    public class RemoveVertexEventArgs<TVertex, TWeight> : VertexArgs<TVertex>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
@@ -26,6 +26,8 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         }
         public Field<TVertex, TWeight> Field { get; private set; }
     }
+
+
 
     public class AddVertexArgs<TVertex, TWeight> : RemoveVertexEventArgs<TVertex, TWeight>
          where TVertex : AVertex, new()

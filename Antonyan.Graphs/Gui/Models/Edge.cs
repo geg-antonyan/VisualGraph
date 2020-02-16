@@ -21,7 +21,7 @@ namespace Antonyan.Graphs.Gui.Models
 
         public override int GetHashCode()
         {
-            return (Source + Stock + Weight).GetHashCode(); ;
+            return (Source + " " + Stock + " " + Weight).GetHashCode(); ;
         }
         public string Weight { get; private set; }
 

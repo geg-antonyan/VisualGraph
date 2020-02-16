@@ -47,15 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Algorithms\Detours.cs" />
+    <Compile Include="Backend\Algorithms\Shortcats.cs" />
     <Compile Include="Backend\CommandArgs\EdgeArgs.cs" />
-    <Compile Include="Backend\CommandArgs\CreatFieldArgs.cs" />
+    <Compile Include="Backend\CommandArgs\RemoveElemsArgs.cs" />
     <Compile Include="Backend\Commands\AddEdgeCommand.cs" />
     <Compile Include="Backend\Commands\AddVertexCommand.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
-    <Compile Include="Backend\CommandArgs\VertexEventArgs.cs" />
-    <Compile Include="Backend\Commands\CreateFieldCommand.cs" />
+    <Compile Include="Backend\CommandArgs\VertexArgs.cs" />
+    <Compile Include="Backend\Commands\RemoveElemsCommand.cs" />
     <Compile Include="Backend\Geometry.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Data\AType.cs" />
@@ -125,7 +126,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="icon\detours.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="icon\plus.jpg" />
   </ItemGroup>
@@ -137,6 +140,87 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="icon\redo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\dfs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\bfs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\shortcat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\lines3d.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\vertex.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\vertex2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\Graph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\vert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\GraphC.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\AddGraph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\AddVertex.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\AddEdge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\AddEdge2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\deturs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\detours.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\shortcat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\shortcat2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\shortcat3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\shortcat4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\mark.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\RemoveGraph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\removeGraph2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\removeGraph3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\removeElems.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

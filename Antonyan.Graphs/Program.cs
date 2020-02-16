@@ -21,9 +21,8 @@ namespace Antonyan.Graphs
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var GUI = new MainForm();
-           
+            CommandRepository.AddCommand(RemoveElemsCommand<Vertex, Weight>.Name, new RemoveElemsCommand<Vertex, Weight>());
             CommandRepository.AddCommand(AddVertexCommand<Vertex, Weight>.Name, new AddVertexCommand<Vertex, Weight>());
-            CommandRepository.AddCommand(CreateFieldCommand<Vertex, Weight>.Name, new CreateFieldCommand<Vertex, Weight>());
             CommandRepository.AddCommand(AddEdgeCommand<Vertex, Weight>.Name, new AddEdgeCommand<Vertex, Weight>());
             _ = new Field<Vertex, Weight>(false, false, GUI);
             _ = new CommandDispetcher<Vertex, Weight>(GUI);

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+
 namespace Antonyan.Graphs.Data
 {
+    //public class 
+
     public class Graph<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
@@ -11,6 +15,8 @@ namespace Antonyan.Graphs.Data
         private readonly SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> data;
         public bool IsOrgraph { get; private set; }
         public bool IsWeighted { get; private set; }
+
+
         public Graph()
         {
             IsOrgraph = false;
@@ -62,6 +68,11 @@ namespace Antonyan.Graphs.Data
                     AddEdge(v, e, w);
                 }
             }
+        }
+
+        public TWeight WeightEdge(TVertex source, TVertex stock)
+        {
+            return null;
         }
         public Graph(Graph<TVertex, TWeight> other)
         {
@@ -129,6 +140,9 @@ namespace Antonyan.Graphs.Data
         {
             if (!data.ContainsKey(v))
                 return ReturnValue.VertexDontExist;
+           // var res = new Tuple<ReturnValue, List<Tuple<TVertex, TVertex, TWeight>>>(ReturnValue.Succsess, new List<Tuple<TVertex, TVertex, TWeight>>());
+            //foreach (var adj in this[v])
+            //    res.Item2.Add(new Tuple<TVertex, TVertex, TWeight>(v, adj.Item1, adj.Item2));
             data.Remove(v);
             foreach (var adjs in data)
                 foreach (var pair in adjs.Value)

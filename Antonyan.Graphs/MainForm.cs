@@ -36,14 +36,17 @@ namespace Antonyan.Graphs
         private bool fieldCreated;
         private bool oriented, weighted;
         private string source = null, stock = null;
+        private string header = "Visual Graph";
 
         private int i = 0;
         private bool algorithmProcessing = false;
         Thread algoThread;
         Thread curent;
+        bool addVertexFl = false;
 
         public MainForm()
         {
+            
             curent = Thread.CurrentThread;
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
@@ -55,6 +58,7 @@ namespace Antonyan.Graphs
                 new Font(FontFamily.GenericMonospace, 12f),
                 new SolidBrush(Color.Red), new SolidBrush(Color.Blue), new SolidBrush(Color.Green), new SolidBrush(Color.DarkGray));
             InitializeComponent();
+            Text = header;
         }
 
         private void RetCalc()
@@ -75,11 +79,12 @@ namespace Antonyan.Graphs
             tsbtnAddEdge.Enabled = false;
             tsbtnRedo.Enabled = false;
             tsbtnUndo.Enabled = false;
+            subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = false;
         }
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-
+            tsbtnAddVertecxFL.Enabled = fieldCreated;
             tsbtnAddEdge.Enabled = models.MarkedCircleCount == 2 && !algorithmProcessing ? true : false;
             var g = e.Graphics;
             models.Draw(g, min, max);
@@ -158,8 +163,9 @@ namespace Antonyan.Graphs
                         {
                             models.Mark(edgehashCode);
                         }
-                        else if (models.GetCircleHashCode(new vec2(e.X, e.Y), R + R + R / 2) == 0)
+                        else if (models.GetCircleHashCode(new vec2(e.X, e.Y), R + R + R / 2) == 0 && addVertexFl)
                         {
+
                             if (models.MarkedCircleCount > 0 || models.MarkedEdgeCount > 0)
                             {
                                 models.UnmarkAll();
@@ -227,8 +233,15 @@ namespace Antonyan.Graphs
                         models.RemoveDrawModel(args.GetHashCode());
                         break;
                     }
+                case FieldEvents.RemoveVertices:
+                    {
+                        break;
+                    }
+                case FieldEvents.RemoveEdges:
+                    {
+                        break;
+                    }
             }
-            Refresh();
         }
 
         public void PostMessage(string message)
@@ -238,23 +251,115 @@ namespace Antonyan.Graphs
 
         private void subDetoursBtnDFS_Click(object sender, EventArgs e)
         {
-               algorithmProcessing = true;
-               algoThread = new Thread(() =>
-               {
-                   Invoke((MethodInvoker)(() =>
-                   {
-                       CommandEntered?.Invoke(this, new UICommandEventArgs("dfs"));
-                       algorithmProcessing = false;
-                   }));
-               });
-               algoThread.Start();
+            Text += " - Выполяется алгоритм обхода в глубину";
+            algorithmProcessing = true;
+            algoThread = new Thread(() =>
+            {
+                BeginInvoke((MethodInvoker)(() =>
+                {
+                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm dfs {source}"));
+                    algorithmProcessing = false;
+                    Text = header;
+                }));
+            });
+            algoThread.Start();
+            
         }
+
+
+        private void subDetoursBtnBFS_Click(object sender, EventArgs e)
+        {
+            Text += " - Выполяется алгоритм обхода в ширину";
+            algorithmProcessing = true;
+            algoThread = new Thread(() =>
+            {
+                BeginInvoke((MethodInvoker)(() =>
+                {
+                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm bfs {source}"));
+                    algorithmProcessing = false;
+                    Text = header;
+                }));
+            });
+            algoThread.Start();
+        }
+
 
         public void SetFieldStatus(bool status)
         {
             if (!status) i = 0;
             fieldCreated = status;
             tlbtnCrtGraph.Enabled = !status;
+        }
+
+        private void tsbtnDetours_Click(object sender, EventArgs e)
+        {
+            string dfs = "Обход в глубину", bfs = "Обход в ширину";
+            bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = models.MarkedCircleCount == 1 ? true : false;
+            if (res)
+            {
+                subDetoursBtnBFS.Text = $"{bfs} начиная с вершины \"{source}\"";
+                subDetoursBtnDFS.Text = $"{dfs} начиная с вершины \"{source}\"";
+            }
+            else
+            {
+                subDetoursBtnBFS.Text = bfs;
+                subDetoursBtnDFS.Text = dfs;
+            }
+        }
+
+        private void tsbtnShortcats_Click(object sender, EventArgs e)
+        {
+            subSortcatBtnBFS.Enabled = models.MarkedCircleCount == 2 && !weighted;
+        }
+
+        private void subSortcatBtnBFS_Click(object sender, EventArgs e)
+        {
+
+            Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
+            algorithmProcessing = true;
+            algoThread = new Thread(() =>
+            {
+                BeginInvoke((MethodInvoker)(() =>
+                {
+                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm shortcatdfs {source} {stock}"));
+                    algorithmProcessing = false;
+                    Text = header;
+                }));
+            });
+            algoThread.Start();
+        }
+
+        private void tsbtnAddVertecxFL_Click(object sender, EventArgs e)
+        {
+            tsbtnAddVertecxFL.Checked = addVertexFl = !addVertexFl;
+
+        }
+
+        private void tsbtnRemoveElems_Click(object sender, EventArgs e)
+        {
+            List<Model> marks = models.GetMarkedModels();
+            int circleCount = models.MarkedCircleCount;
+            int edgeCount = models.MarkedEdgeCount;
+            string res = $"RemoveElements {edgeCount} ";
+            foreach (var m in marks)
+            {
+                if (m.DrawModel is Edge)
+                {
+                    var edge = (Edge)m.DrawModel;
+                    string w = edge.Weight == null ? "null" : edge.Weight; 
+                    res += $"{edge.Source} {edge.Stock} {w} ";
+                }
+            }
+            res += circleCount.ToString() + " ";
+            foreach (var m in marks)
+            {
+                if (m.DrawModel is Circle)
+                {
+                    var circle = (Circle)m.DrawModel;
+                    res += $"{circle.Vertex} {circle.Pos.ToString()} ";
+                }
+            }
+            CommandEntered?.Invoke(this, new UICommandEventArgs(res.TrimEnd(' ')));
         }
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)

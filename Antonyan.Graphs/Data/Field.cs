@@ -10,11 +10,11 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
 {
-    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge };
+    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge, RemoveVertices, RemoveEdges };
     public class FieldUpdateArgs : EventArgs
     {
         protected int hashCode;
-        public FieldUpdateArgs(FieldEvents e) 
+        public FieldUpdateArgs(FieldEvents e)
         {
             Event = e;
         }
@@ -36,13 +36,23 @@ namespace Antonyan.Graphs.Data
         }
         public vec2 Pos { get; private set; }
         public string Vertex { get; private set; }
-        
+
+    }
+
+    public class FieldUpdateVerticesArgs : FieldUpdateArgs
+    {
+        public FieldUpdateVerticesArgs(FieldEvents e, Tuple<string, vec2>[] vertices)
+            : base(e)
+        {
+            Vertices = vertices;
+        }
+        public Tuple<string, vec2>[] Vertices { get; private set; }
     }
 
 
     public class FieldUpdateEdgeArgs : FieldUpdateArgs
     {
-        public FieldUpdateEdgeArgs(FieldEvents e, vec2 posSource, vec2 posStock, string source, string stock, string w) 
+        public FieldUpdateEdgeArgs(FieldEvents e, vec2 posSource, vec2 posStock, string source, string stock, string w)
             : base(e)
         {
             PosSource = posSource;
@@ -50,7 +60,7 @@ namespace Antonyan.Graphs.Data
             Source = source;
             Stock = stock;
             Weight = w;
-            hashCode = (Source + Stock + Weight).GetHashCode();
+            hashCode = (Source + " " + Stock + " " + Weight).GetHashCode();
         }
         public vec2 PosSource { get; private set; }
         public vec2 PosStock { get; private set; }
@@ -59,14 +69,23 @@ namespace Antonyan.Graphs.Data
         public string Weight { get; private set; }
     }
 
+    public class FieldUpdateEdgesArgs : FieldUpdateArgs
+    {
+        public FieldUpdateEdgesArgs(FieldEvents e, Tuple<vec2, vec2, string, string, string>[] edges)
+            : base(e)
+        {
+            Edges = edges;
+        }
+
+        public Tuple<vec2, vec2, string, string, string>[] Edges { get; private set; }
+    }
 
 
     public class Field<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public event EventHandler<FieldUpdateArgs> VertexUpdate;
-        public event EventHandler<FieldUpdateEdgeArgs> EdgeUpdate;
+        public event EventHandler<FieldUpdateArgs> FieldUpdate;
 
         public SortedDictionary<TVertex, vec2> Positions { get; private set; }
         public Graph<TVertex, TWeight> Graph { get; private set; }
@@ -76,9 +95,7 @@ namespace Antonyan.Graphs.Data
             UI = ui;
             Positions = new SortedDictionary<TVertex, vec2>();
             Graph = new Graph<TVertex, TWeight>(oriented, weighted);
-            VertexUpdate += UI.FieldUpdate;
-            EdgeUpdate += UI.FieldUpdate;
-
+            FieldUpdate += UI.FieldUpdate;
         }
         public UserInterface UI { get; private set; }
         public bool IsOrgarph { get { return Graph.IsOrgraph; } }
@@ -107,12 +124,12 @@ namespace Antonyan.Graphs.Data
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 Positions.Add(v, coord);
-                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.AddVertex, v.ToString(), coord));
+                FieldUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.AddVertex, v.ToString(), coord));
             }
             else
                 throw new Exception(res.ToString());
         }
-        public void AddEdge(TVertex v, TVertex e, TWeight w)
+        public void AddEdge(TVertex v, TVertex e, TWeight w = null)
         {
             var res = Graph.AddEdge(v, e, w);
             if (res != Graph<TVertex, TWeight>.ReturnValue.Succsess)
@@ -121,10 +138,11 @@ namespace Antonyan.Graphs.Data
             {
                 vec2 source = GetPos(v);
                 vec2 stock = GetPos(e);
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.AddEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
+                FieldUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.AddEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
             }
         }
-        public void RemoveVertex(TVertex v)
+
+        public void RemoveVertex(TVertex v, bool raise = true)
         {
             var res = Graph.RemoveVertex(v);
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
@@ -132,7 +150,8 @@ namespace Antonyan.Graphs.Data
                 vec2 c;
                 Positions.TryGetValue(v, out c);
                 Positions.Remove(v);
-                VertexUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.RemoveVertex, v.ToString(), c));
+                if (raise)
+                    FieldUpdate?.Invoke(this, new FieldUpdateVertexArgs(FieldEvents.RemoveVertex, v.ToString(), c));
             }
             else
             {
@@ -140,19 +159,47 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-        public void RemoveEdge(TVertex v, TVertex e)
+        public void RemoveVertices(Tuple<TVertex, vec2>[] vertices)
+        {
+            Tuple<string, vec2>[] args = new Tuple<string, vec2>[vertices.Length];
+            int i = 0;
+            foreach (var v in vertices)
+            {
+                RemoveVertex(v.Item1, false);
+                args[i++] = new Tuple<string, vec2>(v.Item1.ToString(), v.Item2);
+            }
+
+            FieldUpdate?.Invoke(this, new FieldUpdateVerticesArgs(FieldEvents.RemoveVertices, args));
+        }
+        public void RemoveEdge(TVertex v, TVertex e, bool raise = true)
         {
             var res = Graph.RemoveEdge(v, e, out TWeight w);
             if (res == Graph<TVertex, TWeight>.ReturnValue.Succsess)
             {
                 vec2 source = GetPos(v);
                 vec2 stock = GetPos(e);
-                EdgeUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.RemoveEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
+                if (raise)
+                    FieldUpdate?.Invoke(this, new FieldUpdateEdgeArgs(FieldEvents.RemoveEdge, source, stock, v.ToString(), e.ToString(), w?.ToString()));
             }
             else
             {
                 throw new Exception(res.ToString());
             }
+        }
+
+        public void RemoveEdges(Tuple<TVertex, TVertex, TWeight>[] edges)
+        {
+            Tuple<vec2, vec2, string, string, string>[] args = new Tuple<vec2, vec2, string, string, string>[edges.Length];
+            int i = 0;
+            foreach (var edge in edges)
+            {
+                RemoveEdge(edge.Item1, edge.Item2, false);
+                vec2 source = GetPos(edge.Item1);
+                vec2 stock = GetPos(edge.Item2);
+                args[i++] = new Tuple<vec2, vec2, string, string, string>(
+                    source, stock, edge.Item1.ToString(), edge.Item2.ToString(), edge.Item3.ToString());
+            }
+            FieldUpdate?.Invoke(this, new FieldUpdateEdgesArgs(FieldEvents.RemoveEdges, args));
         }
 
         public bool HasAFreePlace(vec2 coord, float r)

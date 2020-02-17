@@ -49,6 +49,8 @@ namespace Antonyan.Graphs.Gui.Models
 
         public int MarkedCircleCount { get; private set; } = 0;
         public int MarkedEdgeCount { get; private set; } = 0;
+
+        public int MarkedModelsCount { get { return MarkedCircleCount + MarkedEdgeCount; } }
         public Models(MainForm form, Pen mcp, Pen umcp, Pen me, Pen ume,
             Font mv, Font umv, Font mw, Font umw,
             Brush mvb, Brush umvb, Brush mwb, Brush umwb)
@@ -87,7 +89,7 @@ namespace Antonyan.Graphs.Gui.Models
             Update?.Invoke(this, null);
         }
 
-        public void RemoveDrawModel(int hashCode)
+        public bool RemoveDrawModel(int hashCode)
         {
             if (models.TryGetValue(hashCode, out Model model))
             {
@@ -101,8 +103,9 @@ namespace Antonyan.Graphs.Gui.Models
 
                 models.Remove(hashCode);
                 Update?.Invoke(this, null);
+                return true;
             }
-            else throw new Exception("Некорректный хеш код");
+            else return false;
         }
 
         public bool Mark(int hashCode)

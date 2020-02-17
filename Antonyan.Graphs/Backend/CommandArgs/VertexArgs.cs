@@ -27,8 +27,6 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         public Field<TVertex, TWeight> Field { get; private set; }
     }
 
-
-
     public class AddVertexArgs<TVertex, TWeight> : RemoveVertexEventArgs<TVertex, TWeight>
          where TVertex : AVertex, new()
          where TWeight : AWeight, new()

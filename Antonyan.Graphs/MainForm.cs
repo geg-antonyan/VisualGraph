@@ -36,18 +36,16 @@ namespace Antonyan.Graphs
         private bool fieldCreated;
         private bool oriented, weighted;
         private string source = null, stock = null;
-        private string header = "Visual Graph";
+        private readonly string header = "Visual Graph";
 
         private int i = 0;
         private bool algorithmProcessing = false;
         Thread algoThread;
-        Thread curent;
+        bool mouseDownFL = false;
         bool addVertexFl = false;
 
         public MainForm()
         {
-            
-            curent = Thread.CurrentThread;
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
             Circle.GenerateCircle(R, 1f);
@@ -86,6 +84,7 @@ namespace Antonyan.Graphs
         {
             tsbtnAddVertecxFL.Enabled = fieldCreated;
             tsbtnAddEdge.Enabled = models.MarkedCircleCount == 2 && !algorithmProcessing ? true : false;
+            tsbtnRemoveElems.Enabled = models.MarkedModelsCount > 0 && !tsbtnAddVertecxFL.Checked;
             var g = e.Graphics;
             models.Draw(g, min, max);
             Pen rectPen = new Pen(Color.Black, 2);
@@ -151,7 +150,7 @@ namespace Antonyan.Graphs
                         {
                             models.UnmarkAll();
                         }
-                        else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0)
+                        else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0 && !addVertexFl)
                         {
                             models.Mark(vertexHashCode);
                             if (models.MarkedCircleCount == 1)
@@ -159,7 +158,7 @@ namespace Antonyan.Graphs
                             else if (models.MarkedCircleCount == 2)
                                 stock = models.GetVertex(vertexHashCode);
                         }
-                        else if ((edgehashCode = models.GetEdgeHashCode(pos)) != 0)
+                        else if ((edgehashCode = models.GetEdgeHashCode(pos)) != 0 && !addVertexFl)
                         {
                             models.Mark(edgehashCode);
                         }
@@ -229,16 +228,36 @@ namespace Antonyan.Graphs
                     }
                 case FieldEvents.RemoveEdge:
                     {
-                        var args = (FieldUpdateEdgeArgs)fieldEvent;
-                        models.RemoveDrawModel(args.GetHashCode());
+                        var args = (FieldUpdateEdgeArgs)fieldEvent; 
+                        if (!models.RemoveDrawModel(args.GetHashCode()))
+                            if (!oriented)
+                                models.RemoveDrawModel(args.GetReverseHashCode());
                         break;
                     }
                 case FieldEvents.RemoveVertices:
                     {
+                        var args = (FieldUpdateVerticesArgs)fieldEvent;
+                        foreach (var vert in args.Vertices)
+                        {
+                            models.RemoveDrawModel(vert.GetHashCode());
+                            foreach (var edge in vert.Edges)
+                            {
+                                if (!models.RemoveDrawModel(edge.GetHashCode()))
+                                    if (!oriented)
+                                        models.RemoveDrawModel(edge.GetReverseHashCode());
+                            }
+                        }
                         break;
                     }
                 case FieldEvents.RemoveEdges:
                     {
+                        var args = (FieldUpdateEdgesArgs)fieldEvent;
+                        foreach (var edge in args.Edges)
+                        {
+                            if (!models.RemoveDrawModel(edge.GetHashCode()))
+                                if (!oriented)
+                                    models.RemoveDrawModel(edge.GetReverseHashCode());
+                        }
                         break;
                     }
             }
@@ -332,7 +351,9 @@ namespace Antonyan.Graphs
         private void tsbtnAddVertecxFL_Click(object sender, EventArgs e)
         {
             tsbtnAddVertecxFL.Checked = addVertexFl = !addVertexFl;
-
+            if (addVertexFl)
+                Text = header + " - кликните внутри рабочего прямоугольника, чтобы добавить вершину";
+            else Text = header;
         }
 
         private void tsbtnRemoveElems_Click(object sender, EventArgs e)
@@ -360,6 +381,16 @@ namespace Antonyan.Graphs
                 }
             }
             CommandEntered?.Invoke(this, new UICommandEventArgs(res.TrimEnd(' ')));
+        }
+
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDownFL = true;
+        }
+
+        private void MainForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDownFL = false;
         }
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)

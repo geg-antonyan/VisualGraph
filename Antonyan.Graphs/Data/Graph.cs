@@ -5,7 +5,28 @@ using System.Collections.Generic;
 
 namespace Antonyan.Graphs.Data
 {
-    //public class 
+    public class RemoveVertexReturnValues<TVertex, TWeight> : EventArgs
+        where TVertex : AVertex, new()
+        where TWeight : AWeight, new()
+    {
+        public void SetReturnValue(Graph<TVertex, TWeight>.ReturnValue value) => Return = value;
+        public void AddEdge(TVertex source, TVertex stock, TWeight weight, bool orented = false)
+        {
+
+            //if (orented)
+            Edges.Add(new Tuple<TVertex, TVertex, TWeight>(source, stock, weight));
+            // else
+            //     foreach (var edge in Edges)
+            //      {
+            //          if (edge.Item1.Equals(source) && edge.Item2.Equals(stock) ||
+            //              edge.Item1.Equals(stock) && edge.Item2.Equals(source))
+            //             continue;
+            //          Edges.Add(new Tuple<TVertex, TVertex, TWeight>(source, stock, weight));
+            //      }
+        }
+        public Graph<TVertex, TWeight>.ReturnValue Return { get; private set; }
+        public List<Tuple<TVertex, TVertex, TWeight>> Edges { get; private set; } = new List<Tuple<TVertex, TVertex, TWeight>>();
+    }
 
     public class Graph<TVertex, TWeight>
         where TVertex : AVertex, new()
@@ -85,7 +106,7 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-  
+
         public int Count { get { return AdjList.Count; } }
         public SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> AdjList
         {
@@ -136,24 +157,32 @@ namespace Antonyan.Graphs.Data
             }
 
         }
-        public ReturnValue RemoveVertex(TVertex v)
+        public RemoveVertexReturnValues<TVertex, TWeight> RemoveVertex(TVertex v)
         {
+            var res = new RemoveVertexReturnValues<TVertex, TWeight>();
             if (!data.ContainsKey(v))
-                return ReturnValue.VertexDontExist;
-           // var res = new Tuple<ReturnValue, List<Tuple<TVertex, TVertex, TWeight>>>(ReturnValue.Succsess, new List<Tuple<TVertex, TVertex, TWeight>>());
-            //foreach (var adj in this[v])
-            //    res.Item2.Add(new Tuple<TVertex, TVertex, TWeight>(v, adj.Item1, adj.Item2));
+            {
+                res.SetReturnValue(ReturnValue.VertexDontExist);
+                return res;
+            }
+            foreach (var adj in this[v])
+                res.AddEdge(v, adj.Item1, adj.Item2);
             data.Remove(v);
+            res.SetReturnValue(ReturnValue.Succsess);
             foreach (var adjs in data)
                 foreach (var pair in adjs.Value)
                 {
                     if (pair.Item1.Equals(v))
                     {
+                        if (IsOrgraph)
+                        {
+                            res.AddEdge(pair.Item1, v, pair.Item2);
+                        }
                         adjs.Value.Remove(pair);
                         break;
                     }
                 }
-            return ReturnValue.Succsess;
+            return res;
         }
         public ReturnValue RemoveEdge(TVertex v, TVertex e, out TWeight w)
         {

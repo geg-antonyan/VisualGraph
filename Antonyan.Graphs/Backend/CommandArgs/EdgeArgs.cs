@@ -8,7 +8,7 @@ using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Backend;
 namespace Antonyan.Graphs.Backend.CommandArgs
 {
-    class RemoveEdgeArgs<TVertex, TWeight> : EventArgs
+    public class RemoveEdgeArgs<TVertex, TWeight> : EventArgs
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
@@ -23,7 +23,7 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         public TVertex Stock { get; private set; }
     }
 
-    class AddEdgeArgs<TVertex, TWeight> : RemoveEdgeArgs<TVertex, TWeight>
+    public class AddEdgeArgs<TVertex, TWeight> : RemoveEdgeArgs<TVertex, TWeight>
          where TVertex : AVertex, new()
          where TWeight : AWeight, new()
     {

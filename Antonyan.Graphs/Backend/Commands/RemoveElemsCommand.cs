@@ -13,6 +13,7 @@ namespace Antonyan.Graphs.Backend.Commands
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
+        private List<AddEdgeArgs<TVertex, TWeight>> noMarkedEdge;
         private RemoveElemsArgs<TVertex, TWeight> args;
         public static string Name { get { return "RemoveElements"; } }
 
@@ -28,15 +29,8 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Execute()
         {
-            foreach (var edge in args.Edges)
-            {
-                args.Field.RemoveEdge(edge.Item1, edge.Item2);
-            }
-            foreach (var v in args.Vertices)
-            {
-                args.Field.RemoveVertex(v.Item1);
-            }
-
+            args.Field.RemoveEdges(args.Edges);
+            noMarkedEdge = args.Field.RemoveVertices(args.Vertices);
         }
 
         public string HelpMessage()
@@ -53,6 +47,10 @@ namespace Antonyan.Graphs.Backend.Commands
             foreach (var edge in args.Edges)
             {
                 args.Field.AddEdge(edge.Item1, edge.Item2, edge.Item3);
+            }
+            foreach (var edge in noMarkedEdge)
+            {
+                args.Field.AddEdge(edge.Source, edge.Stock, edge.Weight);
             }
         }
     }

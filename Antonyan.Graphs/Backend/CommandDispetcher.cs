@@ -106,21 +106,21 @@ namespace Antonyan.Graphs.Backend
             var cmdName = splits[0];
             if (field == null)
                 throw new Exception("Граф еще не создан");
-            else if (cmdName == AddVertexCommand<TVertex, TWeight>.Name)
+            else if (cmdName == AddVertexFieldCommand<TVertex, TWeight>.Name)
             {
-                if (splits.Length != 4) throw new Exception($"Некорректная количество аргументов для команды {AddVertexCommand<TVertex, TWeight>.Name}");
+                if (splits.Length != 4) throw new Exception($"Некорректная количество аргументов для команды {AddVertexFieldCommand<TVertex, TWeight>.Name}");
                 TVertex v = new TVertex();
                 v.SetFromString(splits[1]);
                 float x, y;
                 bool succsess_x = float.TryParse(splits[2], out x);
                 bool succsess_y = float.TryParse(splits[3], out y);
                 if (!succsess_x || !succsess_y) throw new Exception($"Некорректные координаты --- \"{message}\"");
-                return CommandRepository.AllocateCommand(cmdName, new AddVertexArgs<TVertex, TWeight>(v, new vec2(x, y), field));
+                return CommandRepository.AllocateCommand(cmdName, new VertexFieldCommandArgs<TVertex, TWeight>(field, v, new vec2(x, y)));
             }
-            else if (cmdName == AddEdgeCommand<TVertex, TWeight>.Name)
+            else if (cmdName == AddEdgeFieldCommand<TVertex, TWeight>.Name)
             {
                 if (splits.Length < 3 || splits.Length > 4)
-                    throw new Exception($"Некорректная количество аргументов для команды {AddEdgeCommand<TVertex, TWeight>.Name}");
+                    throw new Exception($"Некорректная количество аргументов для команды {AddEdgeFieldCommand<TVertex, TWeight>.Name}");
                 TVertex source = new TVertex(), stock = new TVertex();
                 source.SetFromString(splits[1]);
                 stock.SetFromString(splits[2]);
@@ -130,7 +130,7 @@ namespace Antonyan.Graphs.Backend
                     weight = new TWeight();
                     weight.SetFromString(splits[3]);
                 }
-                return CommandRepository.AllocateCommand(cmdName, new AddEdgeArgs<TVertex, TWeight>(source, stock, weight, field));
+                return CommandRepository.AllocateCommand(cmdName, new EdgeFieldCommandArgs<TVertex, TWeight>(field, source, stock, weight));
             }
             else if (cmdName == RemoveElemsCommand<TVertex, TWeight>.Name)
             {
@@ -145,7 +145,10 @@ namespace Antonyan.Graphs.Backend
                     stock.SetFromString(splits[i + 1]);
                     TWeight weight = null;
                     if (splits[i + 2] != "null")
+                    {
+                        weight = new TWeight();
                         weight.SetFromString(splits[i + 2]);
+                    }
                     edges[k++] = new Tuple<TVertex, TVertex, TWeight>(source, stock, weight);
                 }
                 int circlCount = Convert.ToInt32(splits[n]);
@@ -163,7 +166,23 @@ namespace Antonyan.Graphs.Backend
                     vec2 pos = new vec2(x, y);
                     vertices[k++] = new Tuple<TVertex, vec2>(vertex, pos);
                 }
-                return CommandRepository.AllocateCommand(cmdName, new RemoveElemsArgs<TVertex, TWeight>(vertices, edges, field));
+                return CommandRepository.AllocateCommand(cmdName, new RemoveElemsFieldCommandArgs<TVertex, TWeight>(vertices, edges, field));
+            }
+            else if (cmdName == MoveVertexFieldCommand<TVertex, TWeight>.Name)
+            {
+                if (splits.Length != 6)
+                    throw new Exception($"Некорректные данные для команды { MoveVertexFieldCommand<TVertex, TWeight>.Name}");
+                TVertex v = new TVertex();
+                v.SetFromString(splits[1]);
+                bool flX1 = float.TryParse(splits[2], out float x1);
+                bool flY1 = float.TryParse(splits[3], out float y1);
+                bool flX2 = float.TryParse(splits[4], out float x2);
+                bool flY2 = float.TryParse(splits[5], out float y2);
+                if (!flX1 || !flX2 || !flY1 || !flY2)
+                    throw new Exception($"Некорректные данные для команды { MoveVertexFieldCommand<TVertex, TWeight>.Name}");
+                vec2 pos = new vec2(x1, y1);
+                vec2 newPos = new vec2(x2, y2);
+                return CommandRepository.AllocateCommand(cmdName, new MoveVertexFieldCommandArgs<TVertex, TWeight>(field, v, pos, newPos));
             }
             else throw new Exception($"Некорректная имя комманды -- \"{message}\""); ;
 

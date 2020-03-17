@@ -3,7 +3,7 @@
   <Class Name="Antonyan.Graphs.Data.AType" Collapsed="true">
     <Position X="1.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACAAAAAAAAAAAAQEgAABACACAAAAAAEAAAAAAACAAAA=</HashCode>
+      <HashCode>ACgAAAAAAAAAAAQEgAABACACAAAAAIEAAAAAAACAAAA=</HashCode>
       <FileName>Data\AType.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -23,19 +23,19 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Antonyan.Graphs.Data.Graph&lt;TVertex, TWeight&gt;">
-    <Position X="4.5" Y="0.5" Width="2.5" />
+    <Position X="4.25" Y="0.5" Width="2.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Enum Name="Antonyan.Graphs.Data.Graph&lt;TVertex, TWeight&gt;.RetrunValue" Collapsed="true">
+      <Enum Name="Antonyan.Graphs.Data.Graph&lt;TVertex, TWeight&gt;.ReturnValue">
         <TypeIdentifier>
           <NewMemberFileName>Data\Graph.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAAAAAACAAAEAABAAAAACAAAAAQAAAAABA=</HashCode>
+      <HashCode>AAAEAAAAAAAAAAIACAAAEAQBAAAAACAAAAAQAAAAABA=</HashCode>
       <FileName>Data\Graph.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -53,27 +53,6 @@
       <FileName>Data\Weight.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Antonyan.Graphs.Desk.FieldVertexEventArgs&lt;TVertex&gt;">
-    <Position X="10.25" Y="3" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAgAAAAAAQAAAAAAAAAA=</HashCode>
-      <FileName>Desk\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Desk.FieldEdgeEventArgs&lt;TVertex, TWeight&gt;">
-    <Position X="10.25" Y="0.5" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAwAAAAAAAAAAAAiAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Desk\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Desk.Field&lt;TVertex, TWeight&gt;">
-    <Position X="7.75" Y="0.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AIAEAAAAAAAAAAAACAAIAQABAAAAAAgBQABAAAAAEAA=</HashCode>
-      <FileName>Desk\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Antonyan.Graphs.Util.UICommandEventArgs">
     <Position X="0.5" Y="5.25" Width="2" />
     <TypeIdentifier>
@@ -81,11 +60,82 @@
       <FileName>Util\UserInterface.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="Antonyan.Graphs.Desk.FieldEvents">
-    <Position X="13.75" Y="0.5" Width="1.5" />
+  <Class Name="Antonyan.Graphs.Gui.Models.Edges" Collapsed="true">
+    <Position X="8.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAAAAAACAAAAAABAAAAACAAAAAAAAAAAAA=</HashCode>
-      <FileName>Desk\Field.cs</FileName>
+      <HashCode>ABAAAABAAgAAAgAAAAEAAADAgCAQAAAAgAAAAEACAQA=</HashCode>
+      <FileName>Gui\Models\Edges.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Antonyan.Graphs.Gui.Models.OrientedEdges" Collapsed="true">
+    <Position X="7.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Gui\Models\Edges.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Gui.Models.NonOrientedEdges" Collapsed="true">
+    <Position X="9.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Gui\Models\Edges.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateArgs" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateVertexPos" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateVertexArgs" Collapsed="true">
+    <Position X="11.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateVerticesArgs">
+    <Position X="9.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateEdgeArgs" Collapsed="true">
+    <Position X="13.75" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAhCAAAAAAAEAgAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.FieldUpdateEdgesArgs" Collapsed="true">
+    <Position X="7.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Antonyan.Graphs.Data.Field&lt;TVertex, TWeight&gt;" Collapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AKAEAAEBAAAAABAgCAAAEAgBAAAAACgAAAAAQAAAECA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Antonyan.Graphs.Data.FieldEvents" Collapsed="true">
+    <Position X="16.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAEAAAAAAAAABAACAAAAAABAAAAACAAAAAAAAAAACA=</HashCode>
+      <FileName>Data\Field.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

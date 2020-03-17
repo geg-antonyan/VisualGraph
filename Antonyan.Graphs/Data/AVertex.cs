@@ -10,8 +10,6 @@ namespace Antonyan.Graphs.Data
     {
         public AVertex() : base() { }
         public AVertex(string str) : base(str) { }
-
-        public int Key { get; set; }
    
     }
 }

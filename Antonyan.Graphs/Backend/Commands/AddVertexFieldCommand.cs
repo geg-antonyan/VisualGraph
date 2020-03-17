@@ -11,20 +11,20 @@ using Antonyan.Graphs.Backend.CommandArgs;
 namespace Antonyan.Graphs.Backend.Commands
 {
     
-    public class AddVertexCommand<TVertex, TWeight> : ICommand
+    public class AddVertexFieldCommand<TVertex, TWeight> : ICommand
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private AddVertexArgs<TVertex, TWeight> args;
-        public static string Name { get { return "AddVertex"; } }
-        public AddVertexCommand() { }
-        public AddVertexCommand(AddVertexArgs<TVertex, TWeight> args = null)
+        private VertexFieldCommandArgs<TVertex, TWeight> args;
+        public static readonly string Name = "AddVertex"; 
+        public AddVertexFieldCommand() { }
+        public AddVertexFieldCommand(VertexFieldCommandArgs<TVertex, TWeight> args = null)
         {
             this.args = args;
         }
-        public ICommand Clone(EventArgs args)
+        public ICommand Clone(ACommandArgs args)
         {
-            return new AddVertexCommand<TVertex, TWeight>((AddVertexArgs<TVertex, TWeight>)args);
+            return new AddVertexFieldCommand<TVertex, TWeight>((VertexFieldCommandArgs<TVertex, TWeight>)args);
         }
 
         public void Execute()

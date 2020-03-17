@@ -31,7 +31,6 @@ namespace Antonyan.Graphs.Data
         {
             if (!int.TryParse(str, out data))
                 throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
-            Key = data;
             hashCode = str.GetHashCode();
         }
 

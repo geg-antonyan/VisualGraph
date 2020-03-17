@@ -29,7 +29,6 @@ namespace Antonyan.Graphs.Gui.Models
     public class Models
     {
         private SortedDictionary<int, Model> models;
-       
         private Pen markCirclePen;
         private Pen unmarkCirclePen;
         private Pen markEdgePen;
@@ -74,7 +73,7 @@ namespace Antonyan.Graphs.Gui.Models
             return res;
 
         }
-        public string GetVertex(int hashCode)
+        public string GetVertexMark(int hashCode)
         {
             if (models.TryGetValue(hashCode, out Model model))
             {
@@ -83,21 +82,51 @@ namespace Antonyan.Graphs.Gui.Models
             }
             return null;
         }
+
+        public vec2 GetVertexPos(int hashCode)
+        {
+            if (models.ContainsKey(hashCode) && models[hashCode].DrawModel is Circle)
+                return ((Circle)models[hashCode].DrawModel).Pos;
+            return null;
+        }
         public void AddDrawModel(int hashCode, DrawModel drawModel)
         {
             models.Add(hashCode, new Model(drawModel));
             Update?.Invoke(this, null);
         }
 
+        public bool ChangeCirclePos(int hashCode, vec2 newPos)
+        {
+            bool succsess = models.TryGetValue(hashCode, out var model);
+            if (!succsess || !(model.DrawModel is Circle)) return false;
+            var circle = (Circle)model.DrawModel;
+            var lastPos = circle.Pos;
+
+            ((Circle)model.DrawModel).ChangePos(newPos);
+            foreach (var m in models)
+            {
+                if (m.Value.DrawModel is NonOrientedEdges)
+                {
+                    var edge = (NonOrientedEdges)m.Value.DrawModel;
+                    if (edge.SourcePos.Equals(lastPos))
+                        edge.ChangePos(newPos, edge.StockPos);
+                    else if (edge.StockPos.Equals(lastPos))
+                        edge.ChangePos(edge.SourcePos, newPos);
+                }
+            }
+            Update?.Invoke(this, null);
+            return true;
+        }
         public bool RemoveDrawModel(int hashCode)
         {
+
             if (models.TryGetValue(hashCode, out Model model))
             {
                 if (model.Marked)
                 {
                     if (model.DrawModel is Circle)
                         MarkedCircleCount--;
-                    else if (model.DrawModel is Edge)
+                    else if (model.DrawModel is NonOrientedEdges)
                         MarkedEdgeCount--;
                 }
 
@@ -116,7 +145,7 @@ namespace Antonyan.Graphs.Gui.Models
                     model.Marked = true;
                 if (model.DrawModel is Circle)
                     MarkedCircleCount++;
-                else if (model.DrawModel is Edge)
+                else if (model.DrawModel is NonOrientedEdges)
                     MarkedEdgeCount++;
                 Update?.Invoke(this, null);
                 return true;
@@ -132,7 +161,7 @@ namespace Antonyan.Graphs.Gui.Models
                     model.Marked = false;
                 if (model.DrawModel is Circle)
                     MarkedCircleCount--;
-                else if (model.DrawModel is Edge)
+                else if (model.DrawModel is NonOrientedEdges)
                     MarkedEdgeCount--;
                 Update?.Invoke(this, null);
                 return true;
@@ -200,9 +229,9 @@ namespace Antonyan.Graphs.Gui.Models
         public int GetEdgeHashCode(vec2 pos)
         {
             foreach (var m in models)
-                if (m.Value.DrawModel is Edge)
+                if (m.Value.DrawModel is NonOrientedEdges)
                 {
-                    Edge edge = (Edge)(m.Value.DrawModel);
+                    NonOrientedEdges edge = (NonOrientedEdges)(m.Value.DrawModel);
                     vec2 a = edge.SourcePos;
                     vec2 b = edge.StockPos;
                     float bigX = a.x > b.x ? a.x : b.x;

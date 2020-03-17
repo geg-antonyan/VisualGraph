@@ -46,6 +46,7 @@ namespace Antonyan.Graphs
             this.subDetoursBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
             this.subSortcatBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbtnMove = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,6 +64,7 @@ namespace Antonyan.Graphs
             this.tsbtnDeleteGraph,
             this.tsbtnAddVertecxFL,
             this.tsbtnRemoveElems,
+            this.tsbtnMove,
             this.tsbtnAddEdge,
             this.tsbtnDetours,
             this.tsbtnShortcats});
@@ -212,6 +214,16 @@ namespace Antonyan.Graphs
             this.subSortcatBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
             this.subSortcatBtnBFS.Click += new System.EventHandler(this.subSortcatBtnBFS_Click);
             // 
+            // tsbtnMove
+            // 
+            this.tsbtnMove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnMove.Image = global::Antonyan.Graphs.Properties.Resources.move;
+            this.tsbtnMove.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnMove.Name = "tsbtnMove";
+            this.tsbtnMove.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnMove.Text = "Перемещение";
+            this.tsbtnMove.Click += new System.EventHandler(this.tsbtnMove_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -227,6 +239,8 @@ namespace Antonyan.Graphs
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
+            this.MouseEnter += new System.EventHandler(this.MainForm_MouseEnter);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseUp);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.toolStripMain.ResumeLayout(false);
@@ -253,6 +267,7 @@ namespace Antonyan.Graphs
         private System.Windows.Forms.ToolStripButton tsbtnOpen;
         private System.Windows.Forms.ToolStripButton tsbtnDeleteGraph;
         private System.Windows.Forms.ToolStripButton tsbtnRemoveElems;
+        private System.Windows.Forms.ToolStripButton tsbtnMove;
     }
 }
 

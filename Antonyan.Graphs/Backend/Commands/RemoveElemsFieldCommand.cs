@@ -13,18 +13,18 @@ namespace Antonyan.Graphs.Backend.Commands
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private List<AddEdgeArgs<TVertex, TWeight>> noMarkedEdge;
-        private RemoveElemsArgs<TVertex, TWeight> args;
+        private List<EdgeFieldCommandArgs<TVertex, TWeight>> noMarkedEdge;
+        private RemoveElemsFieldCommandArgs<TVertex, TWeight> args;
         public static string Name { get { return "RemoveElements"; } }
 
         public RemoveElemsCommand() { }
-        public RemoveElemsCommand(RemoveElemsArgs<TVertex, TWeight> args)
+        public RemoveElemsCommand(RemoveElemsFieldCommandArgs<TVertex, TWeight> args)
         {
             this.args = args;
         }
-        public ICommand Clone(EventArgs args)
+        public ICommand Clone(ACommandArgs args)
         {
-            return new RemoveElemsCommand<TVertex, TWeight>((RemoveElemsArgs<TVertex, TWeight>)args);
+            return new RemoveElemsCommand<TVertex, TWeight>((RemoveElemsFieldCommandArgs<TVertex, TWeight>)args);
         }
 
         public void Execute()

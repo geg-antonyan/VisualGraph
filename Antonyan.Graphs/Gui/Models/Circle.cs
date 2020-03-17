@@ -16,7 +16,7 @@ namespace Antonyan.Graphs.Gui.Models
         public vec2 Pos { get; private set; }
         private vec2 vertexPos;
         private static float R;
-        private readonly mat3 translate;
+        private  mat3 translate;
         private static vec3[] circle;
         public Circle(vec2 pos, string mark)
         {
@@ -26,13 +26,20 @@ namespace Antonyan.Graphs.Gui.Models
             vertexPos = new vec2(mark.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f,  pos.y - R / 2f);
         }
 
+        public void ChangePos(vec2 pos)
+        {
+            Pos = pos;
+            translate = Transforms.Translate(Pos.x, Pos.y);
+            vertexPos = new vec2(Vertex.Length == 1 ? Pos.x - R / 2f + 2f : Pos.x - R + 6f, Pos.y - R / 2f);
+        }
         public override int GetHashCode()
         {
             return Vertex.GetHashCode();
         }
         public void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
         {
-            graphic.DrawString(Vertex, font, brush, new RectangleF(vertexPos.x, vertexPos.y, R * 2f, R * 2f));
+            if (Clip.SimpleClip(vertexPos, max, min, R / 2f))
+                graphic.DrawString(Vertex, font, brush, new RectangleF(vertexPos.x, vertexPos.y, R * 2f, R * 2f));
             vec3 A = translate * circle[0];
             for (int i = 1; i < circle.Length; i++)
             {

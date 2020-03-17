@@ -41,9 +41,9 @@ namespace Antonyan.Graphs
         private int i = 0;
         private bool algorithmProcessing = false;
         Thread algoThread;
-        bool mouseDownFL = false;
-        bool addVertexFl = false;
-
+        private bool mouseDownFL = false;
+        private int selectedHashCode = 0;
+        private vec2 lastCirclePos;
         public MainForm()
         {
             min = new vec2(); max = new vec2();
@@ -63,6 +63,8 @@ namespace Antonyan.Graphs
         {
             max.x = ClientRectangle.Width - right;
             max.y = ClientRectangle.Height - bottom;
+            min.x = left;
+            min.y = top;
             Wc.y = max.y;
             Wc.x = left;
             W.x = max.x - left;
@@ -86,6 +88,9 @@ namespace Antonyan.Graphs
             tsbtnAddEdge.Enabled = models.MarkedCircleCount == 2 && !algorithmProcessing ? true : false;
             tsbtnRemoveElems.Enabled = models.MarkedModelsCount > 0 && !tsbtnAddVertecxFL.Checked;
             var g = e.Graphics;
+            var pen = new Pen(Color.Black, 6);
+            pen.EndCap = LineCap.ArrowAnchor;
+            g.DrawArc(pen, 100f, 100f, 150f, 50f, 1f, 360f);
             models.Draw(g, min, max);
             Pen rectPen = new Pen(Color.Black, 2);
             g.DrawRectangle(rectPen, left, top, W.x, W.y);
@@ -137,51 +142,7 @@ namespace Antonyan.Graphs
             models.UnmarkAll();
 
         }
-        private void MainForm_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (!fieldCreated) return;
-            switch (e.Button)
-            {
-                case MouseButtons.Left:
-                    {
-                        vec2 pos = new vec2((float)e.X, (float)e.Y);
-                        int vertexHashCode, edgehashCode;
-                        if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
-                        {
-                            models.UnmarkAll();
-                        }
-                        else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0 && !addVertexFl)
-                        {
-                            models.Mark(vertexHashCode);
-                            if (models.MarkedCircleCount == 1)
-                                source = models.GetVertex(vertexHashCode);
-                            else if (models.MarkedCircleCount == 2)
-                                stock = models.GetVertex(vertexHashCode);
-                        }
-                        else if ((edgehashCode = models.GetEdgeHashCode(pos)) != 0 && !addVertexFl)
-                        {
-                            models.Mark(edgehashCode);
-                        }
-                        else if (models.GetCircleHashCode(new vec2(e.X, e.Y), R + R + R / 2) == 0 && addVertexFl)
-                        {
 
-                            if (models.MarkedCircleCount > 0 || models.MarkedEdgeCount > 0)
-                            {
-                                models.UnmarkAll();
-                                break;
-                            }
-                            string v = i++.ToString();
-                            string x = e.X.ToString();
-                            string y = e.Y.ToString();
-                            string command = $"AddVertex {v} {x} {y}";
-                            CommandEntered?.Invoke(this, new UICommandEventArgs(command));
-                        }
-                        else models.UnmarkAll();
-                        break;
-                    }
-                default: break;
-            }
-        }
 
         public event EventHandler<UICommandEventArgs> CommandEntered;
 
@@ -201,6 +162,13 @@ namespace Antonyan.Graphs
             CommandEntered?.Invoke(this, new UICommandEventArgs("redo"));
         }
 
+
+        public Edges makeEdges(vec2 posSource, string source, vec2 posStock, string stock, float r, string weight)
+        {
+            if (oriented) return new OrientedEdges(posSource, source, posStock, stock, r, weight);
+            else return new NonOrientedEdges(posSource, source, posStock, stock, r, weight);
+        }
+
         public void FieldUpdate(object obj, EventArgs e)
         {
             var fieldEvent = (FieldUpdateArgs)e;
@@ -216,7 +184,7 @@ namespace Antonyan.Graphs
                 case FieldEvents.AddEdge:
                     {
                         var args = (FieldUpdateEdgeArgs)fieldEvent;
-                        Edge edge = new Edge(args.PosSource, args.Source, args.PosStock, args.Stock, R, args.Weight);
+                        Edges edge = makeEdges(args.PosSource, args.Source, args.PosStock, args.Stock, R, args.Weight);
                         models.AddDrawModel(args.GetHashCode(), edge);
                         break;
                     }
@@ -228,7 +196,7 @@ namespace Antonyan.Graphs
                     }
                 case FieldEvents.RemoveEdge:
                     {
-                        var args = (FieldUpdateEdgeArgs)fieldEvent; 
+                        var args = (FieldUpdateEdgeArgs)fieldEvent;
                         if (!models.RemoveDrawModel(args.GetHashCode()))
                             if (!oriented)
                                 models.RemoveDrawModel(args.GetReverseHashCode());
@@ -260,6 +228,12 @@ namespace Antonyan.Graphs
                         }
                         break;
                     }
+                case FieldEvents.ChangeVertexPos:
+                    {
+                        var args = (FieldUpdateVertexPos)fieldEvent;
+                        models.ChangeCirclePos(args.GetHashCode(), args.Pos);
+                        break;
+                    }
             }
         }
 
@@ -282,7 +256,7 @@ namespace Antonyan.Graphs
                 }));
             });
             algoThread.Start();
-            
+
         }
 
 
@@ -350,9 +324,12 @@ namespace Antonyan.Graphs
 
         private void tsbtnAddVertecxFL_Click(object sender, EventArgs e)
         {
-            tsbtnAddVertecxFL.Checked = addVertexFl = !addVertexFl;
-            if (addVertexFl)
+            tsbtnAddVertecxFL.Checked = !tsbtnAddVertecxFL.Checked;
+            if (tsbtnAddVertecxFL.Checked)
+            {
                 Text = header + " - кликните внутри рабочего прямоугольника, чтобы добавить вершину";
+                tsbtnMove.Checked = false;
+            }
             else Text = header;
         }
 
@@ -364,10 +341,10 @@ namespace Antonyan.Graphs
             string res = $"RemoveElements {edgeCount} ";
             foreach (var m in marks)
             {
-                if (m.DrawModel is Edge)
+                if (m.DrawModel is Edges)
                 {
-                    var edge = (Edge)m.DrawModel;
-                    string w = edge.Weight == null ? "null" : edge.Weight; 
+                    var edge = (Edges)m.DrawModel;
+                    string w = edge.Weight == null ? "null" : edge.Weight;
                     res += $"{edge.Source} {edge.Stock} {w} ";
                 }
             }
@@ -383,14 +360,99 @@ namespace Antonyan.Graphs
             CommandEntered?.Invoke(this, new UICommandEventArgs(res.TrimEnd(' ')));
         }
 
+        private void MainForm_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (!fieldCreated || tsbtnMove.Checked) return;
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    {
+                        vec2 pos = new vec2((float)e.X, (float)e.Y);
+                        int vertexHashCode, edgehashCode;
+                        if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
+                        {
+                            models.UnmarkAll();
+                        }
+                        else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0 && !tsbtnAddVertecxFL.Checked)
+                        {
+                            models.Mark(vertexHashCode);
+                            if (models.MarkedCircleCount == 1)
+                                source = models.GetVertexMark(vertexHashCode);
+                            else if (models.MarkedCircleCount == 2)
+                                stock = models.GetVertexMark(vertexHashCode);
+                        }
+                        else if ((edgehashCode = models.GetEdgeHashCode(pos)) != 0 && !tsbtnAddVertecxFL.Checked)
+                        {
+                            models.Mark(edgehashCode);
+                        }
+                        else if (models.GetCircleHashCode(new vec2(e.X, e.Y), R + R + R / 2) == 0 && tsbtnAddVertecxFL.Checked)
+                        {
+
+                            if (models.MarkedCircleCount > 0 || models.MarkedEdgeCount > 0)
+                            {
+                                models.UnmarkAll();
+                                break;
+                            }
+                            string v = i++.ToString();
+                            string x = e.X.ToString();
+                            string y = e.Y.ToString();
+                            string command = $"AddVertex {v} {x} {y}";
+                            CommandEntered?.Invoke(this, new UICommandEventArgs(command));
+                        }
+                        else models.UnmarkAll();
+                        break;
+                    }
+                default: break;
+            }
+        }
+
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseDownFL = true;
+            if (tsbtnMove.Checked)
+            {
+                mouseDownFL = true;
+                vec2 pos = new vec2((float)e.X, (float)e.Y);
+                if (selectedHashCode == 0)
+                {
+                    models.UnmarkAll();
+                    selectedHashCode = models.GetCircleHashCode(pos, R);
+                    lastCirclePos = models.GetVertexPos(selectedHashCode);
+                }
+            }
+        }
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!mouseDownFL || !tsbtnMove.Checked) return;
+            vec2 pos = new vec2((float)e.X, (float)e.Y);
+            models.Mark(selectedHashCode);
+            models.ChangeCirclePos(selectedHashCode, pos);
         }
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
+            if (mouseDownFL && lastCirclePos != null)
+            {
+                var vertexMark = models.GetVertexMark(selectedHashCode);
+                vec2 pos = new vec2((float)e.X, (float)e.Y);
+                CommandEntered?.Invoke(this, new UICommandEventArgs($"MoveVertexPos {vertexMark} {lastCirclePos.ToString()} {pos.ToString()}"));
+                selectedHashCode = 0;
+                lastCirclePos = null;
+                models.UnmarkAll();
+            }
             mouseDownFL = false;
+        }
+
+        private void MainForm_MouseEnter(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void tsbtnMove_Click(object sender, EventArgs e)
+        {
+            tsbtnMove.Checked = !tsbtnMove.Checked;
+            if (tsbtnMove.Checked)
+                tsbtnAddVertecxFL.Checked = false;
         }
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)

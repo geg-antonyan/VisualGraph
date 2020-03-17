@@ -48,15 +48,18 @@
   <ItemGroup>
     <Compile Include="Backend\Algorithms\Detours.cs" />
     <Compile Include="Backend\Algorithms\Shortcats.cs" />
-    <Compile Include="Backend\CommandArgs\EdgeArgs.cs" />
-    <Compile Include="Backend\CommandArgs\RemoveElemsArgs.cs" />
-    <Compile Include="Backend\Commands\AddEdgeCommand.cs" />
-    <Compile Include="Backend\Commands\AddVertexCommand.cs" />
+    <Compile Include="Backend\CommandArgs\ACommandArgs.cs" />
+    <Compile Include="Backend\CommandArgs\EdgeFieldCommandArgs.cs" />
+    <Compile Include="Backend\CommandArgs\MoveVertexFieldCommandArgs.cs" />
+    <Compile Include="Backend\CommandArgs\RemoveElemsFieldCommandArgs.cs" />
+    <Compile Include="Backend\Commands\AddEdgeFieldCommand.cs" />
+    <Compile Include="Backend\Commands\AddVertexFieldCommand.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
-    <Compile Include="Backend\CommandArgs\VertexArgs.cs" />
-    <Compile Include="Backend\Commands\RemoveElemsCommand.cs" />
+    <Compile Include="Backend\CommandArgs\VertexFieldCommandArgs.cs" />
+    <Compile Include="Backend\Commands\MoveVertexFieldCommand.cs" />
+    <Compile Include="Backend\Commands\RemoveElemsFieldCommand.cs" />
     <Compile Include="Backend\Geometry.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Data\AType.cs" />
@@ -73,7 +76,7 @@
       <DependentUpon>CreateGraphGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Gui\Models\Circle.cs" />
-    <Compile Include="Gui\Models\Edge.cs" />
+    <Compile Include="Gui\Models\Edges.cs" />
     <Compile Include="Gui\Models\Model.cs" />
     <Compile Include="Gui\WeightGui.cs">
       <SubType>Form</SubType>
@@ -221,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="icon\current\removeElems.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\move.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

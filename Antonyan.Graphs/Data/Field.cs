@@ -10,7 +10,7 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
 {
-    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge, RemoveVertices, RemoveEdges };
+    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge, RemoveVertices, RemoveEdges, ChangeVertexPos };
     public class FieldUpdateArgs : EventArgs
     {
         protected int hashCode;
@@ -25,18 +25,27 @@ namespace Antonyan.Graphs.Data
         }
     }
 
-    public class FieldUpdateVertexArgs : FieldUpdateArgs
+    public class FieldUpdateVertexPos : FieldUpdateArgs
     {
-        public FieldUpdateVertexArgs(FieldEvents e, string vertex, vec2 coord, List<FieldUpdateEdgeArgs> edges = null)
+        public FieldUpdateVertexPos(FieldEvents e, string vertex, vec2 pos)
             : base(e)
         {
-            Pos = coord;
             Vertex = vertex;
+            Pos = pos;
             hashCode = Vertex.GetHashCode();
+        }
+
+        public string Vertex { get; private set; }
+        public vec2 Pos { get; private set; }
+    }
+
+    public class FieldUpdateVertexArgs : FieldUpdateVertexPos
+    {
+        public FieldUpdateVertexArgs(FieldEvents e, string vertex, vec2 coord, List<FieldUpdateEdgeArgs> edges = null)
+            : base(e, vertex, coord)
+        {
             Edges = edges;
         }
-        public vec2 Pos { get; private set; }
-        public string Vertex { get; private set; }
         public List<FieldUpdateEdgeArgs> Edges { get; private set; }
 
     }
@@ -122,6 +131,15 @@ namespace Antonyan.Graphs.Data
                 return pos;
             else return null;
         }
+
+        public void ChangeVertexPos(TVertex v, vec2 newPos)
+        {
+            if (Positions.ContainsKey(v))
+            {
+                Positions[v] = newPos;
+                FieldUpdate?.Invoke(this, new FieldUpdateVertexPos(FieldEvents.ChangeVertexPos, v.ToString(), newPos));
+            }
+        }
         public void AddVertex(TVertex v, vec2 coord)
         {
             var res = Graph.AddVertex(v);
@@ -176,10 +194,10 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-        public List<AddEdgeArgs<TVertex, TWeight>> RemoveVertices(Tuple<TVertex, vec2>[] vertices)
+        public List<EdgeFieldCommandArgs<TVertex, TWeight>> RemoveVertices(Tuple<TVertex, vec2>[] vertices)
         {
             List<FieldUpdateVertexArgs> args = new List<FieldUpdateVertexArgs>();
-            List<AddEdgeArgs<TVertex, TWeight>> res = new List<AddEdgeArgs<TVertex, TWeight>>();
+            List<EdgeFieldCommandArgs<TVertex, TWeight>> res = new List<EdgeFieldCommandArgs<TVertex, TWeight>>();
             foreach (var v in vertices)
             {
                 var retEdges = RemoveVertex(v.Item1, false);
@@ -195,7 +213,7 @@ namespace Antonyan.Graphs.Data
                         weight.SetFromString(edge.Weight);
                     }
                     else weight = null;
-                    res.Add(new AddEdgeArgs<TVertex, TWeight>(soruce, stock, weight, null));
+                    res.Add(new EdgeFieldCommandArgs<TVertex, TWeight>(this, soruce, stock, weight));
                     
                 }
             }

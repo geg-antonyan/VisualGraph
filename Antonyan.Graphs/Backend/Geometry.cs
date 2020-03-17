@@ -47,6 +47,12 @@ namespace Antonyan.Graphs.Backend
         {
             return new vec2(v.x * s, v.y * s);
         }
+
+        public override bool Equals(object obj)
+        {
+            var b = (vec2)obj;
+            return x == b.x && y == b.y;
+        }
         public float this[int i]
         {
             get { return i == 0 ? x : y; }
@@ -276,5 +282,6 @@ namespace Antonyan.Graphs.Backend
             lhs = rhs;
             rhs = temp;
         }
+
     }
 }

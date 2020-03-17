@@ -9,20 +9,21 @@ using Antonyan.Graphs.Backend.CommandArgs;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
-    class AddEdgeCommand<TVertex, TWeight> : ICommand
+    class AddEdgeFieldCommand<TVertex, TWeight> : 
+        AFieldCommand<EdgeFieldCommandArgs<TVertex, TWeight>, TVertex, TWeight>, 
+        ICommand
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private AddEdgeArgs<TVertex, TWeight> args;
         public static string Name { get; } = "AddEdge";
-        public AddEdgeCommand() { }
-        public AddEdgeCommand(AddEdgeArgs<TVertex, TWeight> args = null)
+        public AddEdgeFieldCommand() : base() { }
+        public AddEdgeFieldCommand(EdgeFieldCommandArgs<TVertex, TWeight> args = null)
+            : base(args)
         {
-            this.args = args;
         }
-        public ICommand Clone(EventArgs args)
+        public ICommand Clone(ACommandArgs args)
         {
-            return new AddEdgeCommand<TVertex, TWeight>((AddEdgeArgs<TVertex, TWeight>)args);
+            return new AddEdgeFieldCommand<TVertex, TWeight>((EdgeFieldCommandArgs<TVertex, TWeight>)args);
         }
 
         public void Execute()

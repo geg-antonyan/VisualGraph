@@ -8,8 +8,8 @@ namespace Antonyan.Graphs.Data
 
     public abstract class AVertex : AType
     {
-        public AVertex() : base() { }
-        public AVertex(string str) : base(str) { }
-   
+        public AVertex() { DefaultInit(); }
+        public AVertex(string str) { SetFromString(str); }
+        public abstract string GetRepresentation();
     }
 }

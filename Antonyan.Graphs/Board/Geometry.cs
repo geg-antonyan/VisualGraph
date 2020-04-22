@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace Antonyan.Graphs.Backend
+namespace Antonyan.Graphs.Board
 {
     public class vec2
     {
@@ -42,7 +42,7 @@ namespace Antonyan.Graphs.Backend
         {
             return new vec2(a.x * b.x, a.y * b.y);
         }
-        
+
         public static vec2 operator *(vec2 v, float s)
         {
             return new vec2(v.x * s, v.y * s);
@@ -80,7 +80,7 @@ namespace Antonyan.Graphs.Backend
             return (float)Math.Sqrt(x * x + y * y);
         }
 
-        public vec2 Norm()
+        public vec2 Normalize()
         {
             float m = this.Length();
             return new vec2(x / m, y / m);
@@ -97,8 +97,8 @@ namespace Antonyan.Graphs.Backend
             this.y = y;
             z = 1f;
         }
-        public vec3(float x, float y, float z) 
-            :this(x, y)
+        public vec3(float x, float y, float z)
+            : this(x, y)
         {
             this.z = z;
         }
@@ -204,7 +204,7 @@ namespace Antonyan.Graphs.Backend
             return res;
         }
 
-        
+
     }
 
     public static class Transforms
@@ -215,6 +215,8 @@ namespace Antonyan.Graphs.Backend
                             new vec3(0f, 1f, y),
                             new vec3(0f, 0f, 1f));
         }
+
+
     }
 
     public static class Clip

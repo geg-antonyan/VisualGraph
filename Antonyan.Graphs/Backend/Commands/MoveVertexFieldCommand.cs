@@ -30,7 +30,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Execute()
         {
-            args.Field.ChangeVertexPos(args.Vertex, args.NewPos);
+            args.Field.ChangeVertexModelPos(args.Represent, args.NewPos);
         }
 
         public string HelpMessage()
@@ -40,7 +40,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Undo()
         {
-            args.Field.ChangeVertexPos(args.Vertex, args.Pos);
+            args.Field.ChangeVertexModelPos(args.Represent, args.LastPos);
         }
     }
 }

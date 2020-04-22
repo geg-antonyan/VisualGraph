@@ -29,7 +29,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Execute()
         {
-            args.Field.AddVertex(args.Vertex, args.Pos);
+            args.Field.AddVertexModel(args.Vertex, args.Pos);
         }
 
         public string HelpMessage()
@@ -39,7 +39,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Undo()
         {
-            args.Field.RemoveVertex(args.Vertex);
+            args.Field.RemoveVertexModel(args.Vertex);
         }
     }
 }

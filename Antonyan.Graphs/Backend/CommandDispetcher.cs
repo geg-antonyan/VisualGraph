@@ -9,6 +9,7 @@ using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Backend.CommandArgs;
 using Antonyan.Graphs.Backend.Commands;
 using Antonyan.Graphs.Backend.Algorithms;
+using Antonyan.Graphs.Board;
 
 namespace Antonyan.Graphs.Backend
 {
@@ -18,7 +19,7 @@ namespace Antonyan.Graphs.Backend
     {
         private readonly UserInterface ui;
         private readonly CommandManager cm;
-        private Field<TVertex, TWeight> field;
+        private GraphModelsField<TVertex, TWeight> field;
         public CommandDispetcher(UserInterface u)
         {
             ui = u;
@@ -44,7 +45,7 @@ namespace Antonyan.Graphs.Backend
                         throw new Exception($"Некорректная количество аргументов для команды  {splits[0]}");
                     bool oriented = splits[1].ToLower() == "oriented" ? true : false;
                     bool weighted = splits[2].ToLower() == "weighted" ? true : false;
-                    field = new Field<TVertex, TWeight>(oriented, weighted, ui);
+                    field = new GraphModelsField<TVertex, TWeight>(oriented, weighted, ui);
                     ui.SetFieldStatus(true);
                     undoRedoPossible = cm.CheckPosiible();
                 }
@@ -132,48 +133,11 @@ namespace Antonyan.Graphs.Backend
                 }
                 return CommandRepository.AllocateCommand(cmdName, new EdgeFieldCommandArgs<TVertex, TWeight>(field, source, stock, weight));
             }
-            else if (cmdName == RemoveElemsCommand<TVertex, TWeight>.Name)
-            {
-                int edgeCount = Convert.ToInt32(splits[1]);
-                Tuple<TVertex, TVertex, TWeight>[] edges = new Tuple<TVertex, TVertex, TWeight>[edgeCount];
-                int n = edgeCount * 3 + 2;
-                int k = 0;
-                for (int i = 2; i < n; i += 3)
-                {
-                    TVertex source = new TVertex(), stock = new TVertex();
-                    source.SetFromString(splits[i]);
-                    stock.SetFromString(splits[i + 1]);
-                    TWeight weight = null;
-                    if (splits[i + 2] != "null")
-                    {
-                        weight = new TWeight();
-                        weight.SetFromString(splits[i + 2]);
-                    }
-                    edges[k++] = new Tuple<TVertex, TVertex, TWeight>(source, stock, weight);
-                }
-                int circlCount = Convert.ToInt32(splits[n]);
-                k = 0;
-                Tuple<TVertex, vec2>[] vertices = new Tuple<TVertex, vec2>[circlCount]; 
-                for (int i = n + 1; i < splits.Length; i += 3)
-                {
-                    TVertex vertex = new TVertex();
-                    vertex.SetFromString(splits[i]);
-                    bool flX, flY;
-                    flX = float.TryParse(splits[i + 1], out float x);
-                    flY = float.TryParse(splits[i + 2], out float y);
-                    if (!flY || !flX)
-                        throw new Exception($"Некорректные данные для команды {RemoveElemsCommand<TVertex, TWeight>.Name}");
-                    vec2 pos = new vec2(x, y);
-                    vertices[k++] = new Tuple<TVertex, vec2>(vertex, pos);
-                }
-                return CommandRepository.AllocateCommand(cmdName, new RemoveElemsFieldCommandArgs<TVertex, TWeight>(vertices, edges, field));
-            }
             else if (cmdName == MoveVertexFieldCommand<TVertex, TWeight>.Name)
             {
                 if (splits.Length != 6)
                     throw new Exception($"Некорректные данные для команды { MoveVertexFieldCommand<TVertex, TWeight>.Name}");
-                TVertex v = new TVertex();
-                v.SetFromString(splits[1]);
+                string represent = splits[1];
                 bool flX1 = float.TryParse(splits[2], out float x1);
                 bool flY1 = float.TryParse(splits[3], out float y1);
                 bool flX2 = float.TryParse(splits[4], out float x2);
@@ -182,7 +146,7 @@ namespace Antonyan.Graphs.Backend
                     throw new Exception($"Некорректные данные для команды { MoveVertexFieldCommand<TVertex, TWeight>.Name}");
                 vec2 pos = new vec2(x1, y1);
                 vec2 newPos = new vec2(x2, y2);
-                return CommandRepository.AllocateCommand(cmdName, new MoveVertexFieldCommandArgs<TVertex, TWeight>(field, v, pos, newPos));
+                return CommandRepository.AllocateCommand(cmdName, new MoveVertexFieldCommandArgs<TVertex, TWeight>(field, represent, pos, newPos));
             }
             else throw new Exception($"Некорректная имя комманды -- \"{message}\""); ;
 

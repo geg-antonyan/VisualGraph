@@ -1,6 +1,6 @@
-﻿namespace Antonyan.Graphs.Gui
+﻿namespace Antonyan.Graphs.Gui.Forms
 {
-    partial class WeightGui
+    partial class SetWeightForm
     {
         /// <summary>
         /// Required designer variable.

@@ -3,40 +3,45 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
+using Antonyan.Graphs.Util;
+
 namespace Antonyan.Graphs.Data
 {
     public class Vertex : AVertex
     {
         private int data;
-        public Vertex() : base() { hashCode = data.ToString().GetHashCode(); }
-        public Vertex(string str) : base(str) 
-        {
-        }
-        protected override int CompareToImpl(AType other)
+        public Vertex() : base() { }
+        public Vertex(string str) : base(str) { }
+
+        public override int CompareTo(AType other)
         {
             return data.CompareTo(((Vertex)other).data);
         }
 
-        protected override void DefaultInit()
+        public override bool Equals(AType other)
+        {
+            return CompareTo(other) == 0;
+        }
+
+        public override string ToString()
+        {
+            return data.ToString();
+        }
+
+        public override void SetFromString(string str)
+        {
+            if (!int.TryParse(str, out data))
+                throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
+        }
+
+        public override void DefaultInit()
         {
             data = 0;
         }
 
-        protected override bool EqualsImpl(AType other)
+        public override string GetRepresentation()
         {
-            return CompareToImpl(other) == 0;
-        } 
-
-        protected override void StringInit(string str)
-        {
-            if (!int.TryParse(str, out data))
-                throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
-            hashCode = str.GetHashCode();
-        }
-
-        protected override string ToStringImpl()
-        {
-            return data.ToString();
+            return Representations.VertexRepresentation(data.ToString());
         }
     }
 }

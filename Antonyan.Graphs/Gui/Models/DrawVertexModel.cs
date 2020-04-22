@@ -6,40 +6,41 @@ using System.Threading.Tasks;
 using System.Drawing;
 
 using Antonyan.Graphs.Backend;
+using Antonyan.Graphs.Board;
+using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Gui.Models
 {
-    public class Circle :  DrawModel
+
+    public class DrawVertexModel : ADrawModel
     {
-
-        public string Vertex { get; private set; } 
-        public vec2 Pos { get; private set; }
-        private vec2 vertexPos;
         private static float R;
-        private  mat3 translate;
         private static vec3[] circle;
-        public Circle(vec2 pos, string mark)
+
+        private vec2 vertexStrPos;
+        private mat3 translate;
+
+        public DrawVertexModel(GraphModels model, bool marked)
+            : base(model, marked)
         {
-            Pos = pos;
-            this.Vertex = mark;
-            translate = Transforms.Translate(pos.x, pos.y);
-            vertexPos = new vec2(mark.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f,  pos.y - R / 2f);
+            var m = (VertexModel)Model;
+            SetPos(m.Pos);
         }
 
-        public void ChangePos(vec2 pos)
+        public void SetPos(vec2 pos)
         {
-            Pos = pos;
-            translate = Transforms.Translate(Pos.x, Pos.y);
-            vertexPos = new vec2(Vertex.Length == 1 ? Pos.x - R / 2f + 2f : Pos.x - R + 6f, Pos.y - R / 2f);
+
+            translate = Transforms.Translate(pos.x, pos.y);
+            //((VertexModel)Model).SetPos(pos);
+            vertexStrPos = new vec2(((VertexModel)Model).VertexStr.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f, pos.y - R / 2f);
         }
-        public override int GetHashCode()
+
+        public override void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
         {
-            return Vertex.GetHashCode();
-        }
-        public void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
-        {
-            if (Clip.SimpleClip(vertexPos, max, min, R / 2f))
-                graphic.DrawString(Vertex, font, brush, new RectangleF(vertexPos.x, vertexPos.y, R * 2f, R * 2f));
+            var m = (VertexModel)Model;
+            if (Clip.SimpleClip(vertexStrPos, max, min, R / 2f))
+                graphic.DrawString(m.VertexStr, font, brush, new RectangleF(vertexStrPos.x, vertexStrPos.y, R * 2f, R * 2f));
             vec3 A = translate * circle[0];
             for (int i = 1; i < circle.Length; i++)
             {
@@ -50,6 +51,7 @@ namespace Antonyan.Graphs.Gui.Models
                 A = B;
             }
         }
+
         public static void GenerateCircle(float r, float dx)
         {
             R = r;
@@ -77,6 +79,12 @@ namespace Antonyan.Graphs.Gui.Models
             }
         }
 
-
+        public override string PosRepresent(vec2 pos, float r)
+        {
+            var m = (VertexModel)Model;
+            if (Math.Pow(pos.x - m.Pos.x, 2.0) + Math.Pow(pos.y - m.Pos.y, 2.0) <= r * r)
+                return m.GetRepresentation();
+            return null;
+        }
     }
 }

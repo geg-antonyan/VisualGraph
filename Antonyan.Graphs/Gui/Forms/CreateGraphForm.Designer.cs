@@ -1,6 +1,6 @@
-﻿namespace Antonyan.Graphs.Gui
+﻿namespace Antonyan.Graphs.Gui.Forms
 {
-    partial class CreateGraphGUI
+    partial class CreateGraphForm
     {
         /// <summary>
         /// Required designer variable.

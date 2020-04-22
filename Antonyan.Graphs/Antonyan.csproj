@@ -51,7 +51,6 @@
     <Compile Include="Backend\CommandArgs\ACommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\EdgeFieldCommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\MoveVertexFieldCommandArgs.cs" />
-    <Compile Include="Backend\CommandArgs\RemoveElemsFieldCommandArgs.cs" />
     <Compile Include="Backend\Commands\AddEdgeFieldCommand.cs" />
     <Compile Include="Backend\Commands\AddVertexFieldCommand.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
@@ -59,30 +58,34 @@
     <Compile Include="Backend\CommandRepository.cs" />
     <Compile Include="Backend\CommandArgs\VertexFieldCommandArgs.cs" />
     <Compile Include="Backend\Commands\MoveVertexFieldCommand.cs" />
-    <Compile Include="Backend\Commands\RemoveElemsFieldCommand.cs" />
-    <Compile Include="Backend\Geometry.cs" />
     <Compile Include="Backend\ICommand.cs" />
+    <Compile Include="Board\GraphModelsField.cs" />
+    <Compile Include="Data\AEdge.cs" />
     <Compile Include="Data\AType.cs" />
     <Compile Include="Data\AVertex.cs" />
     <Compile Include="Data\AWeight.cs" />
     <Compile Include="Data\Graph.cs" />
     <Compile Include="Data\Vertex.cs" />
     <Compile Include="Data\Weight.cs" />
-    <Compile Include="Data\Field.cs" />
-    <Compile Include="Gui\CreateGraphGUI.cs">
+    <Compile Include="Board\Geometry.cs" />
+    <Compile Include="Board\Models\EdgeModel.cs" />
+    <Compile Include="Board\Models\GraphModels.cs" />
+    <Compile Include="Board\Models\VertexModel.cs" />
+    <Compile Include="Gui\Forms\CreateGraphForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gui\CreateGraphGUI.Designer.cs">
-      <DependentUpon>CreateGraphGUI.cs</DependentUpon>
+    <Compile Include="Gui\Forms\CreateGraphForm.Designer.cs">
+      <DependentUpon>CreateGraphForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gui\Models\Circle.cs" />
+    <Compile Include="Gui\DrawModelsField.cs" />
+    <Compile Include="Gui\Models\DrawVertexModel.cs" />
     <Compile Include="Gui\Models\Edges.cs" />
-    <Compile Include="Gui\Models\Model.cs" />
-    <Compile Include="Gui\WeightGui.cs">
+    <Compile Include="Gui\Models\DrawModel.cs" />
+    <Compile Include="Gui\Forms\SetWeightForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Gui\WeightGui.Designer.cs">
-      <DependentUpon>WeightGui.cs</DependentUpon>
+    <Compile Include="Gui\Forms\SetWeightForm.Designer.cs">
+      <DependentUpon>SetWeightForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -92,12 +95,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Representation.cs" />
     <Compile Include="Util\UserInterface.cs" />
-    <EmbeddedResource Include="Gui\CreateGraphGUI.resx">
-      <DependentUpon>CreateGraphGUI.cs</DependentUpon>
+    <EmbeddedResource Include="Gui\Forms\CreateGraphForm.resx">
+      <DependentUpon>CreateGraphForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Gui\WeightGui.resx">
-      <DependentUpon>WeightGui.cs</DependentUpon>
+    <EmbeddedResource Include="Gui\Forms\SetWeightForm.resx">
+      <DependentUpon>SetWeightForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -228,5 +232,6 @@
   <ItemGroup>
     <None Include="icon\current\move.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

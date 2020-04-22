@@ -16,13 +16,13 @@ namespace Antonyan.Graphs.Util
     {
         event EventHandler<UICommandEventArgs> CommandEntered;
         void PostMessage(string message);
+        void PostWarningMessage(string warningMessage);
+        void PostErrorMessage(string errorMessage);
         void FieldUpdate(object obj, EventArgs e);
         void CheckUndoRedo(bool undoPossible, bool redoPossible);
         void SetFieldStatus(bool status);
-
-        bool MarkModel(int hashCode);
-        bool UnmarkModel(int hashCode);
-
+        bool MarkModel(string represantion);
+        bool UnmarkModel(string represantion);
         void UnmarkAll();
     }
 

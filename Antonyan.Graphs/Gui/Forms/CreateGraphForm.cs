@@ -8,14 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Antonyan.Graphs.Gui
+namespace Antonyan.Graphs.Gui.Forms
 {
-    public partial class CreateGraphGUI : Form
+    public partial class CreateGraphForm : Form
     {
         public bool Ok { get; private set; }
         public bool Oriented { get; private set; }
         public bool Weighted { get; private set; }
-        public CreateGraphGUI()
+        public CreateGraphForm()
         {
             InitializeComponent();
         }

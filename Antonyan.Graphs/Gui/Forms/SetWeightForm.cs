@@ -10,13 +10,13 @@ using System.Windows.Forms;
 
 using Antonyan.Graphs.Data;
 
-namespace Antonyan.Graphs.Gui
+namespace Antonyan.Graphs.Gui.Forms
 {
-    public partial class WeightGui : Form
+    public partial class SetWeightForm : Form
     {
         public bool Ok { get; private set; }
         public string Weight { get; private set; }
-        public WeightGui()
+        public SetWeightForm()
         {
 
             InitializeComponent();

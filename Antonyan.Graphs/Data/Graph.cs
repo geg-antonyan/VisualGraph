@@ -2,37 +2,16 @@
 using System.Collections.Generic;
 
 
+using Antonyan.Graphs.Util;
+
 
 namespace Antonyan.Graphs.Data
 {
-    public class RemoveVertexReturnValues<TVertex, TWeight> : EventArgs
-        where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
-    {
-        public void SetReturnValue(Graph<TVertex, TWeight>.ReturnValue value) => Return = value;
-        public void AddEdge(TVertex source, TVertex stock, TWeight weight, bool orented = false)
-        {
-
-            //if (orented)
-            Edges.Add(new Tuple<TVertex, TVertex, TWeight>(source, stock, weight));
-            // else
-            //     foreach (var edge in Edges)
-            //      {
-            //          if (edge.Item1.Equals(source) && edge.Item2.Equals(stock) ||
-            //              edge.Item1.Equals(stock) && edge.Item2.Equals(source))
-            //             continue;
-            //          Edges.Add(new Tuple<TVertex, TVertex, TWeight>(source, stock, weight));
-            //      }
-        }
-        public Graph<TVertex, TWeight>.ReturnValue Return { get; private set; }
-        public List<Tuple<TVertex, TVertex, TWeight>> Edges { get; private set; } = new List<Tuple<TVertex, TVertex, TWeight>>();
-    }
-
+    public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess }; 
     public class Graph<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess };
         private readonly SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> data;
         public bool IsOrgraph { get; private set; }
         public bool IsWeighted { get; private set; }
@@ -91,10 +70,6 @@ namespace Antonyan.Graphs.Data
             }
         }
 
-        public TWeight WeightEdge(TVertex source, TVertex stock)
-        {
-            return null;
-        }
         public Graph(Graph<TVertex, TWeight> other)
         {
             data = new SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>>();
@@ -157,27 +132,27 @@ namespace Antonyan.Graphs.Data
             }
 
         }
-        public RemoveVertexReturnValues<TVertex, TWeight> RemoveVertex(TVertex v)
+
+        // List<int> hashcode for edges
+        public Tuple<ReturnValue, List<string>> RemoveVertex(TVertex v)
         {
-            var res = new RemoveVertexReturnValues<TVertex, TWeight>();
+            Tuple<ReturnValue, List<string>> res;
             if (!data.ContainsKey(v))
             {
-                res.SetReturnValue(ReturnValue.VertexDontExist);
+                res = new Tuple<ReturnValue, List<string>>(ReturnValue.VertexDontExist, null);
                 return res;
             }
+            res = new Tuple<ReturnValue, List<string>>(ReturnValue.Succsess, new List<string>());
             foreach (var adj in this[v])
-                res.AddEdge(v, adj.Item1, adj.Item2);
+                res.Item2.Add(Representations.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString()));
+            
             data.Remove(v);
-            res.SetReturnValue(ReturnValue.Succsess);
             foreach (var adjs in data)
                 foreach (var pair in adjs.Value)
                 {
                     if (pair.Item1.Equals(v))
                     {
-                        if (IsOrgraph)
-                        {
-                            res.AddEdge(pair.Item1, v, pair.Item2);
-                        }
+                        res.Item2.Add(Representations.EdgeRepresentation(adjs.Key.ToString(), v.ToString(), pair.Item2.ToString()));
                         adjs.Value.Remove(pair);
                         break;
                     }

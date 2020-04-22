@@ -28,7 +28,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Execute()
         {
-            args.Field.AddEdge(args.Source, args.Stock, args.Weight);
+            args.Field.AddEdgeModel(args.Source, args.Stock, args.Weight);
         }
 
         public string HelpMessage()
@@ -38,7 +38,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Undo()
         {
-            args.Field.RemoveEdge(args.Source, args.Stock);
+            args.Field.RemoveEdgeModel(args.Source, args.Stock);
         }
     }
 }

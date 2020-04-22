@@ -6,8 +6,8 @@ namespace Antonyan.Graphs.Data
 {
     public abstract class AWeight : AType
     {
-        public AWeight() : base() { }
-        public AWeight(string str) :base(str) { }
+        public AWeight()  { DefaultInit(); }
+        public AWeight(string str)  { SetFromString(str); }
 
     }
 }

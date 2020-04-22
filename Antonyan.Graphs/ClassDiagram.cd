@@ -54,74 +54,32 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Antonyan.Graphs.Util.UICommandEventArgs">
-    <Position X="0.5" Y="5.25" Width="2" />
+    <Position X="0.5" Y="4.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Util\UserInterface.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Antonyan.Graphs.Gui.Models.Edges" Collapsed="true">
-    <Position X="8.5" Y="4.5" Width="1.5" />
+    <Position X="8.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABAAAABAAgAAAgAAAAEAAADAgCAQAAAAgAAAAEACAQA=</HashCode>
+      <HashCode>AJAAAQAAAAAAAgAAAAEEAEDCBAAQAAIAAEAAAAAAAQA=</HashCode>
       <FileName>Gui\Models\Edges.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Antonyan.Graphs.Gui.Models.OrientedEdges" Collapsed="true">
-    <Position X="7.25" Y="5.75" Width="1.5" />
+    <Position X="7.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AIAAAAAAAAAAAAAAAAAEAAAAAAAQAIAAAAAAAAAAAAE=</HashCode>
       <FileName>Gui\Models\Edges.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Antonyan.Graphs.Gui.Models.NonOrientedEdges" Collapsed="true">
-    <Position X="9.75" Y="5.75" Width="1.5" />
+    <Position X="10" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAQAIAAAAAAAAAAAAA=</HashCode>
       <FileName>Gui\Models\Edges.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateArgs" Collapsed="true">
-    <Position X="10.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAAAAAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateVertexPos" Collapsed="true">
-    <Position X="11.75" Y="2" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateVertexArgs" Collapsed="true">
-    <Position X="11.5" Y="3.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateVerticesArgs">
-    <Position X="9.5" Y="2" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateEdgeArgs" Collapsed="true">
-    <Position X="13.75" Y="2" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAhCAAAAAAAEAgAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Antonyan.Graphs.Data.FieldUpdateEdgesArgs" Collapsed="true">
-    <Position X="7.25" Y="2" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Data\Field.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Antonyan.Graphs.Data.Field&lt;TVertex, TWeight&gt;" Collapsed="true">

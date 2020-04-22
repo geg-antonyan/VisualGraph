@@ -16,7 +16,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
     {
         public static void Visit(TVertex v, UserInterface ui, SortedDictionary<TVertex, TVertex> prev = null)
         {
-            ui.MarkModel(v.GetHashCode());
+            ui.MarkModel(v.ToString());
             Thread.Sleep(700);
         }
         public static void DFS(Graph<TVertex, TWeight> G, TVertex v, SortedDictionary<TVertex, bool> visited, UserInterface ui)
@@ -28,8 +28,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 if (!visited[adj.Item1])
                 {
                     Thread.Sleep(500);
-                    if (!ui.MarkModel((v.ToString() + " " + adj.Item1.ToString() +  " " + adj.Item2?.ToString()).GetHashCode()))
-                        ui.MarkModel((adj.Item1.ToString() + " " + v.ToString() + " " + adj.Item2?.ToString()).GetHashCode());
+                    if (!ui.MarkModel(Representations.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())))
+                        ui.MarkModel(Representations.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
                    
                     DFS(G, adj.Item1, visited, ui);
                 }
@@ -50,8 +50,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
                     if (!visited[w.Item1])
                     {
                         Thread.Sleep(500);
-                        if (!ui.MarkModel((x.ToString() + " " + w.Item1.ToString() + " " + w.Item2?.ToString()).GetHashCode()))
-                            ui.MarkModel((w.Item1.ToString() + " " + x.ToString() + " " + w.Item2?.ToString()).GetHashCode());
+                        if (!ui.MarkModel(Representations.EdgeRepresentation(x.ToString(), w.Item1.ToString(), w.Item2?.ToString())))
+                            ui.MarkModel(Representations.EdgeRepresentation(w.Item1.ToString(), x.ToString(), w.Item2?.ToString()));
                         Visit(w.Item1, ui);
                         visited[w.Item1] = true;
                         Q.Enqueue(w.Item1);

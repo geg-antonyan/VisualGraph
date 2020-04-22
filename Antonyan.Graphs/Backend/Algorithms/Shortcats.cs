@@ -44,7 +44,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
         {
             if (stock.Equals(source))
             {
-                ui.MarkModel(source.GetHashCode());
+                ui.MarkModel(source.GetRepresentation());
                 Thread.Sleep(500);
             }
             else if (parents[stock] == null)
@@ -58,10 +58,10 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 FindPath(G, source, parents[stock], parents, ui);
                 Thread.Sleep(500);
                 var tmp = parents[stock];
-                if (!ui.MarkModel((tmp?.ToString() + " " + stock.ToString() + " ").GetHashCode()))
-                    ui.MarkModel((stock.ToString() + " " + tmp?.ToString() + " ").GetHashCode());
+                if (!ui.MarkModel(Representations.EdgeRepresentation(tmp?.ToString(), stock.ToString(), null)))
+                    ui.MarkModel(Representations.EdgeRepresentation(stock.ToString(), tmp?.ToString(), null));
                 Thread.Sleep(500);
-                ui.MarkModel(stock.GetHashCode());
+                ui.MarkModel(stock.GetRepresentation());
           
             }
         }

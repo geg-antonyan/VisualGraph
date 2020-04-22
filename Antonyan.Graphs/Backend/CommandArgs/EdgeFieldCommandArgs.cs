@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Backend;
+using Antonyan.Graphs.Board;
+
 namespace Antonyan.Graphs.Backend.CommandArgs
 {
     public class EdgeFieldCommandArgs<TVertex, TWeight> : AFieldCommandArgs<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public EdgeFieldCommandArgs(Field<TVertex, TWeight> field, TVertex source, TVertex stock, TWeight weight)
+        public EdgeFieldCommandArgs(GraphModelsField<TVertex, TWeight> field, TVertex source, TVertex stock, TWeight weight)
             : base(field)
         {
             Source = source;

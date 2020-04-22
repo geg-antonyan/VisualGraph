@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Data;
+using Antonyan.Graphs.Board;
 
 namespace Antonyan.Graphs.Backend.CommandArgs
 {
@@ -14,7 +15,7 @@ namespace Antonyan.Graphs.Backend.CommandArgs
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        public VertexFieldCommandArgs(Field<TVertex, TWeight> field, TVertex vertex, vec2 pos)
+        public VertexFieldCommandArgs(GraphModelsField<TVertex, TWeight> field, TVertex vertex, vec2 pos)
             : base(field)
         {
             Vertex = vertex;

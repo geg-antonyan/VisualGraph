@@ -38,15 +38,15 @@ namespace Antonyan.Graphs
             this.tsbtnRedo = new System.Windows.Forms.ToolStripButton();
             this.tlbtnCrtGraph = new System.Windows.Forms.ToolStripButton();
             this.tsbtnDeleteGraph = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnAddVertecxFL = new System.Windows.Forms.ToolStripButton();
+            this.tsBtnAddVertex = new System.Windows.Forms.ToolStripButton();
             this.tsbtnRemoveElems = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnMove = new System.Windows.Forms.ToolStripButton();
             this.tsbtnAddEdge = new System.Windows.Forms.ToolStripButton();
             this.tsbtnDetours = new System.Windows.Forms.ToolStripDropDownButton();
             this.subDetoursBtnDFS = new System.Windows.Forms.ToolStripMenuItem();
             this.subDetoursBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
             this.subSortcatBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsbtnMove = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,19 +62,19 @@ namespace Antonyan.Graphs
             this.tsbtnRedo,
             this.tlbtnCrtGraph,
             this.tsbtnDeleteGraph,
-            this.tsbtnAddVertecxFL,
+            this.tsBtnAddVertex,
             this.tsbtnRemoveElems,
             this.tsbtnMove,
             this.tsbtnAddEdge,
             this.tsbtnDetours,
             this.tsbtnShortcats});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
-            this.toolStripMain.Margin = new System.Windows.Forms.Padding(3, 5, 0, 0);
+            this.toolStripMain.Margin = new System.Windows.Forms.Padding(2, 4, 0, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.toolStripMain.Size = new System.Drawing.Size(1325, 32);
+            this.toolStripMain.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.toolStripMain.Size = new System.Drawing.Size(994, 32);
             this.toolStripMain.TabIndex = 0;
-            this.toolStripMain.Text = "toolStrip4";
+            this.toolStripMain.Text = "Меню";
             // 
             // tsbtnOpen
             // 
@@ -133,15 +133,15 @@ namespace Antonyan.Graphs
             this.tsbtnDeleteGraph.Size = new System.Drawing.Size(29, 29);
             this.tsbtnDeleteGraph.Text = "toolStripButton1";
             // 
-            // tsbtnAddVertecxFL
+            // tsBtnAddVertex
             // 
-            this.tsbtnAddVertecxFL.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnAddVertecxFL.Image = global::Antonyan.Graphs.Properties.Resources.AddVertex;
-            this.tsbtnAddVertecxFL.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnAddVertecxFL.Name = "tsbtnAddVertecxFL";
-            this.tsbtnAddVertecxFL.Size = new System.Drawing.Size(29, 29);
-            this.tsbtnAddVertecxFL.Text = "Добаить вершины";
-            this.tsbtnAddVertecxFL.Click += new System.EventHandler(this.tsbtnAddVertecxFL_Click);
+            this.tsBtnAddVertex.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnAddVertex.Image = global::Antonyan.Graphs.Properties.Resources.AddVertex;
+            this.tsBtnAddVertex.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnAddVertex.Name = "tsBtnAddVertex";
+            this.tsBtnAddVertex.Size = new System.Drawing.Size(29, 29);
+            this.tsBtnAddVertex.Text = "Добаить вершины";
+            this.tsBtnAddVertex.Click += new System.EventHandler(this.tsbtnAddVertex_Click);
             // 
             // tsbtnRemoveElems
             // 
@@ -152,6 +152,16 @@ namespace Antonyan.Graphs
             this.tsbtnRemoveElems.Size = new System.Drawing.Size(29, 29);
             this.tsbtnRemoveElems.Text = "Удалить выбранные элементы";
             this.tsbtnRemoveElems.Click += new System.EventHandler(this.tsbtnRemoveElems_Click);
+            // 
+            // tsbtnMove
+            // 
+            this.tsbtnMove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnMove.Image = global::Antonyan.Graphs.Properties.Resources.move;
+            this.tsbtnMove.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnMove.Name = "tsbtnMove";
+            this.tsbtnMove.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnMove.Text = "Перемещение";
+            this.tsbtnMove.Click += new System.EventHandler(this.tsbtnMove_Click);
             // 
             // tsbtnAddEdge
             // 
@@ -172,7 +182,7 @@ namespace Antonyan.Graphs
             this.tsbtnDetours.Image = global::Antonyan.Graphs.Properties.Resources.detours1;
             this.tsbtnDetours.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDetours.Name = "tsbtnDetours";
-            this.tsbtnDetours.Size = new System.Drawing.Size(39, 29);
+            this.tsbtnDetours.Size = new System.Drawing.Size(38, 29);
             this.tsbtnDetours.Text = "Обходы";
             this.tsbtnDetours.Click += new System.EventHandler(this.tsbtnDetours_Click);
             // 
@@ -180,7 +190,7 @@ namespace Antonyan.Graphs
             // 
             this.subDetoursBtnDFS.Image = global::Antonyan.Graphs.Properties.Resources.dfs;
             this.subDetoursBtnDFS.Name = "subDetoursBtnDFS";
-            this.subDetoursBtnDFS.Size = new System.Drawing.Size(258, 32);
+            this.subDetoursBtnDFS.Size = new System.Drawing.Size(208, 32);
             this.subDetoursBtnDFS.Text = "Обход в глубину";
             this.subDetoursBtnDFS.Click += new System.EventHandler(this.subDetoursBtnDFS_Click);
             // 
@@ -188,7 +198,7 @@ namespace Antonyan.Graphs
             // 
             this.subDetoursBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.bfs;
             this.subDetoursBtnBFS.Name = "subDetoursBtnBFS";
-            this.subDetoursBtnBFS.Size = new System.Drawing.Size(258, 32);
+            this.subDetoursBtnBFS.Size = new System.Drawing.Size(208, 32);
             this.subDetoursBtnBFS.Text = "Обход в ширину";
             this.subDetoursBtnBFS.Click += new System.EventHandler(this.subDetoursBtnBFS_Click);
             // 
@@ -200,7 +210,7 @@ namespace Antonyan.Graphs
             this.tsbtnShortcats.Image = global::Antonyan.Graphs.Properties.Resources.shortcat4;
             this.tsbtnShortcats.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnShortcats.Name = "tsbtnShortcats";
-            this.tsbtnShortcats.Size = new System.Drawing.Size(39, 29);
+            this.tsbtnShortcats.Size = new System.Drawing.Size(38, 29);
             this.tsbtnShortcats.Text = "Кратчайшие пути";
             this.tsbtnShortcats.Click += new System.EventHandler(this.tsbtnShortcats_Click);
             // 
@@ -210,29 +220,19 @@ namespace Antonyan.Graphs
             this.subSortcatBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.mark;
             this.subSortcatBtnBFS.Name = "subSortcatBtnBFS";
             this.subSortcatBtnBFS.ShowShortcutKeys = false;
-            this.subSortcatBtnBFS.Size = new System.Drawing.Size(583, 32);
+            this.subSortcatBtnBFS.Size = new System.Drawing.Size(454, 32);
             this.subSortcatBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
             this.subSortcatBtnBFS.Click += new System.EventHandler(this.subSortcatBtnBFS_Click);
             // 
-            // tsbtnMove
-            // 
-            this.tsbtnMove.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnMove.Image = global::Antonyan.Graphs.Properties.Resources.move;
-            this.tsbtnMove.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnMove.Name = "tsbtnMove";
-            this.tsbtnMove.Size = new System.Drawing.Size(29, 29);
-            this.tsbtnMove.Text = "Перемещение";
-            this.tsbtnMove.Click += new System.EventHandler(this.tsbtnMove_Click);
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1325, 786);
+            this.ClientSize = new System.Drawing.Size(994, 639);
             this.Controls.Add(this.toolStripMain);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MainForm";
             this.Text = "Visual Graph";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -262,7 +262,7 @@ namespace Antonyan.Graphs
         private System.Windows.Forms.ToolStripMenuItem subDetoursBtnBFS;
         private System.Windows.Forms.ToolStripDropDownButton tsbtnShortcats;
         private System.Windows.Forms.ToolStripMenuItem subSortcatBtnBFS;
-        private System.Windows.Forms.ToolStripButton tsbtnAddVertecxFL;
+        private System.Windows.Forms.ToolStripButton tsBtnAddVertex;
         private System.Windows.Forms.ToolStripButton tsbtnSave;
         private System.Windows.Forms.ToolStripButton tsbtnOpen;
         private System.Windows.Forms.ToolStripButton tsbtnDeleteGraph;

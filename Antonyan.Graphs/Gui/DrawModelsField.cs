@@ -37,7 +37,7 @@ namespace Antonyan.Graphs.Gui
             Font mv, Font umv, Font mw, Font umw,
             Brush mvb, Brush umvb, Brush mwb, Brush umwb)
         {
-            Update += form.ModelsBoardUpdate;
+            Update += form.ModelsFieldUpdate;
             markCirclePen = mcp; unmarkCirclePen = umcp;
             markEdgePen = me; unmarkEdgePen = ume;
             markVertexFont = mv; unmarkVertexFont = umv;

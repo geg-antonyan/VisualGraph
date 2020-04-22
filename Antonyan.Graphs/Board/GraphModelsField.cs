@@ -99,6 +99,20 @@ namespace Antonyan.Graphs.Board
             else
                 throw new Exception(res.ToString());
         }
+
+        public void AddVertexModel(VertexModel vertexModel, bool raise = true)
+        {
+            var vertex = new TVertex();
+            vertex.SetFromString(vertexModel.VertexStr);
+            var res = Graph.AddVertex(vertex);
+            if (res == ReturnValue.Succsess)
+            {
+                Models.Add(vertexModel.GetRepresentation(), vertexModel);
+                if (raise)
+                    FieldUpdate?.Invoke(this, new FieldUpdateArgs(new List<RepresentationFieldEventPair>
+                                       { new RepresentationFieldEventPair(vertexModel.GetRepresentation(), FieldEvents.AddVertex) }, Models));
+            }
+        }
         public void AddEdgeModel(TVertex v, TVertex e, TWeight w = null)
         {
             var res = Graph.AddEdge(v, e, w);

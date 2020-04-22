@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Util;
+using Antonyan.Graphs.Board;
 using System.Threading;
 
 namespace Antonyan.Graphs.Backend.Algorithms
@@ -28,8 +29,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 if (!visited[adj.Item1])
                 {
                     Thread.Sleep(500);
-                    if (!ui.MarkModel(Representations.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())))
-                        ui.MarkModel(Representations.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
+                    if (!ui.MarkModel(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())))
+                        ui.MarkModel(ServiceFunctions.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
                    
                     DFS(G, adj.Item1, visited, ui);
                 }
@@ -50,8 +51,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
                     if (!visited[w.Item1])
                     {
                         Thread.Sleep(500);
-                        if (!ui.MarkModel(Representations.EdgeRepresentation(x.ToString(), w.Item1.ToString(), w.Item2?.ToString())))
-                            ui.MarkModel(Representations.EdgeRepresentation(w.Item1.ToString(), x.ToString(), w.Item2?.ToString()));
+                        if (!ui.MarkModel(ServiceFunctions.EdgeRepresentation(x.ToString(), w.Item1.ToString(), w.Item2?.ToString())))
+                            ui.MarkModel(ServiceFunctions.EdgeRepresentation(w.Item1.ToString(), x.ToString(), w.Item2?.ToString()));
                         Visit(w.Item1, ui);
                         visited[w.Item1] = true;
                         Q.Enqueue(w.Item1);

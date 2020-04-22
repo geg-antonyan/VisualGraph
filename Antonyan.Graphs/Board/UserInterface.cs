@@ -1,26 +1,15 @@
 ﻿using System;
+using Antonyan.Graphs.Board;
+using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Backend.Commands;
+using Antonyan.Graphs.Backend.UICommandArgs;
 
-using Antonyan.Graphs.Backend;
-namespace Antonyan.Graphs.Util
+
+namespace Antonyan.Graphs.Board
 {
-
-
-    //public class UICommand 
-
-    public class UICommandEventArgs : EventArgs
-    {
-        public UICommandEventArgs(string message)
-        {
-            Message = message;
-        }
-        public string Message { get; private set; }
-    }
-
-
-
     public interface UserInterface
     {
-        event EventHandler<UICommandEventArgs> CommandEntered;
+        event EventHandler<UIEventArgs> CommandEntered;
         void PostMessage(string message);
         void PostWarningMessage(string warningMessage);
         void PostErrorMessage(string errorMessage);

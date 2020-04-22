@@ -12,7 +12,6 @@ using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Gui.Models
 {
-
     public class DrawVertexModel : ADrawModel
     {
         private static float R;
@@ -21,6 +20,7 @@ namespace Antonyan.Graphs.Gui.Models
         private vec2 vertexStrPos;
         private mat3 translate;
 
+        public event EventHandler<EventArgs> PosChanged;
         public DrawVertexModel(GraphModels model, bool marked)
             : base(model, marked)
         {
@@ -32,8 +32,9 @@ namespace Antonyan.Graphs.Gui.Models
         {
 
             translate = Transforms.Translate(pos.x, pos.y);
-            //((VertexModel)Model).SetPos(pos);
+            ((VertexModel)Model).SetPos(pos);
             vertexStrPos = new vec2(((VertexModel)Model).VertexStr.Length == 1 ? pos.x - R / 2f + 2f : pos.x - R + 6f, pos.y - R / 2f);
+            PosChanged?.Invoke(this, null);
         }
 
         public override void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)

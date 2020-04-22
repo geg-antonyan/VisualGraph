@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 
-using Antonyan.Graphs.Backend;
+using Antonyan.Graphs.Backend.UICommandArgs;
 using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Data;
 
@@ -27,7 +27,7 @@ namespace Antonyan.Graphs
 
     public partial class MainForm : Form, UserInterface
     {
-        public event EventHandler<UICommandEventArgs> CommandEntered;
+        public event EventHandler<UIEventArgs> CommandEntered;
         private DrawModelsField modelsField;
 
         private readonly float R = 20;
@@ -40,7 +40,8 @@ namespace Antonyan.Graphs
 
         private bool fieldCreated;
         private bool oriented, weighted;
-        private string source = null, stock = null;
+        private VertexModel sourceModel, stockModel;
+        private string source = null, stock = null; //
         private readonly string header = "Visual Graph";
 
         private int i = 0;
@@ -94,7 +95,7 @@ namespace Antonyan.Graphs
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
             tsBtnAddVertex.Enabled = fieldCreated;
-            tsBtnAddEdge.Enabled = modelsField.MarkedCircleCount == 2 && !algorithmProcessing ? true : false;
+            tsBtnAddEdge.Enabled = modelsField.MarkedVertexCount == 2 && !algorithmProcessing ? true : false;
             tsbtnRemoveElems.Enabled = modelsField.MarkedModelsCount > 0 && !tsBtnAddVertex.Checked;
             var g = e.Graphics;
             modelsField.Draw(g, min, max);
@@ -108,17 +109,6 @@ namespace Antonyan.Graphs
         }
 
         // --------------------------------- !From events --------------------------------- //
-
-
-        
-
-       
-
-
-
-
-
-
         //public Edges makeEdges(vec2 posSource, string source, vec2 posStock, string stock, float r, string weight)
         //{
         //    if (oriented) return new OrientedEdges(posSource, source, posStock, stock, r, weight);
@@ -137,10 +127,25 @@ namespace Antonyan.Graphs
                 case MouseButtons.Left:
                     {
                         vec2 pos = new vec2((float)e.X, (float)e.Y);
+
+                        string selected;
                         //int vertexHashCode, edgehashCode;
                         if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
                         {
                             modelsField.UnmarkAllDrawModels();
+                        }
+                        else if ((selected = modelsField.GetPosRepresent(pos, R)) != null && !tsBtnAddVertex.Checked)
+                        {
+                            modelsField.MarkDrawModel(selected);
+                            var drawModel = modelsField.GetGraphModel(selected);
+                            if (drawModel is VertexModel && modelsField.MarkedModelsCount <= 2)
+                            {
+                                if (modelsField.MarkedVertexCount == 1)
+                                    sourceModel = (VertexModel)drawModel;
+                                else if (modelsField.MarkedVertexCount == 2)
+                                    stockModel = (VertexModel)drawModel;
+                            }
+
                         }
                         //else if ((vertexHashCode = models.GetCircleHashCode(pos, R)) != 0 && !tsbtnAddVertecxFL.Checked)
                         //{
@@ -154,19 +159,18 @@ namespace Antonyan.Graphs
                         //{
                         //    models.Mark(edgehashCode);
                         //}
-                        if (modelsField.GetPosRepresent(new vec2(e.X, e.Y), R + R + R / 2) == null && tsBtnAddVertex.Checked)
+                        else if (modelsField.GetPosRepresent(pos, R + R + R / 2) == null && tsBtnAddVertex.Checked)
                         {
 
-                            if (modelsField.MarkedCircleCount > 0 || modelsField.MarkedEdgeCount > 0)
+                            if (modelsField.MarkedVertexCount > 0 || modelsField.MarkedEdgeCount > 0)
                             {
                                 modelsField.UnmarkAllDrawModels();
                                 break;
                             }
                             string v = i++.ToString();
-                            string x = e.X.ToString();
-                            string y = e.Y.ToString();
-                            string command = $"AddVertex {v} {x} {y}";
-                            CommandEntered?.Invoke(this, new UICommandEventArgs(command));
+                            VertexModel model = new VertexModel(v, pos);
+                            UIAddRemoveModelArgs command = new UIAddRemoveModelArgs("AddGraphModel", model);
+                            CommandEntered?.Invoke(this, command);
                         }
                         else modelsField.UnmarkAllDrawModels();
                         break;
@@ -185,16 +189,20 @@ namespace Antonyan.Graphs
                 {
                     modelsField.UnmarkAllDrawModels();
                     selectedRepresent = modelsField.GetPosRepresent(pos, R);
-                    lastVertexPos = modelsField.GetDrawVertexModelPos(selectedRepresent);
+                    if (selectedRepresent != null)
+                        lastVertexPos = modelsField.GetDrawVertexModelPos(selectedRepresent);
                 }
             }
         }
         private void MainForm_MouseMove(object sender, MouseEventArgs e)
         {
             if (!mouseDownFL || !tsbtnMove.Checked) return;
-            vec2 pos = new vec2((float)e.X, (float)e.Y);
-            modelsField.MarkDrawModel(selectedRepresent);
-            modelsField.ChangeDrawVertexModelPos(selectedRepresent, pos);
+            vec2 pos = new vec2(e.X, e.Y);
+            if (selectedRepresent != null)
+            {
+                modelsField.MarkDrawModel(selectedRepresent);
+                modelsField.ChangeDrawVertexModelPos(selectedRepresent, pos);
+            }
         }
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
@@ -202,7 +210,7 @@ namespace Antonyan.Graphs
             if (mouseDownFL && lastVertexPos != null)
             {
                 vec2 pos = new vec2(e.X, e.Y);
-                CommandEntered?.Invoke(this, new UICommandEventArgs($"MoveVertexPos {selectedRepresent} {lastVertexPos} {pos}"));
+                CommandEntered?.Invoke(this, new UIMoveModelArgs(selectedRepresent, pos, lastVertexPos));
                 selectedRepresent = null;
                 lastVertexPos = null;
                 modelsField.UnmarkAllDrawModels();
@@ -224,11 +232,11 @@ namespace Antonyan.Graphs
 
         private void tsbtnUndo_Click(object sender, EventArgs e)
         {
-            CommandEntered?.Invoke(this, new UICommandEventArgs("undo"));
+            CommandEntered?.Invoke(this, new UIEventArgs("undo"));
         }
         private void tsbtnRedo_Click(object sender, EventArgs e)
         {
-            CommandEntered?.Invoke(this, new UICommandEventArgs("redo"));
+            CommandEntered?.Invoke(this, new UIEventArgs("redo"));
         }
         private void tsBtnCrtGraph_Click(object sender, EventArgs e)
         {
@@ -239,9 +247,7 @@ namespace Antonyan.Graphs
             {
                 oriented = window.Oriented;
                 weighted = window.Weighted;
-                string orGraph = oriented ? "oriented" : "noOriented";
-                string weightedGraph = weighted ? "weighted" : "noWeighted";
-                CommandEntered?.Invoke(this, new UICommandEventArgs($"CreateField {orGraph} {weightedGraph}"));
+                CommandEntered?.Invoke(this, new UICreateGraphArgs(oriented, weighted));
                 tlbtnCrtGraph.Enabled = false;
                 fieldCreated = true;
             }
@@ -278,11 +284,9 @@ namespace Antonyan.Graphs
 
         private void tsBtnAddEdge_Click(object sender, EventArgs e)
         {
-            if (source == null || stock == null) return;
+            if (sourceModel == null || stockModel == null) return;
 
-            string src = source;
-            string stc = stock;
-            source = stock = null;
+            string weight = null;
             if (weighted)
             {
                 SetWeightForm window = new SetWeightForm();
@@ -290,13 +294,14 @@ namespace Antonyan.Graphs
                 window.ShowDialog();
                 if (window.Ok)
                 {
-                    CommandEntered?.Invoke(this, new UICommandEventArgs($"AddEdge {src} {stc} {window.Weight}"));
+                    weight = window.Weight;
+                   // CommandEntered?.Invoke(this, new UIStringArgs($"AddEdge {src} {stc} {window.Weight}"));
                 }
             }
-            else
-            {
-                CommandEntered?.Invoke(this, new UICommandEventArgs($"AddEdge {src} {stc}"));
-            }
+            GraphModels graphModel = new EdgeModel(sourceModel, stockModel, weight, oriented);
+      
+            CommandEntered?.Invoke(this, new UIAddRemoveModelArgs("AddGraphModel", graphModel));
+            //}
             modelsField.UnmarkAllDrawModels();
 
         }
@@ -305,7 +310,7 @@ namespace Antonyan.Graphs
         private void tsBtnDetours_Click(object sender, EventArgs e)
         {
             string dfs = "Обход в глубину", bfs = "Обход в ширину";
-            bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = modelsField.MarkedCircleCount == 1 ? true : false;
+            bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = modelsField.MarkedVertexCount == 1 ? true : false;
             if (res)
             {
                 subDetoursBtnBFS.Text = $"{bfs} начиная с вершины \"{source}\"";
@@ -326,7 +331,7 @@ namespace Antonyan.Graphs
             {
                 BeginInvoke((MethodInvoker)(() =>
                 {
-                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm dfs {source}"));
+                    CommandEntered?.Invoke(this, new UIStringArgs($"algorithm dfs {source}"));
                     algorithmProcessing = false;
                     Text = header;
                 }));
@@ -343,7 +348,7 @@ namespace Antonyan.Graphs
             {
                 BeginInvoke((MethodInvoker)(() =>
                 {
-                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm bfs {source}"));
+                    CommandEntered?.Invoke(this, new UIStringArgs($"algorithm bfs {source}"));
                     algorithmProcessing = false;
                     Text = header;
                 }));
@@ -353,7 +358,7 @@ namespace Antonyan.Graphs
 
         private void tsBtnShortcats_Click(object sender, EventArgs e)
         {
-            subSortcatBtnBFS.Enabled = modelsField.MarkedCircleCount == 2 && !weighted;
+            subSortcatBtnBFS.Enabled = modelsField.MarkedVertexCount == 2 && !weighted;
         }
 
         private void subSortcatBtnBFS_Click(object sender, EventArgs e)
@@ -364,7 +369,7 @@ namespace Antonyan.Graphs
             {
                 BeginInvoke((MethodInvoker)(() =>
                 {
-                    CommandEntered?.Invoke(this, new UICommandEventArgs($"algorithm shortcatdfs {source} {stock}"));
+                    CommandEntered?.Invoke(this, new UIStringArgs($"algorithm shortcatdfs {source} {stock}"));
                     algorithmProcessing = false;
                     Text = header;
                 }));
@@ -443,6 +448,20 @@ namespace Antonyan.Graphs
                     case FieldEvents.ChangeVertexPos:
                         {
                             modelsField.ChangeDrawVertexModelPos(fldEvent.Representation, ((VertexModel)fieldEvents.Models[fldEvent.Representation]).Pos);
+                            break;
+                        }
+                    case FieldEvents.AddEdge:
+                        {
+                            ADrawModel drawEdgeModel;
+
+                            if (!oriented)
+                                drawEdgeModel = new NonOrientedEdgeDrawModel(fieldEvents.Models[fldEvent.Representation]);
+                            else drawEdgeModel = null;
+                            var edgeModel = (EdgeModel)fieldEvents.Models[fldEvent.Representation];
+                            ((ADrawEdgeModel)drawEdgeModel)
+                                .SetObservableVertices((DrawVertexModel)modelsField[edgeModel.Source.GetRepresentation()],
+                                                       (DrawVertexModel)modelsField[edgeModel.Stock.GetRepresentation()]);
+                            modelsField.AddDrawModel(drawEdgeModel.GetRepresent(), drawEdgeModel);
                             break;
                         }
                     default: break;

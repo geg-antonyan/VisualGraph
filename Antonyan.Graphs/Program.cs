@@ -22,11 +22,13 @@ namespace Antonyan.Graphs
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var GUI = new MainForm();
-            CommandRepository.AddCommand(AddVertexFieldCommand<Vertex, Weight>.Name, new AddVertexFieldCommand<Vertex, Weight>());
-            CommandRepository.AddCommand(AddEdgeFieldCommand<Vertex, Weight>.Name, new AddEdgeFieldCommand<Vertex, Weight>());
-            CommandRepository.AddCommand(MoveVertexFieldCommand<Vertex, Weight>.Name, new MoveVertexFieldCommand<Vertex, Weight>());
+            CommandRepository.AddCommand(AddRemoveModelCommand.Name, new AddRemoveModelCommand());
+            CommandRepository.AddCommand(MoveModelCommand.Name, new MoveModelCommand());
+            //CommandRepository.AddCommand(AddEdgeFieldCommand<Vertex, Weight>.Name, new AddEdgeFieldCommand<Vertex, Weight>());
+            //CommandRepository.AddCommand(MoveVertexFieldCommand<Vertex, Weight>.Name, new MoveVertexFieldCommand<Vertex, Weight>());
             _ = new GraphModelsField<Vertex, Weight>(false, false, GUI);
-            _ = new CommandDispetcher<Vertex, Weight>(GUI);
+            IField field = new GraphModelsField<Vertex, Weight>(GUI);
+            _ = new CommandDispetcher(GUI, field);
             Application.Run(GUI);
         }
     }

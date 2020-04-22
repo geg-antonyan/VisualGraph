@@ -10,7 +10,7 @@ using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Util
 {
-    public static class Representations
+    public static class ServiceFunctions
     {
         public static string VertexRepresentation(string vertex)
         {
@@ -33,6 +33,14 @@ namespace Antonyan.Graphs.Util
         public static string EdgeRepresentation(string source, string stock, string weight)
         {
             return source + "->" + stock + "=" + weight;
+        }
+
+        public static void Swap<T>(ref T lhs, ref T rhs)
+        {
+            T temp;
+            temp = lhs;
+            lhs = rhs;
+            rhs = temp;
         }
     }
 }

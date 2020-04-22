@@ -22,6 +22,8 @@ namespace Antonyan.Graphs.Gui.Models
         public bool Marked { get; set; }
         public GraphModels Model { get; private set; }
         public abstract string PosRepresent(vec2 pos, float r);
+
+        public string GetRepresent() => Model.GetRepresentation();
         public abstract void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max);
     }
 

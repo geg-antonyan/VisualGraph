@@ -1,13 +1,123 @@
-﻿//using System;
-//using System.Drawing;
-//using System.Drawing.Drawing2D;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//using Antonyan.Graphs.Backend;
-//using Antonyan.Graphs.Board;
+using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Board;
+using Antonyan.Graphs.Util;
+
+namespace Antonyan.Graphs.Gui.Models
+{
+    public abstract class ADrawEdgeModel : ADrawModel
+    {
+        protected static readonly Matrix mirrorX = new Matrix(-1f, 0f, 0f, 1f, 0f, 0f);
+        protected static readonly Matrix mirrorY = new Matrix(1f, 0f, 0f, -1f, 0f, 0f);
+
+        public bool Weighted { get; private set; }
+        protected float angleWeight;
+        protected vec2 posWeight;
+        protected float R = 20;
+        protected vec2 posA, posB;
+        public ADrawEdgeModel(GraphModels model, bool marked = false)
+            : base(model, marked)
+        {
+            Weighted = ((EdgeModel)Model).Weight == null ? false : true;
+            SetPos(null, null);
+        }
+
+        public void SetObservableVertices(DrawVertexModel a, DrawVertexModel b)
+        {
+            a.PosChanged += SetPos;
+            b.PosChanged += SetPos;
+        }
+        public virtual void SetPos(object ob, EventArgs args)
+        {
+            EdgeModel edge = (EdgeModel)Model;
+            vec2 src = new vec2(edge.Source.Pos), stc = new vec2(edge.Stock.Pos);
+            if (src.y > stc.y)
+                ServiceFunctions.Swap(ref src, ref stc);
+            vec2 deltaV = stc - src;
+            float tmp = deltaV.x / deltaV.Length();
+            angleWeight = (float)Math.Acos(tmp) * 180f / (float)Math.PI;
+            vec2 norm = deltaV.Normalize();
+            vec2 incr = norm * R;
+            posA = src + incr;
+            posB = stc - incr;
+            if (Weighted)
+            {
+                float length = deltaV.Length();
+                float center = length / 2f;
+                vec2 dl = norm * center;
+                posWeight = src + dl;
+            }
+        }
+        public override void Draw(Graphics graphic, Pen pen, Brush brush, Font font, vec2 min, vec2 max)
+        {
+            DrawEdge(graphic, pen, min, max);
+            if (Weighted && Clip.SimpleClip(new vec2(posWeight.x + 5f, posWeight.y + 5f), max, min, R))
+                DrawWeight(graphic, brush, font, min, max);
+        }
+        public abstract override string PosRepresent(vec2 pos, float r);
+        protected abstract void DrawEdge(Graphics graphic, Pen pen, vec2 min, vec2 max);
+        protected abstract void DrawWeight(Graphics graphic, Brush brush, Font font, vec2 min, vec2 max);
+    }
+
+    public class NonOrientedEdgeDrawModel : ADrawEdgeModel
+    {
+        public NonOrientedEdgeDrawModel(GraphModels model, bool marked = false)
+            : base(model, marked)
+        {
+
+        }
+        public override string PosRepresent(vec2 pos, float r)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void DrawEdge(Graphics graphic, Pen pen, vec2 min, vec2 max)
+        {
+            vec2 start = new vec2(posA);
+            vec2 end = new vec2(posB);
+            if (Clip.RectangleClip(ref start, ref end, min, max))
+                graphic.DrawLine(pen, start.x, start.y, end.x, end.y);
+        }
+
+        protected override void DrawWeight(Graphics graphic, Brush brush, Font font, vec2 min, vec2 max)
+        {
+            Matrix matrix = new Matrix();
+            vec2 A = posB - posA;
+            vec2 B = new vec2(10f, 0f);
+            B.y = -(A.x * A.y) / B.x;
+            B = B.Normalize();
+            B *= 20f;
+            StringFormat stringFormat = new StringFormat();
+            matrix.Translate(posWeight.x, posWeight.y);
+            matrix.Rotate(angleWeight);
+            if (angleWeight > 90f)
+            {
+                B *= -1f;
+                matrix.Multiply(mirrorY);
+                matrix.Multiply(mirrorX);
+            }
+            if (angleWeight == 90f) B = new vec2(0f, 0f);
+            graphic.MultiplyTransform(matrix);
+            graphic.DrawString(((EdgeModel)Model).Weight, font, brush, B.x, B.y, stringFormat);
+            matrix.Reset();
+            if (angleWeight > 90f)
+            {
+                matrix.Multiply(mirrorX);
+                matrix.Multiply(mirrorY);
+            }
+            matrix.Rotate(-angleWeight);
+            matrix.Translate(-posWeight.x, -posWeight.y);
+            graphic.MultiplyTransform(matrix);
+        }
+    }
+}
 
 
 //namespace Antonyan.Graphs.Gui.Models
@@ -23,12 +133,15 @@
 //        protected bool reverse = false;
 //        public vec2 PosA { get; protected set; }
 //        public vec2 PosB { get; protected set; }
+
 //        public string SourceStr { get; protected set; }
 //        public string StockStr { get; protected set; }
 //        public vec2 PosSource { get; protected set; }
 //        public vec2 PosStock { get; protected set; }
 //        public string WeightStr { get; protected set; }
 //        public bool Weighted { get; protected set; }
+
+
 
 //        public Edges(vec2 posSource, string sourceStr, vec2 posStock, string stockStr, float r, string weightStr = null)
 //        {
@@ -253,7 +366,7 @@
 //    //        float delta_x = PosB.x - PosA.x;
 //    //        float dx = delta_x / length;
 //    //        float x = start.x + dx;
-            
+
 //    //        while (x <= PosB.x)
 //    //        {
 //    //            float y2 = r * r - x * x;
@@ -272,7 +385,7 @@
 //    //        //{
 //    //        //    vec2 end = PosA + (normDirection * i);
 //    //        //    vec2 tmpEnd = end;
-                 
+
 //    //        //}
 //    //    }
 

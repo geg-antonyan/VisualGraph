@@ -11,7 +11,7 @@ namespace Antonyan.Graphs.Board.Models
     {
         public string GetRepresentation()
         {
-            return Representations.ModelRepresentation(this);
+            return ServiceFunctions.ModelRepresentation(this);
         }
     }
 }

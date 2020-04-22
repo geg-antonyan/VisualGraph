@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Util;
+using Antonyan.Graphs.Board;
 using System.Threading;
 
 namespace Antonyan.Graphs.Backend.Algorithms
@@ -58,8 +59,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 FindPath(G, source, parents[stock], parents, ui);
                 Thread.Sleep(500);
                 var tmp = parents[stock];
-                if (!ui.MarkModel(Representations.EdgeRepresentation(tmp?.ToString(), stock.ToString(), null)))
-                    ui.MarkModel(Representations.EdgeRepresentation(stock.ToString(), tmp?.ToString(), null));
+                if (!ui.MarkModel(ServiceFunctions.EdgeRepresentation(tmp?.ToString(), stock.ToString(), null)))
+                    ui.MarkModel(ServiceFunctions.EdgeRepresentation(stock.ToString(), tmp?.ToString(), null));
                 Thread.Sleep(500);
                 ui.MarkModel(stock.GetRepresentation());
           

@@ -144,7 +144,7 @@ namespace Antonyan.Graphs.Data
             }
             res = new Tuple<ReturnValue, List<string>>(ReturnValue.Succsess, new List<string>());
             foreach (var adj in this[v])
-                res.Item2.Add(Representations.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString()));
+                res.Item2.Add(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString()));
             
             data.Remove(v);
             foreach (var adjs in data)
@@ -152,7 +152,7 @@ namespace Antonyan.Graphs.Data
                 {
                     if (pair.Item1.Equals(v))
                     {
-                        res.Item2.Add(Representations.EdgeRepresentation(adjs.Key.ToString(), v.ToString(), pair.Item2.ToString()));
+                        res.Item2.Add(ServiceFunctions.EdgeRepresentation(adjs.Key.ToString(), v.ToString(), pair.Item2?.ToString()));
                         adjs.Value.Remove(pair);
                         break;
                     }

@@ -48,17 +48,18 @@
   <ItemGroup>
     <Compile Include="Backend\Algorithms\Detours.cs" />
     <Compile Include="Backend\Algorithms\Shortcats.cs" />
-    <Compile Include="Backend\CommandArgs\ACommandArgs.cs" />
-    <Compile Include="Backend\CommandArgs\EdgeFieldCommandArgs.cs" />
-    <Compile Include="Backend\CommandArgs\MoveVertexFieldCommandArgs.cs" />
-    <Compile Include="Backend\Commands\AddEdgeFieldCommand.cs" />
-    <Compile Include="Backend\Commands\AddVertexFieldCommand.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
-    <Compile Include="Backend\CommandArgs\VertexFieldCommandArgs.cs" />
-    <Compile Include="Backend\Commands\MoveVertexFieldCommand.cs" />
+    <Compile Include="Backend\Commands\AddRemoveModelCommand.cs" />
+    <Compile Include="Backend\Commands\MoveModelCommand.cs" />
     <Compile Include="Backend\ICommand.cs" />
+    <Compile Include="Backend\UICommandArgs\UIAddRemoveModelArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UIEventArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UICreateGraphArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UIFieldUpdateArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UIMoveModelArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UIStringCommand.cs" />
     <Compile Include="Board\GraphModelsField.cs" />
     <Compile Include="Data\AEdge.cs" />
     <Compile Include="Data\AType.cs" />
@@ -79,8 +80,8 @@
     </Compile>
     <Compile Include="Gui\DrawModelsField.cs" />
     <Compile Include="Gui\Models\DrawVertexModel.cs" />
-    <Compile Include="Gui\Models\Edges.cs" />
-    <Compile Include="Gui\Models\DrawModel.cs" />
+    <Compile Include="Gui\Models\DrawEdgeModel.cs" />
+    <Compile Include="Gui\Models\ADrawModel.cs" />
     <Compile Include="Gui\Forms\SetWeightForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,8 +96,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\Representation.cs" />
-    <Compile Include="Util\UserInterface.cs" />
+    <Compile Include="Util\ServiceFunctions.cs" />
+    <Compile Include="Board\UserInterface.cs" />
     <EmbeddedResource Include="Gui\Forms\CreateGraphForm.resx">
       <DependentUpon>CreateGraphForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -232,6 +233,8 @@
   <ItemGroup>
     <None Include="icon\current\move.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Backend\CommandArgs\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

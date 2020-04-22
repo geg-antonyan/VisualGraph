@@ -41,7 +41,7 @@ namespace Antonyan.Graphs.Data
 
         public override string GetRepresentation()
         {
-            return Representations.VertexRepresentation(data.ToString());
+            return ServiceFunctions.VertexRepresentation(data.ToString());
         }
     }
 }

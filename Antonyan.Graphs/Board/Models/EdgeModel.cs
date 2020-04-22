@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Board;
-
+using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Board.Models
 {
@@ -30,5 +30,7 @@ namespace Antonyan.Graphs.Board.Models
 
         public void SetSoruce(VertexModel source) => Source = source;
         public void SetStock(VertexModel stock) => Stock = stock;
+
+        public string GetReverseRepresentation() => ServiceFunctions.EdgeRepresentation(Stock.VertexStr, Source.VertexStr, Weight);
     }
 }

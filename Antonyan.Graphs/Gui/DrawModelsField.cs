@@ -5,6 +5,7 @@ using System.Drawing;
 using Antonyan.Graphs.Gui.Models;
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Gui
 {
@@ -25,14 +26,14 @@ namespace Antonyan.Graphs.Gui
         private Brush markWeightBrush;
         private Brush unmarkWeightBrush;
 
-        private SortedDictionary<string, ADrawModel> models;
+        private SortedDictionary<string, ADrawModel> drawModels;
 
         public event EventHandler<EventArgs> Update;
 
-        public int MarkedCircleCount { get; private set; } = 0;
+        public int MarkedVertexCount { get; private set; } = 0;
         public int MarkedEdgeCount { get; private set; } = 0;
 
-        public int MarkedModelsCount { get { return MarkedCircleCount + MarkedEdgeCount; } }
+        public int MarkedModelsCount => MarkedEdgeCount + MarkedVertexCount; 
         public DrawModelsField(MainForm form, Pen mcp, Pen umcp, Pen me, Pen ume,
             Font mv, Font umv, Font mw, Font umw,
             Brush mvb, Brush umvb, Brush mwb, Brush umwb)
@@ -44,38 +45,47 @@ namespace Antonyan.Graphs.Gui
             markWeightFont = mw; unmarkWeightFont = umw;
             markVertexBrush = mvb; unmarkVertexBrush = umvb;
             markWeightBrush = mwb; unmarkWeightBrush = umwb;
-            models = new SortedDictionary<string, ADrawModel>();
+            drawModels = new SortedDictionary<string, ADrawModel>();
         }
 
-
+        public GraphModels GetGraphModel(string represent)
+        {
+            return drawModels[represent].Model;
+        }
         public void AddDrawModel(string present, ADrawModel drawModel)
         {
-            models.Add(present, drawModel);
+            drawModels.Add(present, drawModel);
             Update?.Invoke(this, null);
         }
         public bool RemoveDrawModel(string represent)
         {
 
-            if (models.TryGetValue(represent, out ADrawModel model))
+            if (drawModels.TryGetValue(represent, out ADrawModel model))
             {
                 if (model.Marked)
                 {
                     if (model is DrawVertexModel)
-                        MarkedCircleCount--;
-                    //else if (model is Edges)
-                    //    MarkedEdgeCount--;
+                        MarkedVertexCount--;
+                    else 
+                        MarkedEdgeCount--;
                 }
 
-                models.Remove(represent);
+                drawModels.Remove(represent);
                 Update?.Invoke(this, null);
                 return true;
             }
             else return false;
         }
 
+        public  ADrawModel this[string key]
+        {
+            get { return drawModels[key]; }
+            //set { }
+        }
+
         public string GetPosRepresent(vec2 pos, float r)
         {
-            foreach (var m in models)
+            foreach (var m in drawModels)
             {
                 var concretModel = m.Value as DrawVertexModel;
                 if (concretModel != null)
@@ -92,7 +102,7 @@ namespace Antonyan.Graphs.Gui
         public vec2 GetDrawVertexModelPos(string represent)
         {
             ADrawModel dv;
-            if (models.ContainsKey(represent) && (dv = models[represent]) is DrawVertexModel)
+            if (drawModels.ContainsKey(represent) && (dv = drawModels[represent]) is DrawVertexModel)
             {
                 var vertexModel = (DrawVertexModel)dv;
                 return ((VertexModel)vertexModel.Model).Pos;
@@ -103,7 +113,7 @@ namespace Antonyan.Graphs.Gui
         public void ChangeDrawVertexModelPos(string represent, vec2 newPos)
         {
             ADrawModel dm;
-            if (models.ContainsKey(represent) && (dm = models[represent]) is DrawVertexModel)
+            if (drawModels.ContainsKey(represent) && (dm = drawModels[represent]) is DrawVertexModel)
             {
                 ((DrawVertexModel)dm).SetPos(newPos);
                 Update(this, null);
@@ -112,9 +122,15 @@ namespace Antonyan.Graphs.Gui
 
         public bool MarkDrawModel(string represent)
         {
-            if (models.ContainsKey(represent))
+            ADrawModel drawModel;
+            if (drawModels.ContainsKey(represent) && !(drawModel = drawModels[represent]).Marked)
             {
-                models[represent].Marked = true;
+                drawModel.Marked = true;
+                if (drawModel is DrawVertexModel)
+                    MarkedVertexCount++;
+                else
+                    MarkedEdgeCount++;
+                Update?.Invoke(this, null);
                 return true;
             }
             return false;
@@ -122,9 +138,9 @@ namespace Antonyan.Graphs.Gui
 
         public void UnmarkAllDrawModels()
         {
-            foreach (var m in models)
+            foreach (var m in drawModels)
                 m.Value.Marked = false;
-            MarkedCircleCount = 0;
+            MarkedVertexCount = 0;
             MarkedEdgeCount = 0;
             Update?.Invoke(this, null);
         }
@@ -132,7 +148,7 @@ namespace Antonyan.Graphs.Gui
 
         public void Draw(Graphics g, vec2 min, vec2 max)
         {
-            foreach (var m in models)
+            foreach (var m in drawModels)
             {
                 Pen pen; Brush brush; Font font;
                 if (m.Value is DrawVertexModel)

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Board.Models;
 using Antonyan.Graphs.Util;
+using System.Linq;
 
 namespace Antonyan.Graphs.Board
 {
-    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge, RemoveVertices, RemoveEdges, ChangeVertexPos };
+    public enum FieldEvents { AddVertex, RemoveVertex, AddEdge, RemoveEdge, RemoveVertices, RemoveEdges, ChangeVertexPos, RemoveGraphModel };
 
     public class RepresentationFieldEventPair
     {
@@ -43,8 +44,9 @@ namespace Antonyan.Graphs.Board
         void AddEdgeModel(EdgeModel edgeModel, bool raise = true);
         void AddGraphModel(GraphModels model, bool raise = true);
         List<GraphModels> RemoveVertexModel(VertexModel vertexModel, bool raise = true);
-        void RemoveEdgeModel(EdgeModel edgeModel, bool raise = true);
-        List<GraphModels> RemoveModels(GraphModels model, bool raise = true);
+        GraphModels RemoveEdgeModel(EdgeModel edgeModel, bool raise = true);
+        List<GraphModels> RemoveGraphModel(GraphModels model, bool raise = true);
+        List<GraphModels> RemoveGraphModels(List<GraphModels> models, bool raise = true);
     }
 
 
@@ -274,7 +276,7 @@ namespace Antonyan.Graphs.Board
             }
         }
 
-        public void RemoveEdgeModel(EdgeModel edgeModel, bool raise = true)
+        public GraphModels RemoveEdgeModel(EdgeModel edgeModel, bool raise = true)
         {
             TWeight weight = null;
             if (edgeModel.Weight != null)
@@ -295,6 +297,7 @@ namespace Antonyan.Graphs.Board
                 if (raise)
                     FieldUpdate?.Invoke(this, new FieldUpdateArgs(new List<RepresentationFieldEventPair>()
                                                                         { new RepresentationFieldEventPair(represent, FieldEvents.RemoveEdge) }, Models));
+                return edgeModel;
             }
             else
             {
@@ -302,16 +305,33 @@ namespace Antonyan.Graphs.Board
             }
         }
 
-        public List<GraphModels> RemoveModels(GraphModels model, bool raise = true)
+        public List<GraphModels> RemoveGraphModel(GraphModels model, bool raise = true)
         {
             var vertexModel = model as VertexModel;
             if (vertexModel != null)
                 return RemoveVertexModel(vertexModel, raise);
             else
             {
-                RemoveEdgeModel((EdgeModel)model, raise);
-                return null;
+                return new List<GraphModels>() { RemoveEdgeModel((EdgeModel)model, raise) };
             }
+        }
+
+
+        public List<GraphModels> RemoveGraphModels(List<GraphModels> models, bool raise = true)
+        {
+            List<GraphModels> res = new List<GraphModels>();
+            List<VertexModel> vertices = new List<VertexModel>();
+            List<RepresentationFieldEventPair> raiseArgs = new List<RepresentationFieldEventPair>();
+            foreach (var m in models)
+            {
+                var list = RemoveGraphModel(m, false);
+                list.ForEach(elem => raiseArgs.Add(new 
+                    RepresentationFieldEventPair(elem.GetRepresentation(), FieldEvents.RemoveGraphModel)));
+                res.AddRange(list);
+            }
+            if (raise)
+                FieldUpdate?.Invoke(this, new FieldUpdateArgs(raiseArgs, Models));
+            return res;
         }
 
     }

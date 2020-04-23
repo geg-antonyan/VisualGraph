@@ -190,7 +190,10 @@ namespace Antonyan.Graphs
                     modelsField.UnmarkAllDrawModels();
                     selectedRepresent = modelsField.GetPosRepresent(pos, R);
                     if (selectedRepresent != null)
+                    {
+                        modelsField.MarkDrawModel(selectedRepresent);
                         lastVertexPos = modelsField.GetDrawVertexModelPos(selectedRepresent);
+                    }
                 }
             }
         }
@@ -200,7 +203,7 @@ namespace Antonyan.Graphs
             vec2 pos = new vec2(e.X, e.Y);
             if (selectedRepresent != null)
             {
-                modelsField.MarkDrawModel(selectedRepresent);
+               
                 modelsField.ChangeDrawVertexModelPos(selectedRepresent, pos);
             }
         }
@@ -271,6 +274,7 @@ namespace Antonyan.Graphs
 
         private void tsbtnRemoveElems_Click(object sender, EventArgs e)
         {
+
         }
 
 
@@ -465,6 +469,11 @@ namespace Antonyan.Graphs
                             break;
                         }
                     case FieldEvents.RemoveEdge:
+                        {
+                            modelsField.RemoveDrawModel(fldEvent.Representation);
+                            break;
+                        }
+                    case FieldEvents.RemoveGraphModel:
                         {
                             modelsField.RemoveDrawModel(fldEvent.Representation);
                             break;

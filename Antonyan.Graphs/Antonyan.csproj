@@ -53,12 +53,14 @@
     <Compile Include="Backend\CommandRepository.cs" />
     <Compile Include="Backend\Commands\AddRemoveModelCommand.cs" />
     <Compile Include="Backend\Commands\MoveModelCommand.cs" />
+    <Compile Include="Backend\Commands\RemoveModelsCommand.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Backend\UICommandArgs\UIAddRemoveModelArgs.cs" />
     <Compile Include="Backend\UICommandArgs\UIEventArgs.cs" />
     <Compile Include="Backend\UICommandArgs\UICreateGraphArgs.cs" />
     <Compile Include="Backend\UICommandArgs\UIFieldUpdateArgs.cs" />
     <Compile Include="Backend\UICommandArgs\UIMoveModelArgs.cs" />
+    <Compile Include="Backend\UICommandArgs\UIRemoveModelsArgs.cs" />
     <Compile Include="Backend\UICommandArgs\UIStringCommand.cs" />
     <Compile Include="Board\GraphModelsField.cs" />
     <Compile Include="Data\AEdge.cs" />
@@ -235,8 +237,6 @@
   <ItemGroup>
     <None Include="icon\current\move.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Backend\CommandArgs\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

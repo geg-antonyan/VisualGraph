@@ -38,7 +38,7 @@ namespace Antonyan.Graphs.Backend.Commands
                     _args.Field.AddGraphModel(_args.GraphModel, raise);
                     break;
                 case "RemoveGraphModel":
-                    graphModels = _args.Field.RemoveModels(_args.GraphModel, raise);
+                    graphModels = _args.Field.RemoveGraphModel(_args.GraphModel, raise);
                     break;
                 default: break;
             }
@@ -49,7 +49,7 @@ namespace Antonyan.Graphs.Backend.Commands
             switch (_args.CommandOption)
             {
                 case "AddGraphModel":
-                    graphModels = _args.Field.RemoveModels(_args.GraphModel, raise);
+                    graphModels = _args.Field.RemoveGraphModel(_args.GraphModel, raise);
                     break;
                 case "RemoveGraphModel":
                     _args.Field.AddGraphModel(_args.GraphModel, raise);

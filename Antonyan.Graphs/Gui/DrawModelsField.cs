@@ -87,13 +87,15 @@ namespace Antonyan.Graphs.Gui
         {
             foreach (var m in drawModels)
             {
-                var concretModel = m.Value as VertexDrawModel;
-                if (concretModel != null)
-                {
-                    var v = (VertexModel)concretModel.Model;
-                    if (Math.Pow(pos.x - v.Pos.x, 2.0) + Math.Pow(pos.y - v.Pos.y, 2.0) <= r * r)
-                        return v.GetRepresentation();
-                }
+               // var concretModel = m.Value as VertexDrawModel;
+              //  if (concretModel != null)
+              //  {
+
+                   // var v = (VertexModel)concretModel.Model;
+                    string res = m.Value.PosRepresent(pos, r);
+                    if (res != null)
+                        return res;
+               // }
             }
             return null;
         }

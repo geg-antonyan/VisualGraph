@@ -24,6 +24,7 @@ namespace Antonyan.Graphs
             var GUI = new MainForm();
             CommandRepository.AddCommand(AddRemoveModelCommand.Name, new AddRemoveModelCommand());
             CommandRepository.AddCommand(MoveModelCommand.Name, new MoveModelCommand());
+            CommandRepository.AddCommand(RemoveModelsCommand.Name, new RemoveModelsCommand());
             //CommandRepository.AddCommand(AddEdgeFieldCommand<Vertex, Weight>.Name, new AddEdgeFieldCommand<Vertex, Weight>());
             //CommandRepository.AddCommand(MoveVertexFieldCommand<Vertex, Weight>.Name, new MoveVertexFieldCommand<Vertex, Weight>());
             _ = new GraphModelsField<Vertex, Weight>(false, false, GUI);

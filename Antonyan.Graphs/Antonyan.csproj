@@ -79,8 +79,8 @@
       <DependentUpon>CreateGraphForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Gui\DrawModelsField.cs" />
-    <Compile Include="Gui\Models\DrawVertexModel.cs" />
-    <Compile Include="Gui\Models\DrawEdgeModel.cs" />
+    <Compile Include="Gui\Models\VertexDrawModel.cs" />
+    <Compile Include="Gui\Models\AEdgeDrawModel.cs" />
     <Compile Include="Gui\Models\ADrawModel.cs" />
     <Compile Include="Gui\Forms\SetWeightForm.cs">
       <SubType>Form</SubType>
@@ -88,6 +88,8 @@
     <Compile Include="Gui\Forms\SetWeightForm.Designer.cs">
       <DependentUpon>SetWeightForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\Models\NonOrientedAdgeDrawModel.cs" />
+    <Compile Include="Gui\Models\OrientedEdgeDrawModel.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

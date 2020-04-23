@@ -64,7 +64,7 @@ namespace Antonyan.Graphs.Gui
             {
                 if (model.Marked)
                 {
-                    if (model is DrawVertexModel)
+                    if (model is VertexDrawModel)
                         MarkedVertexCount--;
                     else 
                         MarkedEdgeCount--;
@@ -87,7 +87,7 @@ namespace Antonyan.Graphs.Gui
         {
             foreach (var m in drawModels)
             {
-                var concretModel = m.Value as DrawVertexModel;
+                var concretModel = m.Value as VertexDrawModel;
                 if (concretModel != null)
                 {
                     var v = (VertexModel)concretModel.Model;
@@ -102,9 +102,9 @@ namespace Antonyan.Graphs.Gui
         public vec2 GetDrawVertexModelPos(string represent)
         {
             ADrawModel dv;
-            if (drawModels.ContainsKey(represent) && (dv = drawModels[represent]) is DrawVertexModel)
+            if (drawModels.ContainsKey(represent) && (dv = drawModels[represent]) is VertexDrawModel)
             {
-                var vertexModel = (DrawVertexModel)dv;
+                var vertexModel = (VertexDrawModel)dv;
                 return ((VertexModel)vertexModel.Model).Pos;
             }
             return null;
@@ -113,9 +113,9 @@ namespace Antonyan.Graphs.Gui
         public void ChangeDrawVertexModelPos(string represent, vec2 newPos)
         {
             ADrawModel dm;
-            if (drawModels.ContainsKey(represent) && (dm = drawModels[represent]) is DrawVertexModel)
+            if (drawModels.ContainsKey(represent) && (dm = drawModels[represent]) is VertexDrawModel)
             {
-                ((DrawVertexModel)dm).SetPos(newPos);
+                ((VertexDrawModel)dm).SetPos(newPos);
                 Update(this, null);
             }
         }
@@ -126,7 +126,7 @@ namespace Antonyan.Graphs.Gui
             if (drawModels.ContainsKey(represent) && !(drawModel = drawModels[represent]).Marked)
             {
                 drawModel.Marked = true;
-                if (drawModel is DrawVertexModel)
+                if (drawModel is VertexDrawModel)
                     MarkedVertexCount++;
                 else
                     MarkedEdgeCount++;
@@ -151,7 +151,7 @@ namespace Antonyan.Graphs.Gui
             foreach (var m in drawModels)
             {
                 Pen pen; Brush brush; Font font;
-                if (m.Value is DrawVertexModel)
+                if (m.Value is VertexDrawModel)
                 {
                     if (m.Value.Marked)
                     {

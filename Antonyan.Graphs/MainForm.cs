@@ -54,7 +54,7 @@ namespace Antonyan.Graphs
         {
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
-            DrawVertexModel.GenerateCircle(R, 1f);
+            VertexDrawModel.GenerateCircle(R, 1f);
             modelsField = new DrawModelsField(this,
                 new Pen(Color.Red, 2f), new Pen(Color.Blue), new Pen(Color.Green, 3f), new Pen(Color.DarkGray, 2f),
                 new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f),
@@ -436,7 +436,7 @@ namespace Antonyan.Graphs
                     case FieldEvents.AddVertex:
                         {
                             var model = fieldEvents.Models[fldEvent.Representation];
-                            var drawModel = new DrawVertexModel(model, false);
+                            var drawModel = new VertexDrawModel(model, false);
                             modelsField.AddDrawModel(model.GetRepresentation(), drawModel);
                             break;
                         }
@@ -456,12 +456,17 @@ namespace Antonyan.Graphs
 
                             if (!oriented)
                                 drawEdgeModel = new NonOrientedEdgeDrawModel(fieldEvents.Models[fldEvent.Representation]);
-                            else drawEdgeModel = null;
+                            else drawEdgeModel = new OrientedEdgeDrawModel(fieldEvents.Models[fldEvent.Representation]);
                             var edgeModel = (EdgeModel)fieldEvents.Models[fldEvent.Representation];
-                            ((ADrawEdgeModel)drawEdgeModel)
-                                .SetObservableVertices((DrawVertexModel)modelsField[edgeModel.Source.GetRepresentation()],
-                                                       (DrawVertexModel)modelsField[edgeModel.Stock.GetRepresentation()]);
+                            ((AEdgeDrawModel)drawEdgeModel)
+                                .SetObservableVertices((VertexDrawModel)modelsField[edgeModel.Source.GetRepresentation()],
+                                                       (VertexDrawModel)modelsField[edgeModel.Stock.GetRepresentation()]);
                             modelsField.AddDrawModel(drawEdgeModel.GetRepresent(), drawEdgeModel);
+                            break;
+                        }
+                    case FieldEvents.RemoveEdge:
+                        {
+                            modelsField.RemoveDrawModel(fldEvent.Representation);
                             break;
                         }
                     default: break;

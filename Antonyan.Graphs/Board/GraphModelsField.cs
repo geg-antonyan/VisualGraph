@@ -276,8 +276,12 @@ namespace Antonyan.Graphs.Board
 
         public void RemoveEdgeModel(EdgeModel edgeModel, bool raise = true)
         {
-            var weight = new TWeight();
-            weight.SetFromString(edgeModel.Weight);
+            TWeight weight = null;
+            if (edgeModel.Weight != null)
+            {
+                weight = new TWeight();
+                weight.SetFromString(edgeModel.Weight);
+            }
             var source = new TVertex();
             var stock = new TVertex();
             source.SetFromString(edgeModel.Source.VertexStr);

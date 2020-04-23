@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +12,14 @@ namespace Antonyan.Graphs.Util
 {
     public static class ServiceFunctions
     {
+        //public 
+
+        public static void WriteLine(string txt)
+        {
+            StreamWriter writer = new StreamWriter("log.txt", true);
+            writer.WriteLine(txt);
+            writer.Close();
+        }
         public static string VertexRepresentation(string vertex)
         {
             return vertex;

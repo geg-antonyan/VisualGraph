@@ -12,7 +12,7 @@ using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Gui.Models
 {
-    public class DrawVertexModel : ADrawModel
+    public class VertexDrawModel : ADrawModel
     {
         private static float R;
         private static vec3[] circle;
@@ -21,7 +21,7 @@ namespace Antonyan.Graphs.Gui.Models
         private mat3 translate;
 
         public event EventHandler<EventArgs> PosChanged;
-        public DrawVertexModel(GraphModels model, bool marked)
+        public VertexDrawModel(GraphModels model, bool marked)
             : base(model, marked)
         {
             var m = (VertexModel)Model;

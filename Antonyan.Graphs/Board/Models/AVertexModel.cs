@@ -9,17 +9,18 @@ using Antonyan.Graphs.Board;
 
 namespace Antonyan.Graphs.Board.Models
 {
-    public class VertexModel : GraphModels
+    public abstract class AVertexModel : GraphModel
     {
-        public VertexModel(string vertex, vec2 pos)
+        public AVertexModel(string vertex, vec2 pos)
+            : base(vertex)
         {
             Pos = pos;
             VertexStr = vertex;
+            StringRepresent = vertex;
         }
         public vec2 Pos { get; private set; }
         public string VertexStr { get; private set; }
-
-        public void SetPos(vec2 pos)
+        public virtual void UpdatePos(vec2 pos)
         {
             Pos = pos;
         }

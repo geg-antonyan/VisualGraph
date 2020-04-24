@@ -29,6 +29,14 @@ namespace Antonyan.Graphs.Data
             IsWeighted = weighted;
             data = new SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>>();
         }
+        public void SetOptions(bool orgraph, bool weighted)
+        {
+            if (data.Count == 0)
+            {
+                IsOrgraph = orgraph;
+                IsWeighted = weighted;
+            }    
+        }
         public Graph(string text)
         {
             text.Replace('\r', ' ');

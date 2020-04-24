@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Antonyan.Graphs.Backend.Commands;
+using Antonyan.Graphs.Board;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Antonyan.Graphs.Backend.UICommandArgs
+namespace Antonyan.Graphs.Backend.CommandArgs
 {
-    public class UICreateGraphArgs : UIEventArgs
+    public class CreateGraphCommandArgs : ACommandArgs
     {
-        public UICreateGraphArgs(bool oriented, bool weighted)
-            : base("CreateGraph")
+        public CreateGraphCommandArgs(bool oriented, bool weighted)
+            : base(nameof(CreateGraphCommand))
         {
             Oriented = oriented;
             Weighted = weighted;

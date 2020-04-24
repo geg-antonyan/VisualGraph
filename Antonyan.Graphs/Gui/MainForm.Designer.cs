@@ -1,6 +1,6 @@
 ﻿using Antonyan.Graphs.Data;
 
-namespace Antonyan.Graphs
+namespace Antonyan.Graphs.Gui
 {
     partial class MainForm
     {
@@ -131,7 +131,8 @@ namespace Antonyan.Graphs
             this.tsbtnDeleteGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDeleteGraph.Name = "tsbtnDeleteGraph";
             this.tsbtnDeleteGraph.Size = new System.Drawing.Size(29, 29);
-            this.tsbtnDeleteGraph.Text = "toolStripButton1";
+            this.tsbtnDeleteGraph.Text = "tsBtnRemoveGraph";
+            this.tsbtnDeleteGraph.ToolTipText = "Удалить Граф";
             this.tsbtnDeleteGraph.Click += new System.EventHandler(this.tsBtnDeleteGraph_Click);
             // 
             // tsBtnAddVertex

@@ -4,15 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Antonyan.Graphs.Backend.UICommandArgs
+namespace Antonyan.Graphs.Backend
 {
-    public class UIEventArgs : EventArgs
+    public class ACommandArgs : EventArgs
     {
-        public UIEventArgs(string cmdName)
-        {
-            CommandName = cmdName;
-        }
+        public ACommandArgs(string commandName) => CommandName = commandName;
         public string CommandName { get; private set; }
     }
-
 }

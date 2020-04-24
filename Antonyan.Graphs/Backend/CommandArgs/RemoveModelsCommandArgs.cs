@@ -6,15 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Antonyan.Graphs.Backend.UICommandArgs
+namespace Antonyan.Graphs.Backend.CommandArgs
 {
-    public class UIRemoveModelsArgs : UIFieldUpdateArgs
+    public class RemoveModelsCommandArgs : ACommandArgs
     {
-        public UIRemoveModelsArgs(List<GraphModels> models) 
+        public RemoveModelsCommandArgs(List<GraphModel> models)
             : base(nameof(RemoveModelsCommand))
         {
             Models = models;
         }
-        public List<GraphModels> Models { get; private set; }
+
+        public List<GraphModel> Models { get; private set; }
     }
 }

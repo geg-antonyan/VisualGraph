@@ -7,11 +7,19 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Board.Models
 {
-    public abstract class GraphModels
+    public abstract class GraphModel
     {
-        public string GetRepresentation()
+        protected readonly string _key;
+        public string StringRepresent { get; protected set; }
+
+        public GraphModel(string key, bool marked = false)
         {
-            return ServiceFunctions.ModelRepresentation(this);
+            _key = key;
+            Marked = marked;
         }
+        public string Key => _key;
+        public bool Marked { get; set; }
+        public void SetStringPresent(string str) => StringRepresent = str;
+        public abstract string PosKey(vec2 pos, float r);
     }
 }

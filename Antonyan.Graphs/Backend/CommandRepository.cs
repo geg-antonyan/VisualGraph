@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
-using Antonyan.Graphs.Backend.UICommandArgs;
+using Antonyan.Graphs.Backend.CommandArgs;
+using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Backend
 {
@@ -37,7 +38,7 @@ namespace Antonyan.Graphs.Backend
             if (repos.ContainsKey(name))
                 repos.Remove(name);
         }
-        public static ICommand AllocateCommand(string name, UIEventArgs args)
+        public static ICommand AllocateCommand(string name, ACommandArgs args)
         {
             ICommand command;
             repos.TryGetValue(name, out command);

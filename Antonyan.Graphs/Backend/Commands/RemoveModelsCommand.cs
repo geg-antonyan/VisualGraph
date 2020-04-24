@@ -1,4 +1,5 @@
-﻿using Antonyan.Graphs.Backend.UICommandArgs;
+﻿using Antonyan.Graphs.Backend.CommandArgs;
+using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Board.Models;
 using System;
 using System.Collections.Generic;
@@ -8,46 +9,51 @@ using System.Threading.Tasks;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
-    public class RemoveModelsCommand : ICommand
+    public class RemoveModelsCommand : AFieldCommand, IStoredCommand
     {
-        public static readonly string Name = nameof(RemoveModelsCommand);
-        private UIRemoveModelsArgs _args;
-        private List<EdgeModel> _edgeModel;
-        private List<VertexModel> _vertexModels;
-        private bool _executed;
-        public RemoveModelsCommand() { }
-        public RemoveModelsCommand(UIRemoveModelsArgs args)
+        private RemoveModelsCommandArgs _args;
+        private List<AEdgeModel> _edges;
+        private List<AVertexModel> _vertices;
+        private bool _exec;
+        public RemoveModelsCommand(IModelField field)
+            : base(field)
         {
-            _executed = false;
-            _args = args;
-            _edgeModel = new List<EdgeModel>();
-            _vertexModels = new List<VertexModel>();
+
         }
-        public ICommand Clone(UIEventArgs args)
+        public RemoveModelsCommand(RemoveModelsCommandArgs args, IModelField field)
+            : base(field)
         {
-            return new RemoveModelsCommand((UIRemoveModelsArgs)args);
+            _exec = false;
+            _args = args;
+            _edges = new List<AEdgeModel>();
+            _vertices = new List<AVertexModel>();
+        }
+        public ICommand Clone(ACommandArgs args)
+        {
+            return new RemoveModelsCommand((RemoveModelsCommandArgs)args, Field);
         }
 
         public void Execute()
         {
-            var removes = _args.Field.RemoveGraphModels(_args.Models, true);
-            if (!_executed)
+            var removeModels = Field.RemoveGraphModels(_args.Models);
+            if (!_exec)
             {
-                _executed = true;
-                removes.ForEach(elem =>
+                _exec = true;
+                removeModels.ForEach(m =>
                 {
-                    var m = elem as VertexModel;
-                    if (m != null) _vertexModels.Add(m);
-                    else _edgeModel.Add((EdgeModel)elem);
-    
+                    var v = m as AVertexModel;
+                    if (v != null)
+                        _vertices.Add(v);
+                    else _edges.Add((AEdgeModel)m);
                 });
             }
         }
 
         public void Undo()
         {
-            _vertexModels.ForEach(elem => _args.Field.AddVertexModel((VertexModel)elem));
-            _edgeModel.ForEach(elem => _args.Field.AddEdgeModel((EdgeModel)elem));
+            _vertices.ForEach(v => Field.AddVertexModel(v, false));
+            _edges.ForEach(e => Field.AddEdgeModel(e, false));
+            Field.Refresh();
         }
     }
 }

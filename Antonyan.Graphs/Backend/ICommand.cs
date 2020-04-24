@@ -4,16 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Antonyan.Graphs.Backend.UICommandArgs;
+using Antonyan.Graphs.Backend.CommandArgs;
 using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Board;
+using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Backend
 {
     public interface ICommand
     {
-        ICommand Clone(UIEventArgs args);
         void Execute();
+        ICommand Clone(ACommandArgs args);
+    }
+
+    public interface IStoredCommand : ICommand
+    {
         void Undo();
+    }
+
+    public interface INonStoredCommand : ICommand
+    {
+
     }
 }

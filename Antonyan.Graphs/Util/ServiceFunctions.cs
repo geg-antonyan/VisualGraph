@@ -3,8 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-
+using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Board.Models;
 using Antonyan.Graphs.Data;
 
@@ -25,13 +24,13 @@ namespace Antonyan.Graphs.Util
             return vertex;
         }
 
-        public static string ModelRepresentation(GraphModels model)
+        public static string ModelRepresentation(GraphModel model)
         {
-            if (model is VertexModel)
-                return ((VertexModel)model).VertexStr;
+            if (model is AVertexModel)
+                return ((AVertexModel)model).VertexStr;
             else
             {
-                var edge = (EdgeModel)model;
+                var edge = (AEdgeModel)model;
                 return edge.Source.VertexStr + "->" +
                        edge.Stock.VertexStr + "=" +
                        edge.Weight;
@@ -50,5 +49,6 @@ namespace Antonyan.Graphs.Util
             lhs = rhs;
             rhs = temp;
         }
+
     }
 }

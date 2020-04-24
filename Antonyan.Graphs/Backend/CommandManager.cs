@@ -29,7 +29,7 @@ namespace Antonyan.Graphs.Backend
 
             if (undoStore.Count > 0)
             {
-                ICommand cmd = undoStore.Pop();
+                IStoredCommand cmd = (IStoredCommand)undoStore.Pop();
                 cmd.Undo();
                 redoStore.Push(cmd);
             }
@@ -48,9 +48,12 @@ namespace Antonyan.Graphs.Backend
         public bool[] CommandExecute(ICommand command)
         {
             command.Execute();
-            undoStore.Push(command);
-            if (!(redoStore.Count == 0))
-                redoStore.Clear();
+            if (command is IStoredCommand)
+            {
+                undoStore.Push(command);
+                if (!(redoStore.Count == 0))
+                    redoStore.Clear();
+            }
             return CheckPosiible();
         }
     }

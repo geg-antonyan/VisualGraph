@@ -25,15 +25,15 @@ namespace Antonyan.Graphs.Backend.Algorithms
         public AVertexModel VertexModel { get; private set; }
     }
 
-    public class DFSalgorithm<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class DFSalgorithmCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
         private readonly DFScommandArgs _args;
-        public DFSalgorithm(IModelField field)
+        public DFSalgorithmCommand(IModelField field)
             : base(field)
         { }
-        public DFSalgorithm(DFScommandArgs args, IModelField field)
+        public DFSalgorithmCommand(DFScommandArgs args, IModelField field)
             : base(field)
         {
             _args = args;
@@ -41,7 +41,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
         public ICommand Clone(ACommandArgs args)
         {
-            return new DFSalgorithm<TVertex, TWeight>((DFScommandArgs)args, Field);
+            return new DFSalgorithmCommand<TVertex, TWeight>((DFScommandArgs)args, Field);
         }
 
         public void Execute()

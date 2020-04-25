@@ -10,6 +10,7 @@ using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Gui;
 using Antonyan.Graphs.Backend.Algorithms;
+using Antonyan.Graphs.Backend.CommandArgs;
 
 namespace Antonyan.Graphs
 {
@@ -18,7 +19,7 @@ namespace Antonyan.Graphs
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
+        //[STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
@@ -28,13 +29,16 @@ namespace Antonyan.Graphs
             var field = new ModelsField<Vertex, Weight>(GUI);
             GUI.AttachField(field);
 
+            CommandRepository.AddCommand("SaveGraphToFileCommand", new SaveGraphToFileCommand<Vertex, Weight>(field));
+
             CommandRepository.AddCommand(nameof(AddModelCommand), new AddModelCommand(field));
             CommandRepository.AddCommand(nameof(CreateGraphCommand), new CreateGraphCommand(field));
             CommandRepository.AddCommand(nameof(MoveVertexModelCommand), new MoveVertexModelCommand(field));
             CommandRepository.AddCommand(nameof(RemoveModelsCommand), new RemoveModelsCommand(field));
             CommandRepository.AddCommand(nameof(RemoveGraphCommand), new RemoveGraphCommand(field));
-            CommandRepository.AddCommand("DFSalgorithm", new DFSalgorithm<Vertex, Weight>(field));
-            CommandRepository.AddCommand("ShortcutBFSalgorithm", new ShortcutBFSalgorithm<Vertex, Weight>(field));
+
+            CommandRepository.AddCommand("DFSalgorithm", new DFSalgorithmCommand<Vertex, Weight>(field));
+            CommandRepository.AddCommand("ShortcutBFSalgorithm", new ShortcutBFSalgorithmCommand<Vertex, Weight>(field));
 
             _ = new CommandDispetcher(GUI);
             Application.Run(GUI);

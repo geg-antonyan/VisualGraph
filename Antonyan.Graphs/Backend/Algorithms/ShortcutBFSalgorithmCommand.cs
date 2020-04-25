@@ -14,9 +14,9 @@ using Antonyan.Graphs.Board.Models;
 namespace Antonyan.Graphs.Backend.Algorithms
 {
 
-    public class ShortcutBFSargs : ACommandArgs
+    public class ShortcutBFSCommandArgs : ACommandArgs
     {
-        public ShortcutBFSargs(AVertexModel source, AVertexModel stock)
+        public ShortcutBFSCommandArgs(AVertexModel source, AVertexModel stock)
             : base("ShortcutBFSalgorithm")
         {
             SourceModel = source;
@@ -27,25 +27,25 @@ namespace Antonyan.Graphs.Backend.Algorithms
         public AVertexModel StockModel { get; private set; }
     }
 
-    public class ShortcutBFSalgorithm<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class ShortcutBFSalgorithmCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private readonly ShortcutBFSargs _args;
+        private readonly ShortcutBFSCommandArgs _args;
 
-        public ShortcutBFSalgorithm(IModelField field) 
+        public ShortcutBFSalgorithmCommand(IModelField field) 
             : base(field)
         {
 
         }
-        public ShortcutBFSalgorithm(ShortcutBFSargs args, IModelField field)
+        public ShortcutBFSalgorithmCommand(ShortcutBFSCommandArgs args, IModelField field)
             : base(field)
         {
             _args = args;
         }
         public ICommand Clone(ACommandArgs args)
         {
-            return new ShortcutBFSalgorithm<TVertex, TWeight>((ShortcutBFSargs)args, Field);
+            return new ShortcutBFSalgorithmCommand<TVertex, TWeight>((ShortcutBFSCommandArgs)args, Field);
         }
 
         public void Execute()

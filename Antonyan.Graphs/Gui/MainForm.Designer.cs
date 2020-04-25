@@ -33,7 +33,7 @@ namespace Antonyan.Graphs.Gui
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.tsbtnOpen = new System.Windows.Forms.ToolStripButton();
-            this.tsbtnSave = new System.Windows.Forms.ToolStripButton();
+            this.tsbtnSaveGraph = new System.Windows.Forms.ToolStripButton();
             this.tsBtnUndo = new System.Windows.Forms.ToolStripButton();
             this.tsBtnRedo = new System.Windows.Forms.ToolStripButton();
             this.tlbtnCrtGraph = new System.Windows.Forms.ToolStripButton();
@@ -47,6 +47,7 @@ namespace Antonyan.Graphs.Gui
             this.subDetoursBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
             this.subShortcutBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveGraphFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +58,7 @@ namespace Antonyan.Graphs.Gui
             this.toolStripMain.ImageScalingSize = new System.Drawing.Size(25, 25);
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbtnOpen,
-            this.tsbtnSave,
+            this.tsbtnSaveGraph,
             this.tsBtnUndo,
             this.tsBtnRedo,
             this.tlbtnCrtGraph,
@@ -85,14 +86,15 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnOpen.Size = new System.Drawing.Size(29, 29);
             this.tsbtnOpen.Text = "Открыть";
             // 
-            // tsbtnSave
+            // tsbtnSaveGraph
             // 
-            this.tsbtnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnSave.Image = global::Antonyan.Graphs.Properties.Resources.save;
-            this.tsbtnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnSave.Name = "tsbtnSave";
-            this.tsbtnSave.Size = new System.Drawing.Size(29, 29);
-            this.tsbtnSave.Text = "Сохранить";
+            this.tsbtnSaveGraph.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnSaveGraph.Image = global::Antonyan.Graphs.Properties.Resources.save;
+            this.tsbtnSaveGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnSaveGraph.Name = "tsbtnSaveGraph";
+            this.tsbtnSaveGraph.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnSaveGraph.Text = "Сохранить";
+            this.tsbtnSaveGraph.Click += new System.EventHandler(this.tsbtnSaveGraph_Click);
             // 
             // tsBtnUndo
             // 
@@ -216,15 +218,19 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnShortcats.Text = "Кратчайшие пути";
             this.tsbtnShortcats.Click += new System.EventHandler(this.tsBtnShortcats_Click);
             // 
-            // subSortcatBtnBFS
+            // subShortcutBtnBFS
             // 
             this.subShortcutBtnBFS.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.subShortcutBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.mark;
-            this.subShortcutBtnBFS.Name = "subSortcatBtnBFS";
+            this.subShortcutBtnBFS.Name = "subShortcutBtnBFS";
             this.subShortcutBtnBFS.ShowShortcutKeys = false;
             this.subShortcutBtnBFS.Size = new System.Drawing.Size(454, 32);
             this.subShortcutBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
             this.subShortcutBtnBFS.Click += new System.EventHandler(this.subShortcutBtnBFS_Click);
+            // 
+            // saveGraphFileDialog
+            // 
+            this.saveGraphFileDialog.Filter = "graph files (*.graph)|*.graph";
             // 
             // MainForm
             // 
@@ -265,11 +271,12 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.ToolStripDropDownButton tsbtnShortcats;
         private System.Windows.Forms.ToolStripMenuItem subShortcutBtnBFS;
         private System.Windows.Forms.ToolStripButton tsBtnAddVertex;
-        private System.Windows.Forms.ToolStripButton tsbtnSave;
+        private System.Windows.Forms.ToolStripButton tsbtnSaveGraph;
         private System.Windows.Forms.ToolStripButton tsbtnOpen;
         private System.Windows.Forms.ToolStripButton tsbtnDeleteGraph;
         private System.Windows.Forms.ToolStripButton tsbtnRemoveElems;
         private System.Windows.Forms.ToolStripButton tsbtnMove;
+        private System.Windows.Forms.SaveFileDialog saveGraphFileDialog;
     }
 }
 

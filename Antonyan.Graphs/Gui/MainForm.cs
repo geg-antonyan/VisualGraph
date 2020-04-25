@@ -22,6 +22,7 @@ using Antonyan.Graphs.Board.Models;
 using Antonyan.Graphs.Backend.Algorithms;
 using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Backend.Commands;
+using System.IO;
 
 namespace Antonyan.Graphs.Gui
 {
@@ -203,7 +204,7 @@ namespace Antonyan.Graphs.Gui
             vec2 pos = new vec2(e.X, e.Y);
             if (selectedKey != null && !selectedKey.Contains("->"))
             {
-                if ((pos - middlePos).Length() > 20f)
+                if (Clip.SimpleClip(pos, max, min, GlobalParameters.Radius))
                 {
                     middlePos = pos;
                     _field.MoveVertexModel(selectedKey, pos);
@@ -213,10 +214,12 @@ namespace Antonyan.Graphs.Gui
 
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
-            if (mouseDownFL && lastVertexPos != null)
+            vec2 pos = new vec2(e.X, e.Y);
+            if (mouseDownFL && lastVertexPos != null && middlePos != null)
             {
-                vec2 pos = new vec2(e.X, e.Y);
-                CommandEntered?.Invoke(this, new MoveVertexModelCommandArgs(pos, lastVertexPos, selectedKey));
+                vec2 helpVector = new vec2(min);
+                Clip.RectangleClip(ref helpVector, ref pos, min, max);
+                CommandEntered?.Invoke(this, new MoveVertexModelCommandArgs(middlePos, lastVertexPos, selectedKey));
                 selectedKey = null;
                 lastVertexPos = null;
                 _field.UnmarkGraphModels();
@@ -366,7 +369,7 @@ namespace Antonyan.Graphs.Gui
         private void subShortcutBtnBFS_Click(object sender, EventArgs e)
         {
             Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
-            CommandEntered?.Invoke(this, new  ShortcutBFSargs(sourceModel, stockModel));
+            CommandEntered?.Invoke(this, new  ShortcutBFSCommandArgs(sourceModel, stockModel));
             Text = header;
 
         }
@@ -378,17 +381,28 @@ namespace Antonyan.Graphs.Gui
 
         public void PostMessage(string message)
         {
-            MessageBox.Show(message, "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show(message, "Информация!!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public void PostWarningMessage(string warningMessage)
         {
-            throw new NotImplementedException();
+            MessageBox.Show(warningMessage, "Предупреждение!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void tsbtnSaveGraph_Click(object sender, EventArgs e)
+        {
+            if (saveGraphFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                using (Stream stream = saveGraphFileDialog.OpenFile())
+                {
+                    CommandEntered?.Invoke(this, new SaveGraphToFileCommandArgs(stream));
+                }
+            }
         }
 
         public void PostErrorMessage(string errorMessage)
         {
-            throw new NotImplementedException();
+            MessageBox.Show(errorMessage, "Ошибка!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)
         {

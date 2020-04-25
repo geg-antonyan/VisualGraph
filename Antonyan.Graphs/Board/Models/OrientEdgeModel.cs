@@ -37,14 +37,13 @@ namespace Antonyan.Graphs.Board.Models
             PosD = stockPos - incr;
             var length = (PosD - PosA).Length();
 
-            vec2 posStock = Stock.Pos, posSource = Source.Pos;
             float x, y;
-            vec2 AB = posStock - posSource;
+            vec2 AB = stockPos - sourcePos;
             if (AB.x == 0f) AB.x = 0.0001f;
             if (AB.y == 0f) AB.y = 0.0001f;
-            if (posSource.x != posStock.y)
+            if (sourcePos.x != stockPos.y)
             {
-                if (posStock.x > posSource.x)
+                if (stockPos.x > sourcePos.x)
                     y = -10f;
                 else y = 10f;
                 vec2 v = new vec2(0f, y);
@@ -52,7 +51,7 @@ namespace Antonyan.Graphs.Board.Models
             }
             else
             {
-                if (posStock.y > posSource.y)
+                if (stockPos.y > sourcePos.y)
                     x = -10f;
                 else x = 10f;
                 vec2 v = new vec2(x, 0f);

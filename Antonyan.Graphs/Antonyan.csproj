@@ -48,11 +48,12 @@
   <ItemGroup>
     <Compile Include="Backend\Algorithms\Algorithm.cs" />
     <Compile Include="Backend\Algorithms\AlgorithmRepository.cs" />
-    <Compile Include="Backend\Algorithms\DFSalgorithm.cs" />
-    <Compile Include="Backend\Algorithms\ShortcutBFSalgorithm.cs" />
+    <Compile Include="Backend\Algorithms\DFSalgorithmCommand.cs" />
+    <Compile Include="Backend\Algorithms\ShortcutBFSalgorithmCommand.cs" />
     <Compile Include="Backend\CommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\MoveVertexModelCommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\RemoveModelsCommandArgs.cs" />
+    <Compile Include="Backend\CommandArgs\SaveGraphToFileCommandArgs.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Backend\Commands\MoveVertexModelCommand.cs" />
     <Compile Include="Backend\Commands\RemoveGraphCommand.cs" />
     <Compile Include="Backend\Commands\RemoveModelsCommand.cs" />
+    <Compile Include="Backend\Commands\SaveGraphToFileCommand.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Backend\CommandArgs\AddModelCommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\CreateGraphCommandArgs.cs" />

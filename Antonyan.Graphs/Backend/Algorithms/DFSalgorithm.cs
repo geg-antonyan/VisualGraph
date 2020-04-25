@@ -9,72 +9,93 @@ using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Board;
 using System.Threading;
 using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Backend.Commands;
 
 namespace Antonyan.Graphs.Backend.Algorithms
 {
 
-    //public class UIDFSargs : UIAlgorithmArgs
-    //{
-    //    public UIDFSargs(AVertexModel model)
-    //        : base("DFS")
-    //    {
-    //        VertexModel = model;
-    //    }
+    public class DFScommandArgs : ACommandArgs
+    {
+        public DFScommandArgs(AVertexModel model)
+            : base("DFSalgorithm")
+        {
+            VertexModel = model;
+        }
 
-    //    public AVertexModel VertexModel { get; private set; }
-    //}
+        public AVertexModel VertexModel { get; private set; }
+    }
 
-    //public  class DFSalgorithm<TVertex, TWeight> : Algorithm
-    //    where TVertex : AVertex, new()
-    //    where TWeight : AWeight, new()
-    //{
-    //    private readonly Graph<TVertex, TWeight> _graph;
-    //    private readonly UserInterface _ui;
+    public class DFSalgorithm<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+        where TVertex : AVertex, new()
+        where TWeight : AWeight, new()
+    {
+        private readonly DFScommandArgs _args;
+        public DFSalgorithm(IModelField field)
+            : base(field)
+        { }
+        public DFSalgorithm(DFScommandArgs args, IModelField field)
+            : base(field)
+        {
+            _args = args;
+        }
 
-    //    public DFSalgorithm(Graph<TVertex, TWeight> graph, UserInterface ui)
-    //    {
-    //        _graph = graph;
-    //        _ui = ui;
-    //    }
-    //    public void Visit(TVertex v, UserInterface ui)
-    //    {
-    //        Thread.Sleep(700);
-    //        ui.MarkModel(v.ToString());
-            
-    //    }
-    //    public void DFS(TVertex v, SortedDictionary<TVertex, bool> visited)
-    //    {
-    //        Visit(v, _ui);
-    //        visited[v] = true;
-    //        foreach (var adj in _graph[v])
-    //        {
-    //            if (!visited[adj.Item1])
-    //            {
-    //                Thread.Sleep(500);
-    //                if (!_ui.MarkModel(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())) && !_graph.IsOrgraph)
-    //                    _ui.MarkModel(ServiceFunctions.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
+        public ICommand Clone(ACommandArgs args)
+        {
+            return new DFSalgorithm<TVertex, TWeight>((DFScommandArgs)args, Field);
+        }
 
-    //                DFS(adj.Item1, visited);
-    //            }
-    //        }
-    //    }
-      
-    //    public override RepositoryItem Clone(RepositoryArgs args)
-    //    {
-    //        SetArgs((UIAlgorithmArgs)args);
-    //        return this;
-    //    }
+        public void Execute()
+        {
+            var graph = ((ModelsField<TVertex, TWeight>)Field).Graph;
+            TVertex vertex = new TVertex();
+            vertex.SetFromString(_args.VertexModel.VertexStr);
+            SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
+            foreach (var v in graph.AdjList)
+                visited[v.Key] = false;
+            DFS(graph, vertex, visited);
 
-    //    public override void Execute()
-    //    {
-    //        TVertex vertex = new TVertex();
-    //        vertex.SetFromString(((UIDFSargs)_args).VertexModel.VertexStr);
-    //        SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
-    //        foreach (var v in _graph.AdjList)
-    //            visited[v.Key] = false;
-    //        DFS(vertex, visited);
-    //    }
-    //}
+        }
+        private void Visit(TVertex v)
+        {
+            Thread.Sleep(700);
+            Field.MarkGraphModel(v.GetRepresentation());
+
+
+        }
+        private void DFS(Graph<TVertex, TWeight> G,  TVertex v, SortedDictionary<TVertex, bool> visited)
+        {
+            Visit(v);
+            visited[v] = true;
+            foreach (var adj in  G[v])
+            {
+                if (!visited[adj.Item1])
+                {
+                    Thread.Sleep(500);
+                    if (!Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())) && !G.IsOrgraph)
+                        Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
+
+                    DFS(G, adj.Item1, visited);
+                }
+            }
+        }
+
+        //public override RepositoryItem Clone(RepositoryArgs args)
+        //{
+        //    SetArgs((UIAlgorithmArgs)args);
+        //    return this;
+        //}
+
+        //public override void Execute()
+        //{
+        //    TVertex vertex = new TVertex();
+        //    vertex.SetFromString(((DFScommandArgs)_args).VertexModel.VertexStr);
+        //    SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
+        //    foreach (var v in _graph.AdjList)
+        //        visited[v.Key] = false;
+        //    DFS(vertex, visited);
+        //}
+
+    }
 }
 
 /*

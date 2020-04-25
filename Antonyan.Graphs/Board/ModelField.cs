@@ -9,7 +9,9 @@ using Antonyan.Graphs.Data;
 
 namespace Antonyan.Graphs.Board
 {
-    public enum FieldEvents { InitGraph, RemoveGraph, AddModel, RemoveModel }
+    public enum FieldEvents { InitGraph, RemoveGraph, AddModel, RemoveModel,
+        RemoveModels
+    }
     public class ModelFieldUpdateArgs : EventArgs
     {
         public ModelFieldUpdateArgs(FieldEvents e) => Event = e;
@@ -22,8 +24,9 @@ namespace Antonyan.Graphs.Board
         public event EventHandler<ModelFieldUpdateArgs> FieldUpdate;
         private readonly SortedDictionary<string, GraphModel> _models;
         private bool _status = false;
+        private UserInterface _ui;
         public Graph<TVertex, TWeight> Graph { get; private set; }
-        public UserInterface UI { get; private set; }
+        
         public bool IsOrgraph { get { return Graph.IsOrgraph; } }
         public bool IsWeighted { get { return Graph.IsWeighted; } }
 
@@ -36,6 +39,9 @@ namespace Antonyan.Graphs.Board
         public List<GraphModel> Models => _models.Values.ToList();
 
         public bool Status => _status;
+
+        public UserInterface UserInterface => _ui;
+
         public GraphModel this[string key]
         {
             get
@@ -48,9 +54,9 @@ namespace Antonyan.Graphs.Board
 
         public ModelsField(UserInterface ui)
         {
-            UI = ui;
+            _ui = ui;
             _models = new SortedDictionary<string, GraphModel>();
-            FieldUpdate += UI.FieldUpdate;
+            FieldUpdate += _ui.FieldUpdate;
             Graph = new Graph<TVertex, TWeight>();
         }
 
@@ -102,28 +108,28 @@ namespace Antonyan.Graphs.Board
             vertex.SetFromString(vertexModel.VertexStr);
             var retVal = Graph.RemoveVertex(vertex);
             List<GraphModel> removeModels = new List<GraphModel>();
-            if (retVal.Item1 == ReturnValue.Succsess)
+            if (retVal == ReturnValue.Succsess)
             {
-                string vertexKey = vertexModel.Key;
-                GraphModel vertM = _models[vertexKey];
-                removeModels.Add(vertM);
-                _models.Remove(vertexKey);
-                foreach (var represent in retVal.Item2)
+                removeModels.Add(vertexModel);
+                _models.Remove(vertexModel.Key);
+                _models.Values.ToList().ForEach(m =>
                 {
-                    if (_models.ContainsKey(represent)) // при неориентированном графе удаляются два ребра, но в моделе один
+                    var edge = m as AEdgeModel;
+                    if (edge != null &&
+                       (edge.Source.Key == vertexModel.Key ||
+                        edge.Stock.Key == vertexModel.Key))
                     {
-                        GraphModel edge = _models[represent];
                         removeModels.Add(edge);
-                        _models.Remove(represent);
+                        _models.Remove(edge.Key);
                     }
-                }
+                });
                 if (raise)
                     FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.RemoveModel));
                 return removeModels;
             }
             else
             {
-                throw new Exception(retVal.Item1.ToString());
+                throw new Exception(retVal.ToString());
             }
         }
 
@@ -139,7 +145,7 @@ namespace Antonyan.Graphs.Board
             var stock = new TVertex();
             source.SetFromString(edgeModel.Source.VertexStr);
             stock.SetFromString(edgeModel.Stock.VertexStr);
-            var res = Graph.RemoveEdge(source, stock, out TWeight w);
+            var res = Graph.RemoveEdge(source, stock);
             string key = edgeModel.Key;
             if (res == ReturnValue.Succsess)
             {
@@ -180,7 +186,7 @@ namespace Antonyan.Graphs.Board
             res.AddRange(edges.Select(e => RemoveEdgeModel(e, false)));
             res.AddRange(vertices.SelectMany(v => RemoveVertexModel(v, false)));
             if (raise)
-                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.RemoveModel));
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.RemoveModels));
             return res;
         }
 

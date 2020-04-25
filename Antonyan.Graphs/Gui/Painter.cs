@@ -106,59 +106,49 @@ namespace Antonyan.Graphs.Gui
             if (Clip.RectangleClip(ref start, ref end, min, max))
                 g.DrawLine(pen, start.x, start.y, end.x, end.y);
             if (edge.Weighted && Clip.SimpleClip(new vec2(edge.WeightPos.x + 5f, edge.WeightPos.y + 5f), max, min, GlobalParameters.Radius))
-                DrawWeight(g, edge, min, max, 20f);
+                DrawWeight(g, edge, min, max);
             
         }
 
         private void DrawOrientedEdge(Graphics g, OrientEdgeModel edge, vec2 min, vec2 max)
         {
             vec2 A = new vec2(edge.PosA);
-            vec2 B = new vec2(edge.PosA1);
+            vec2 B = new vec2(edge.PosB);
             if (Clip.RectangleClip(ref A, ref B, min, max))
                 g.DrawLine(pen, A.x, A.y, B.x, B.y);
-            B = new vec2(edge.PosA1);
-            vec2 C = new vec2(edge.PosA2);
+            B = new vec2(edge.PosB);
+            vec2 C = new vec2(edge.PosC);
             if (Clip.RectangleClip(ref B, ref C, min, max))
                 g.DrawLine(pen, B.x, B.y, C.x, C.y);
-            C = new vec2(edge.PosA2);
-            vec2 D = new vec2(edge.PosB);
+            C = new vec2(edge.PosC);
+            vec2 D = new vec2(edge.PosD);
             if (Clip.RectangleClip(ref C, ref D, min, max) && (C - D).Length() > 6)
             {
                 endPen.Color = pen.Color;
                 endPen.Width = pen.Width;
-                if (!D.Equals(edge.PosB)) ServiceFunctions.Swap(ref D, ref C);
+                if (!D.Equals(edge.PosD)) ServiceFunctions.Swap(ref D, ref C);
                 g.DrawLine(endPen, C.x, C.y, D.x, D.y);
             }
             if (edge.Weighted && Clip.SimpleClip(new vec2(edge.WeightPos.x + 5f, edge.WeightPos.y + 5f), max, min, GlobalParameters.Radius))
             {
-                var koef = 40f;
-                if (edge.PosA.x > edge.PosB.x)
-                    koef = -30f;
-                DrawWeight(g, edge, min, max, koef);
+                DrawWeight(g, edge, min, max);
             }
         }
 
 
-        private void DrawWeight(Graphics g, AEdgeDrawModel edge, vec2 min, vec2 max, float weightPosOffsetKoef)
+        private void DrawWeight(Graphics g, AEdgeModel edge, vec2 min, vec2 max)
         {
             Matrix matrix = new Matrix();
-            vec2 A = edge.PosB - edge.PosA;
-            vec2 B = new vec2(10f, 0f);
-            B.y = -(A.x * A.y) / B.x;
-            B = B.Normalize();
-            B *= weightPosOffsetKoef;
             StringFormat stringFormat = new StringFormat();
             matrix.Translate(edge.WeightPos.x, edge.WeightPos.y);
             matrix.Rotate(edge.WeightAngle);
-            if (edge.WeightAngle == 90f) B = new vec2(0f, 0f);
             if (edge.WeightAngle > 90f)
             {
-                B *= -1f;
                 matrix.Multiply(mirrorY);
                 matrix.Multiply(mirrorX);
             }
             g.MultiplyTransform(matrix);
-            g.DrawString(edge.StringRepresent, font, brush, B.x, B.y, stringFormat);
+            g.DrawString(edge.StringRepresent, font, brush, 0, 0, stringFormat);
             matrix.Reset();
             if (edge.WeightAngle > 90f)
             {
@@ -169,9 +159,5 @@ namespace Antonyan.Graphs.Gui
             matrix.Translate(-edge.WeightPos.x, -edge.WeightPos.y);
             g.MultiplyTransform(matrix);
         }
-
-       
-
-        
     }
 }

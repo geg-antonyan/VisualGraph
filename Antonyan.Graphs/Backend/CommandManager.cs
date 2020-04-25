@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Antonyan.Graphs.Backend.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,6 +49,11 @@ namespace Antonyan.Graphs.Backend
         public bool[] CommandExecute(ICommand command)
         {
             command.Execute();
+            if (command is CreateGraphCommand || command is RemoveGraphCommand)
+            {
+                undoStore.Clear();
+                redoStore.Clear();
+            }    
             if (command is IStoredCommand)
             {
                 undoStore.Push(command);

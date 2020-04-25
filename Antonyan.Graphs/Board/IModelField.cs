@@ -19,6 +19,7 @@ namespace Antonyan.Graphs.Board
         List<GraphModel> RemoveGraphModels(List<GraphModel> models, bool raise = true);
         bool IsWeighted { get; }
         bool IsOrgraph { get; }
+        UserInterface UserInterface { get; }
         void Clear(bool raise = true);
 
         void SetGraphOptions(bool oriented, bool weighted, bool raise = true);

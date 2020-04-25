@@ -9,6 +9,7 @@ using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Gui;
+using Antonyan.Graphs.Backend.Algorithms;
 
 namespace Antonyan.Graphs
 {
@@ -32,6 +33,8 @@ namespace Antonyan.Graphs
             CommandRepository.AddCommand(nameof(MoveVertexModelCommand), new MoveVertexModelCommand(field));
             CommandRepository.AddCommand(nameof(RemoveModelsCommand), new RemoveModelsCommand(field));
             CommandRepository.AddCommand(nameof(RemoveGraphCommand), new RemoveGraphCommand(field));
+            CommandRepository.AddCommand("DFSalgorithm", new DFSalgorithm<Vertex, Weight>(field));
+            CommandRepository.AddCommand("ShortcutBFSalgorithm", new ShortcutBFSalgorithm<Vertex, Weight>(field));
 
             _ = new CommandDispetcher(GUI);
             Application.Run(GUI);

@@ -9,14 +9,16 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Board.Models
 {
-    public class OrientEdgeModel : AEdgeDrawModel
+    public class OrientEdgeModel : AEdgeModel
     {
-        public vec2 PosA1 { get; private set; }
-        public vec2 PosA2 { get; private set; }
-        
+        public vec2 PosA { get; private set; }
+        public vec2 PosB { get; private set; }
+        public vec2 PosC { get; private set; }
+        public vec2 PosD { get; private set; }
         public OrientEdgeModel(AVertexModel source, AVertexModel stock, string weight)
             : base(source, stock, weight)
         {
+            RefreshPos();
         }
 
         public override string PosKey(vec2 pos, float r)
@@ -24,8 +26,17 @@ namespace Antonyan.Graphs.Board.Models
             return null;
         }
         public override void RefreshPos()
+
         {
-            base.RefreshPos();
+            vec2 sourcePos = Source.Pos;
+            vec2 stockPos = Stock.Pos;
+            vec2 direction = stockPos - sourcePos;
+            vec2 normDirection = direction.Normalize();
+            vec2 incr = normDirection * GlobalParameters.Radius;
+            PosA = sourcePos + incr;
+            PosD = stockPos - incr;
+            var length = (PosD - PosA).Length();
+
             vec2 posStock = Stock.Pos, posSource = Source.Pos;
             float x, y;
             vec2 AB = posStock - posSource;
@@ -51,10 +62,32 @@ namespace Antonyan.Graphs.Board.Models
             vec2 norm = new vec2(x, y).Normalize();
 
             float step = length / 3f;
-            PosA1 = PosA + (normDirection * step);
-            PosA1 += (norm * 20f);
-            PosA2 = PosA + (normDirection * (step * 2f));
-            PosA2 += (norm * 20f);
+            PosB = PosA + (normDirection * step);
+            PosB += (norm * 20f);
+            PosC = PosA + (normDirection * (step * 2f));
+            PosC += (norm * 20f);
+
+            if (Weighted)
+            {
+                vec2 delta = sourcePos.y > stockPos.y ? sourcePos - stockPos : stockPos - sourcePos;
+                float koef = delta.x / delta.Length();
+                WeightAngle = (float)(Math.Acos(koef) * 180 / Math.PI);
+                
+                delta = PosC - PosB;
+                var ln = delta.Length();
+                delta = delta.Normalize();
+                float charPX = 5f;
+                float strLength = charPX * StringRepresent.Length;
+                if (sourcePos.x < stockPos.x)
+                {
+                    strLength *= -1f;
+                    norm *= 20f;
+                }    
+
+                float offset = (ln / 2f) + (strLength / 2);
+                WeightPos = PosB + (delta * offset);
+                WeightPos += norm;
+            }
         }
     }
 }

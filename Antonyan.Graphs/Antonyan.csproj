@@ -49,7 +49,7 @@
     <Compile Include="Backend\Algorithms\Algorithm.cs" />
     <Compile Include="Backend\Algorithms\AlgorithmRepository.cs" />
     <Compile Include="Backend\Algorithms\DFSalgorithm.cs" />
-    <Compile Include="Backend\Algorithms\Shortcats.cs" />
+    <Compile Include="Backend\Algorithms\ShortcutBFSalgorithm.cs" />
     <Compile Include="Backend\CommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\MoveVertexModelCommandArgs.cs" />
     <Compile Include="Backend\CommandArgs\RemoveModelsCommandArgs.cs" />
@@ -67,7 +67,6 @@
     <Compile Include="Backend\CommandArgs\CreateGraphCommandArgs.cs" />
     <Compile Include="Board\IModelField.cs" />
     <Compile Include="Board\ModelField.cs" />
-    <Compile Include="Board\Models\AEdgeDrawModel.cs" />
     <Compile Include="Board\Models\NonOrientEdgeModel.cs" />
     <Compile Include="Board\Models\OrientEdgeModel.cs" />
     <Compile Include="Board\Models\VertexDrawModel.cs" />

@@ -41,7 +41,7 @@ namespace Antonyan.Graphs.Gui
 
 
         private bool oriented, weighted;
-        private VertexDrawModel sourceModel, stockModel;
+        private AVertexModel sourceModel, stockModel;
         private string header = $"Visual Graph";
 
 
@@ -91,6 +91,9 @@ namespace Antonyan.Graphs.Gui
         private void MainForm_Load(object sender, EventArgs e)
         {
             RetCalc();
+            tsbtnDeleteGraph.Enabled = false;
+            tsbtnRemoveElems.Enabled = false;
+            tsbtnMove.Enabled = false;
             tsBtnAddEdge.Enabled = false;
             tsBtnRedo.Enabled = false;
             tsBtnUndo.Enabled = false;
@@ -140,13 +143,13 @@ namespace Antonyan.Graphs.Gui
                         {
                             _field.MarkGraphModel(selectedKey);
                             var model = _field[selectedKey];
-                            if (model is VertexDrawModel && _field.MarkedModelsCount <= 2)
+                            if (model is AVertexModel && _field.MarkedModelsCount <= 2)
                             {
                                 if (_field.MarkedVertexModelCount == 1)
-                                    sourceModel = (VertexDrawModel)model;
+                                    sourceModel = (AVertexModel)model;
                                 else if (_field.MarkedVertexModelCount == 2)
                                 {
-                                    stockModel = (VertexDrawModel)model;
+                                    stockModel = (AVertexModel)model;
                                 }
                             }
 
@@ -162,7 +165,7 @@ namespace Antonyan.Graphs.Gui
                             }
 
                             string v = i++.ToString();
-                            VertexDrawModel model = new VertexDrawModel(v, pos);
+                            var model = new VertexDrawModel(v, pos);
                             AddModelCommandArgs command = new AddModelCommandArgs(model);
                             CommandEntered?.Invoke(this, command);
 
@@ -277,6 +280,7 @@ namespace Antonyan.Graphs.Gui
         private void tsbtnRemoveElems_Click(object sender, EventArgs e)
         {
             CommandEntered?.Invoke(this, new RemoveModelsCommandArgs(_field.GetMarkedModels()));
+            sourceModel = stockModel = null;
         }
 
 
@@ -304,41 +308,38 @@ namespace Antonyan.Graphs.Gui
                     weight = window.Weight;
                 }
             }
-            AEdgeDrawModel edgeModel;
+            AEdgeModel edgeModel;
             if (_field.IsOrgraph)
                 edgeModel = new OrientEdgeModel(sourceModel, stockModel, weight);
             else edgeModel = new NonOrientEdgeModel(sourceModel, stockModel, weight);
 
             CommandEntered?.Invoke(this, new AddModelCommandArgs(edgeModel));
             _field.UnmarkGraphModels();
-            sourceModel = stockModel = null;
         }
 
 
         private void tsBtnDetours_Click(object sender, EventArgs e)
         {
-            //string dfs = "Обход в глубину", bfs = "Обход в ширину";
-            //bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = modelsField.MarkedVertexCount == 1 ? true : false;
-            //if (res)
-            //{
-            //    subDetoursBtnBFS.Text = $"{bfs} начиная с вершины \"{source}\"";
-            //    subDetoursBtnDFS.Text = $"{dfs} начиная с вершины \"{source}\"";
-            //}
-            //else
-            //{
-            //    subDetoursBtnBFS.Text = bfs;
-            //    subDetoursBtnDFS.Text = dfs;
-            //}
+            string dfs = "Обход в глубину", bfs = "Обход в ширину";
+            bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = _field.MarkedVertexModelCount == 1 ? true : false;
+            if (res)
+            {
+                subDetoursBtnBFS.Text = $"{bfs} начиная с вершины \"{sourceModel.StringRepresent}\"";
+                subDetoursBtnDFS.Text = $"{dfs} начиная с вершины \"{sourceModel.StringRepresent}\"";
+            }
+            else
+            {
+                subDetoursBtnBFS.Text = bfs;
+                subDetoursBtnDFS.Text = dfs;
+            }
         }
 
         private void subDetoursBtnDFS_Click(object sender, EventArgs e)
         {
-            //Text += " - Выполяется алгоритм обхода в глубину";
-
-            //   CommandEntered?.Invoke(this, new UIDFSargs(sourceModel));
-            //        algorithmProcessing = false;
-            //        Text = header;
-
+            Text += " - Выполяется алгоритм обхода в глубину";
+            _field.UnmarkGraphModels();
+            CommandEntered?.Invoke(this, new  DFScommandArgs(sourceModel));
+            Text = header;
         }
 
         private void subDetoursBtnBFS_Click(object sender, EventArgs e)
@@ -359,23 +360,15 @@ namespace Antonyan.Graphs.Gui
 
         private void tsBtnShortcats_Click(object sender, EventArgs e)
         {
-            // subSortcatBtnBFS.Enabled = modelsField.MarkedVertexCount == 2 && !weighted;
+            subShortcutBtnBFS.Enabled = _field.MarkedVertexModelCount == 2 && !weighted;
         }
 
-        private void subSortcatBtnBFS_Click(object sender, EventArgs e)
+        private void subShortcutBtnBFS_Click(object sender, EventArgs e)
         {
-            //Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
-            //algorithmProcessing = true;
-            //algoThread = new Thread(() =>
-            //{
-            //    BeginInvoke((MethodInvoker)(() =>
-            //    {
-            //        CommandEntered?.Invoke(this, new UIStringArgs($"algorithm shortcatdfs {source} {stock}"));
-            //        algorithmProcessing = false;
-            //        Text = header;
-            //    }));
-            //});
-            //algoThread.Start();
+            Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
+            CommandEntered?.Invoke(this, new  ShortcutBFSargs(sourceModel, stockModel));
+            Text = header;
+
         }
         // -----------------------------!MainToolStrip ----------------------------------- //
 
@@ -420,6 +413,7 @@ namespace Antonyan.Graphs.Gui
                     Text = header;
                     tlbtnCrtGraph.Enabled = false;
                     tsbtnDeleteGraph.Enabled = true;
+                    tsbtnMove.Enabled = true;
                     break;
                 case FieldEvents.RemoveGraph:
                     header = "Visual Graph";
@@ -427,6 +421,13 @@ namespace Antonyan.Graphs.Gui
                     i = 0;
                     tlbtnCrtGraph.Enabled = true;
                     tsbtnDeleteGraph.Enabled = false;
+                    tsbtnRemoveElems.Enabled = false;
+                    tsbtnMove.Enabled = false;
+                    break;
+                case FieldEvents.RemoveModels:
+                case FieldEvents.RemoveModel:
+                    _field.UnmarkGraphModels();
+                    sourceModel = stockModel = null;
                     break;
                 default: break;
             }

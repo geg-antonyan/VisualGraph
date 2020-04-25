@@ -24,10 +24,6 @@ namespace Antonyan.Graphs.Board
             y = v.y;
         }
 
-        public override string ToString()
-        {
-            return x.ToString() + " " + y.ToString();
-        }
         public static vec2 operator -(vec2 a, vec2 b)
         {
             return new vec2(a.x - b.x, a.y - b.y);
@@ -79,12 +75,21 @@ namespace Antonyan.Graphs.Board
         {
             return (float)Math.Sqrt(x * x + y * y);
         }
-
         public vec2 Normalize()
         {
             float m = this.Length();
             return new vec2(x / m, y / m);
         }
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return x.ToString() + " " + y.ToString();
+        }
+
     }
 
     public class vec3

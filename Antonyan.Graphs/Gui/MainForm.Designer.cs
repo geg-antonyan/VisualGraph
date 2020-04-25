@@ -46,7 +46,7 @@ namespace Antonyan.Graphs.Gui
             this.subDetoursBtnDFS = new System.Windows.Forms.ToolStripMenuItem();
             this.subDetoursBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
-            this.subSortcatBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
+            this.subShortcutBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -208,7 +208,7 @@ namespace Antonyan.Graphs.Gui
             // 
             this.tsbtnShortcats.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbtnShortcats.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.subSortcatBtnBFS});
+            this.subShortcutBtnBFS});
             this.tsbtnShortcats.Image = global::Antonyan.Graphs.Properties.Resources.shortcat4;
             this.tsbtnShortcats.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnShortcats.Name = "tsbtnShortcats";
@@ -218,13 +218,13 @@ namespace Antonyan.Graphs.Gui
             // 
             // subSortcatBtnBFS
             // 
-            this.subSortcatBtnBFS.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.subSortcatBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.mark;
-            this.subSortcatBtnBFS.Name = "subSortcatBtnBFS";
-            this.subSortcatBtnBFS.ShowShortcutKeys = false;
-            this.subSortcatBtnBFS.Size = new System.Drawing.Size(454, 32);
-            this.subSortcatBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
-            this.subSortcatBtnBFS.Click += new System.EventHandler(this.subSortcatBtnBFS_Click);
+            this.subShortcutBtnBFS.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.subShortcutBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.mark;
+            this.subShortcutBtnBFS.Name = "subSortcatBtnBFS";
+            this.subShortcutBtnBFS.ShowShortcutKeys = false;
+            this.subShortcutBtnBFS.Size = new System.Drawing.Size(454, 32);
+            this.subShortcutBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
+            this.subShortcutBtnBFS.Click += new System.EventHandler(this.subShortcutBtnBFS_Click);
             // 
             // MainForm
             // 
@@ -263,7 +263,7 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.ToolStripMenuItem subDetoursBtnDFS;
         private System.Windows.Forms.ToolStripMenuItem subDetoursBtnBFS;
         private System.Windows.Forms.ToolStripDropDownButton tsbtnShortcats;
-        private System.Windows.Forms.ToolStripMenuItem subSortcatBtnBFS;
+        private System.Windows.Forms.ToolStripMenuItem subShortcutBtnBFS;
         private System.Windows.Forms.ToolStripButton tsBtnAddVertex;
         private System.Windows.Forms.ToolStripButton tsbtnSave;
         private System.Windows.Forms.ToolStripButton tsbtnOpen;

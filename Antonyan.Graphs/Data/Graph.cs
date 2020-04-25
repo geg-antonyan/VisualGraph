@@ -142,34 +142,26 @@ namespace Antonyan.Graphs.Data
         }
 
         // List<int> hashcode for edges
-        public Tuple<ReturnValue, List<string>> RemoveVertex(TVertex v)
+        public ReturnValue RemoveVertex(TVertex v)
         {
-            Tuple<ReturnValue, List<string>> res;
             if (!data.ContainsKey(v))
             {
-                res = new Tuple<ReturnValue, List<string>>(ReturnValue.VertexDontExist, null);
-                return res;
+                return ReturnValue.VertexDontExist;
             }
-            res = new Tuple<ReturnValue, List<string>>(ReturnValue.Succsess, new List<string>());
-            foreach (var adj in this[v])
-                res.Item2.Add(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString()));
-            
             data.Remove(v);
             foreach (var adjs in data)
                 foreach (var pair in adjs.Value)
                 {
                     if (pair.Item1.Equals(v))
                     {
-                        res.Item2.Add(ServiceFunctions.EdgeRepresentation(adjs.Key.ToString(), v.ToString(), pair.Item2?.ToString()));
                         adjs.Value.Remove(pair);
                         break;
                     }
                 }
-            return res;
+            return ReturnValue.Succsess;
         }
-        public ReturnValue RemoveEdge(TVertex v, TVertex e, out TWeight w)
+        public ReturnValue RemoveEdge(TVertex v, TVertex e)
         {
-            w = null;
             bool find_v = data.ContainsKey(v);
             bool find_e = data.ContainsKey(e);
             if (!find_v || !find_e)
@@ -181,7 +173,6 @@ namespace Antonyan.Graphs.Data
                 if (adj.Item1.Equals(e))
                 {
                     value = ReturnValue.EdgeExist;
-                    w = adj.Item2;
                     data[v].Remove(adj);
                     break;
                 }

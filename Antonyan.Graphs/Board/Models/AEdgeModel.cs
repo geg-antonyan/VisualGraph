@@ -12,17 +12,22 @@ namespace Antonyan.Graphs.Board.Models
 {
     public abstract class AEdgeModel : GraphModel
     {
+
+        public vec2 WeightPos { get; protected set; }
+        public bool Weighted { get; protected set; }
+        public float WeightAngle { get; protected set; }
+        public AVertexModel Source { get; private set; }
+        public AVertexModel Stock { get; private set; }
+        public string Weight { get; protected set; }
         public AEdgeModel(AVertexModel source, AVertexModel stock, string weight)
-            : base(ServiceFunctions.EdgeRepresentation(stock.VertexStr, source.VertexStr, weight))
+            : base(ServiceFunctions.EdgeRepresentation(source.VertexStr, stock.VertexStr, weight))
         {
             StringRepresent = weight;
             Source = source;
             Stock = stock;
             Weight = weight;
+            Weighted = weight != null;
         }
-        public AVertexModel Source { get; private set; }
-        public AVertexModel Stock { get; private set; }
-        public string Weight { get; private set; }
         public abstract void RefreshPos();
     }
 }

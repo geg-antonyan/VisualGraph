@@ -5,11 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Backend;
-using Antonyan.Graphs.Backend.CommandArgs;
+using Antonyan.Graphs.Board.Models;
 using Antonyan.Graphs.Board;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
+
+    public class AddModelCommandArgs : ACommandArgs
+    {
+        public AddModelCommandArgs(GraphModel model) :
+            base(nameof(AddModelCommand))
+            => Model = model;
+        public GraphModel Model { get; private set; }
+    }
+
+
     class AddModelCommand : AFieldCommand, IStoredCommand
     {
         private AddModelCommandArgs _args;

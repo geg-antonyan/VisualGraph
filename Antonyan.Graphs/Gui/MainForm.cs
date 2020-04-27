@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 
-using Antonyan.Graphs.Backend.CommandArgs;
 using Antonyan.Graphs.Util;
 using Antonyan.Graphs.Data;
 
@@ -34,7 +33,7 @@ namespace Antonyan.Graphs.Gui
 
         private readonly float R = GlobalParameters.Radius;
         private readonly float left = 30f;
-        private readonly float right = 30f;
+        private readonly float right = 60f;
         private readonly float top = 50f;
         private readonly float bottom = 50f;
         private readonly vec2 max, min;
@@ -54,8 +53,17 @@ namespace Antonyan.Graphs.Gui
 
         private Painter _painter;
         private IModelField _field;
+
+        private event EventHandler<EventArgs> myEvent;
+
+        private void MyEventFun(object sender, EventArgs e)
+        {
+            Refresh();
+        }
         public MainForm()
         {
+            myEvent += MyEventFun;
+
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
 
@@ -94,20 +102,30 @@ namespace Antonyan.Graphs.Gui
             RetCalc();
             tsbtnDeleteGraph.Enabled = false;
             tsbtnRemoveElems.Enabled = false;
+            tsBtnAddVertex.Enabled = false;
             tsbtnMove.Enabled = false;
             tsBtnAddEdge.Enabled = false;
             tsBtnRedo.Enabled = false;
             tsBtnUndo.Enabled = false;
             subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = false;
+            tsbtnSaveGraph.Enabled = false;
         }
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
-            tsBtnAddVertex.Enabled = _field.Status;
-            var g = e.Graphics;
-            _field.Models.ForEach(m => _painter.Draw(g, m, min, max));
-            Pen rectPen = new Pen(Color.Black, 2);
-            g.DrawRectangle(rectPen, left, top, W.x, W.y);
+            // tsBtnAddVertex.Enabled = _field.Status;
+            try
+            {
+                var g = e.Graphics;
+                if (_field.Status)
+                    _field.Models.ForEach(m => _painter.Draw(g, m, min, max));
+                Pen rectPen = new Pen(Color.Black, 2);
+                g.DrawRectangle(rectPen, left, top, W.x, W.y);
+            }
+            catch (Exception ex)
+            {
+                PostErrorMessage(ex.Message);
+            }
         }
         private void MainForm_Resize(object sender, EventArgs e)
         {
@@ -128,59 +146,63 @@ namespace Antonyan.Graphs.Gui
 
         private void MainForm_MouseClick(object sender, MouseEventArgs e)
         {
-            if (!_field.Status || tsbtnMove.Checked) return;
-            switch (e.Button)
+            try
             {
-                case MouseButtons.Left:
-                    {
-                        vec2 pos = new vec2((float)e.X, (float)e.Y);
-
-                        //int vertexHashCode, edgehashCode;
-                        if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
+                if (!_field.Status || tsbtnMove.Checked) return;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
                         {
-                            _field.UnmarkGraphModels();
-                        }
-                        else if ((selectedKey = _field.GetPosKey(pos, R)) != null && !tsBtnAddVertex.Checked)
-                        {
-                            _field.MarkGraphModel(selectedKey);
-                            var model = _field[selectedKey];
-                            if (model is AVertexModel && _field.MarkedModelsCount <= 2)
-                            {
-                                if (_field.MarkedVertexModelCount == 1)
-                                    sourceModel = (AVertexModel)model;
-                                else if (_field.MarkedVertexModelCount == 2)
-                                {
-                                    stockModel = (AVertexModel)model;
-                                }
-                            }
-
-                        }
-
-                        else if (_field.GetPosKey(pos, R + R + R / 2) == null && tsBtnAddVertex.Checked)
-                        {
-
-                            if (_field.MarkedVertexModelCount > 0 || _field.MarkedEdgeModelCount > 0)
+                            vec2 pos = new vec2((float)e.X, (float)e.Y);
+                            if (max.x - pos.x < R || pos.x - left < R || max.y - pos.y < R || pos.y - top < R)
                             {
                                 _field.UnmarkGraphModels();
-                                break;
+                            }
+                            else if ((selectedKey = _field.GetPosKey(pos, R)) != null && !tsBtnAddVertex.Checked)
+                            {
+                                _field.MarkGraphModel(selectedKey);
+                                var model = _field[selectedKey];
+                                if (model is AVertexModel && _field.MarkedModelsCount <= 2)
+                                {
+                                    if (_field.MarkedVertexModelCount == 1)
+                                        sourceModel = (AVertexModel)model;
+                                    else if (_field.MarkedVertexModelCount == 2)
+                                    {
+                                        stockModel = (AVertexModel)model;
+                                    }
+                                }
+
                             }
 
-                            string v = i++.ToString();
-                            var model = new VertexDrawModel(v, pos);
-                            AddModelCommandArgs command = new AddModelCommandArgs(model);
-                            CommandEntered?.Invoke(this, command);
+                            else if (_field.GetPosKey(pos, R + R + R / 2) == null && tsBtnAddVertex.Checked)
+                            {
 
+                                if (_field.MarkedVertexModelCount > 0 || _field.MarkedEdgeModelCount > 0)
+                                {
+                                    _field.UnmarkGraphModels();
+                                    break;
+                                }
+
+                                string v = i++.ToString();
+                                var model = new VertexDrawModel(v, pos);
+                                AddModelCommandArgs command = new AddModelCommandArgs(model);
+                                CommandEntered?.Invoke(this, command);
+
+                            }
+                            else
+                            {
+                                _field.UnmarkGraphModels();
+                                sourceModel = stockModel = null;
+                            }
+                            break;
                         }
-                        else
-                        {
-                            _field.UnmarkGraphModels();
-                            sourceModel = stockModel = null;
-                        }
-                        break;
-                    }
-                default: break;
+                    default: break;
+                }
             }
-            tsBtnAddEdge.Enabled = _field.MarkedVertexModelCount == 2 && _field.MarkedModelsCount == 2;
+            catch (Exception ex)
+            {
+                PostErrorMessage(ex.Message);
+            }
         }
 
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
@@ -238,6 +260,42 @@ namespace Antonyan.Graphs.Gui
         // *************** ****************** *************** **************************** //
 
         // ----------------------------- MainToolStrip ----------------------------------- //
+        private void tsbtnOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (openGraphFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (Stream stream = openGraphFileDialog.OpenFile())
+                    {
+                        CommandEntered?.Invoke(this, new OpenGraphInFileCommandArgs(stream));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                PostErrorMessage(ex.Message);
+            }
+        }
+        private void tsbtnSaveGraph_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (saveGraphFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (Stream stream = saveGraphFileDialog.OpenFile())
+                    {
+                        CommandEntered?.Invoke(this, new SaveGraphToFileCommandArgs(stream));
+                        PostMessage("Граф успешно сохранен");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                PostErrorMessage(ex.Message);
+            }
+
+        }
 
         private void tsbtnUndo_Click(object sender, EventArgs e)
         {
@@ -266,7 +324,7 @@ namespace Antonyan.Graphs.Gui
             if (result == DialogResult.Yes)
             {
                 CommandEntered?.Invoke(null, new ACommandArgs(nameof(RemoveGraphCommand)));
-            }    
+            }
         }
 
         private void tsbtnAddVertex_Click(object sender, EventArgs e)
@@ -341,7 +399,8 @@ namespace Antonyan.Graphs.Gui
         {
             Text += " - Выполяется алгоритм обхода в глубину";
             _field.UnmarkGraphModels();
-            CommandEntered?.Invoke(this, new  DFScommandArgs(sourceModel));
+            new Thread(() =>
+            CommandEntered?.Invoke(this, new DFScommandArgs(sourceModel))).Start();
             Text = header;
         }
 
@@ -369,9 +428,10 @@ namespace Antonyan.Graphs.Gui
         private void subShortcutBtnBFS_Click(object sender, EventArgs e)
         {
             Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
-            CommandEntered?.Invoke(this, new  ShortcutBFSCommandArgs(sourceModel, stockModel));
-            Text = header;
-
+            new Thread(() =>
+            {
+                CommandEntered?.Invoke(this, new ShortcutBFSCommandArgs(sourceModel, stockModel));
+            }).Start();
         }
         // -----------------------------!MainToolStrip ----------------------------------- //
 
@@ -389,21 +449,15 @@ namespace Antonyan.Graphs.Gui
             MessageBox.Show(warningMessage, "Предупреждение!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-        private void tsbtnSaveGraph_Click(object sender, EventArgs e)
-        {
-            if (saveGraphFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                using (Stream stream = saveGraphFileDialog.OpenFile())
-                {
-                    CommandEntered?.Invoke(this, new SaveGraphToFileCommandArgs(stream));
-                }
-            }
-        }
+
 
         public void PostErrorMessage(string errorMessage)
         {
             MessageBox.Show(errorMessage, "Ошибка!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
+
+
+
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)
         {
             tsBtnRedo.Enabled = redoPossible;
@@ -419,35 +473,60 @@ namespace Antonyan.Graphs.Gui
 
         public void FieldUpdate(object obj, ModelFieldUpdateArgs e)
         {
-            switch (e?.Event)
-            {
-                case FieldEvents.InitGraph:
-                    header += (_field.IsOrgraph ? " - Ориентриванный, " : " - Неориентированный, ") +
-                        (_field.IsWeighted ? "Взвещанный." : "Невзвещанный.");
-                    Text = header;
-                    tlbtnCrtGraph.Enabled = false;
-                    tsbtnDeleteGraph.Enabled = true;
-                    tsbtnMove.Enabled = true;
-                    break;
-                case FieldEvents.RemoveGraph:
-                    header = "Visual Graph";
-                    Text = header;
-                    i = 0;
-                    tlbtnCrtGraph.Enabled = true;
-                    tsbtnDeleteGraph.Enabled = false;
-                    tsbtnRemoveElems.Enabled = false;
-                    tsbtnMove.Enabled = false;
-                    break;
-                case FieldEvents.RemoveModels:
-                case FieldEvents.RemoveModel:
-                    _field.UnmarkGraphModels();
-                    sourceModel = stockModel = null;
-                    break;
-                default: break;
-            }
-            tsbtnRemoveElems.Enabled = _field.MarkedModelsCount > 0;
-            Refresh();
 
+            BeginInvoke((MethodInvoker)(() =>
+           {
+               try
+               {
+                   switch (e?.Event)
+                   {
+                       case FieldEvents.InitGraph:
+                           header += (_field.IsOrgraph ? " - Ориентриванный, " : " - Неориентированный, ") +
+                                   (_field.IsWeighted ? "Взвещанный." : "Невзвещанный.");
+                           Text = header;
+                           tlbtnCrtGraph.Enabled = false;
+                           tsbtnDeleteGraph.Enabled = true;
+                           tsbtnMove.Enabled = true;
+                           tsBtnAddVertex.Enabled = true;
+                           tsbtnSaveGraph.Enabled = true;
+                           break;
+                       case FieldEvents.RemoveGraph:
+                           header = "Visual Graph";
+                           Text = header;
+                           i = 0;
+                           tlbtnCrtGraph.Enabled = true;
+                           tsbtnDeleteGraph.Enabled = false;
+                           tsbtnRemoveElems.Enabled = false;
+                           tsbtnMove.Enabled = false;
+                           tsBtnAddVertex.Enabled = false;
+                           tsbtnSaveGraph.Enabled = false;
+                           break;
+                       case FieldEvents.RemoveModels:
+                       case FieldEvents.RemoveModel:
+                           _field.UnmarkGraphModels();
+                           sourceModel = stockModel = null;
+                           break;
+                       default: break;
+                   }
+                   if (_field.Status)
+                   {
+                       tsbtnRemoveElems.Enabled = _field.MarkedModelsCount > 0;
+                       tsBtnAddEdge.Enabled = _field.MarkedVertexModelCount == 2 && _field.MarkedModelsCount == 2;
+                   }
+                   Refresh();
+               }
+               catch (Exception ex)
+               {
+                   PostErrorMessage(ex.Message);
+               }
+           }));
+        }
+
+
+        public bool AnswerTheQuestion(string question)
+        {
+            DialogResult result = MessageBox.Show(this, question, "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result == DialogResult.Yes ? true : false;
         }
 
         // ---------------------------- !Override Methods --------------------------------- //

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-
-
+using System.IO;
+using System.Text;
 using Antonyan.Graphs.Util;
 
 
 namespace Antonyan.Graphs.Data
 {
-    public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess }; 
+    public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess };
     public class Graph<TVertex, TWeight>
         where TVertex : AVertex, new()
         where TWeight : AWeight, new()
     {
-        private readonly SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> data;
+        private SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>> data;
         public bool IsOrgraph { get; private set; }
         public bool IsWeighted { get; private set; }
 
@@ -29,15 +29,20 @@ namespace Antonyan.Graphs.Data
             IsWeighted = weighted;
             data = new SortedDictionary<TVertex, List<Tuple<TVertex, TWeight>>>();
         }
-        public void SetOptions(bool orgraph, bool weighted)
+        
+        public Graph(Stream stream)
         {
-            if (data.Count == 0)
+            using (StreamReader sr = new StreamReader(stream, Encoding.UTF8))
             {
-                IsOrgraph = orgraph;
-                IsWeighted = weighted;
-            }    
+                ReadInText(sr.ReadToEnd());
+            }
         }
         public Graph(string text)
+        {
+            ReadInText(text);
+        }
+
+        private void ReadInText(string text)
         {
             text.Replace('\r', ' ');
             string[] lines = text.Replace('\r', ' ').Split('\n');
@@ -76,6 +81,24 @@ namespace Antonyan.Graphs.Data
                     AddEdge(v, e, w);
                 }
             }
+        }
+        public void SaveGraphInFile(StreamWriter sw)
+        {
+                sw.WriteLine(IsOrgraph ? "orgraph" : "graph");
+                sw.WriteLine(IsWeighted ? "weighted" : "notweighted");
+                foreach (var adjs in AdjList)
+                {
+                    sw.Write(adjs.Key.ToString() + " ");
+                    foreach (var pair in adjs.Value)
+                    {
+                        sw.Write(pair.Item1.ToString());
+                        if (IsWeighted)
+                            sw.Write("/" + pair.Item2.ToString());
+                        sw.Write(" ");
+                    }
+                    sw.WriteLine();
+                }
+           
         }
 
         public Graph(Graph<TVertex, TWeight> other)
@@ -190,6 +213,12 @@ namespace Antonyan.Graphs.Data
                     }
             }
             return ReturnValue.Succsess;
+        }
+
+
+        public int GetHalfLifeDegree(TVertex v)
+        {
+            return AdjList[v].Count;
         }
     }
 }

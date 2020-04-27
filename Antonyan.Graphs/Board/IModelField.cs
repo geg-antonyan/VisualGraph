@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace Antonyan.Graphs.Board
 {
     public interface IModelField
     {
+        void CreateGraph(bool oriented, bool weighted, bool raise = true);
         void AddVertexModel(AVertexModel vertexModel, bool raise = true);
         void AddEdgeModel(AEdgeModel edgeModel, bool raise = true);
         void AddGraphModel(GraphModel model, bool raise = true);
@@ -22,12 +24,14 @@ namespace Antonyan.Graphs.Board
         UserInterface UserInterface { get; }
         void Clear(bool raise = true);
 
-        void SetGraphOptions(bool oriented, bool weighted, bool raise = true);
         void MoveVertexModel(string  key, vec2 newPos, bool raise = true);
 
         bool MarkGraphModel(string key, bool raise = true);
         void UnmarkGraphModels(bool raise = true);
         void Refresh();
+
+        void SaveGraphToFile(Stream stream, bool raise = true);
+        void OpenGraphInFile(List<GraphModel> models, string graphDataText, bool raise = true);
         string GetPosKey(vec2 pos, float r);
         string GetVertexPosKey(vec2 pos, float r);
         vec2 GetVertexModelPos(string key);
@@ -38,5 +42,11 @@ namespace Antonyan.Graphs.Board
         int MarkedVertexModelCount { get; }
         int MarkedEdgeModelCount { get; }
         bool Status { get; }
+
+
+        // Tasks
+        int GetHalfLifeDegree(AVertexModel vertex);
+
+        // !Tasks
     }
 }

@@ -1,4 +1,4 @@
-﻿using Antonyan.Graphs.Backend.CommandArgs;
+﻿
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Board.Models;
 using System;
@@ -9,6 +9,17 @@ using System.Threading.Tasks;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
+
+    public class RemoveModelsCommandArgs : ACommandArgs
+    {
+        public RemoveModelsCommandArgs(List<GraphModel> models)
+            : base(nameof(RemoveModelsCommand))
+        {
+            Models = models;
+        }
+
+        public List<GraphModel> Models { get; private set; }
+    }
     public class RemoveModelsCommand : AFieldCommand, IStoredCommand
     {
         private RemoveModelsCommandArgs _args;

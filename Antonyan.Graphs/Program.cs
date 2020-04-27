@@ -10,7 +10,6 @@ using Antonyan.Graphs.Backend;
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Gui;
 using Antonyan.Graphs.Backend.Algorithms;
-using Antonyan.Graphs.Backend.CommandArgs;
 
 namespace Antonyan.Graphs
 {
@@ -19,7 +18,7 @@ namespace Antonyan.Graphs
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        //[STAThread]
+        [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
@@ -29,7 +28,11 @@ namespace Antonyan.Graphs
             var field = new ModelsField<Vertex, Weight>(GUI);
             GUI.AttachField(field);
 
-            CommandRepository.AddCommand("SaveGraphToFileCommand", new SaveGraphToFileCommand<Vertex, Weight>(field));
+
+            CommandRepository.AddCommand(nameof(HalfLifeDegreeCommand), new HalfLifeDegreeCommand(field));
+
+            CommandRepository.AddCommand("SaveGraphToFileCommand", new SaveGraphToFileCommand(field));
+            CommandRepository.AddCommand(nameof(OpenGraphInFileCommand), new OpenGraphInFileCommand(field));
 
             CommandRepository.AddCommand(nameof(AddModelCommand), new AddModelCommand(field));
             CommandRepository.AddCommand(nameof(CreateGraphCommand), new CreateGraphCommand(field));

@@ -1,4 +1,4 @@
-﻿using Antonyan.Graphs.Backend.CommandArgs;
+﻿
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Data;
 
@@ -9,9 +9,18 @@ using System;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
-    public class SaveGraphToFileCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
-        where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
+
+    public class SaveGraphToFileCommandArgs : ACommandArgs
+    {
+        public Stream Stream { get; private set; }
+        public SaveGraphToFileCommandArgs(Stream stream)
+            : base("SaveGraphToFileCommand")
+        {
+            Stream = stream;
+        }
+    }
+
+    public class SaveGraphToFileCommand: AFieldCommand, INonStoredCommand
     {
         private readonly SaveGraphToFileCommandArgs _args;
         public SaveGraphToFileCommand(IModelField field)
@@ -24,42 +33,12 @@ namespace Antonyan.Graphs.Backend.Commands
         }
         public ICommand Clone(ACommandArgs args)
         {
-            return new SaveGraphToFileCommand<TVertex, TWeight>((SaveGraphToFileCommandArgs)args, Field);
+            return new SaveGraphToFileCommand((SaveGraphToFileCommandArgs)args, Field);
         }
 
         public void Execute()
         {
-            var graph = ((ModelsField<TVertex, TWeight>)Field).Graph;
-            try
-            {
-                using (StreamWriter sw = new StreamWriter(_args.Stream, Encoding.UTF8))
-                {
-                    sw.WriteLine(graph.IsOrgraph ? "orgraph" : "graph");
-                    sw.WriteLine(graph.IsWeighted ? "weighted" : "notweighted");
-                    foreach (var adjs in graph.AdjList)
-                    {
-                        sw.Write(adjs.Key.ToString() + " ");
-                        foreach (var pair in adjs.Value)
-                        {
-                            sw.Write(pair.Item1.ToString());
-                            if (graph.IsWeighted)
-                                sw.Write("/" + pair.Item2.ToString());
-                            sw.Write(" ");
-                        }
-                        sw.WriteLine();
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Field.UserInterface.PostErrorMessage(ex.Message);
-            }
-            finally
-            {
-                _args.Stream.Close();
-            }
-            Field.UserInterface.PostMessage("Файл успешно сохранен");
+            Field.SaveGraphToFile(_args.Stream);
         }
     }
 }

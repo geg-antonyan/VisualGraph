@@ -2,7 +2,7 @@
 using Antonyan.Graphs.Board;
 using Antonyan.Graphs.Board.Models;
 using Antonyan.Graphs.Backend.Commands;
-using Antonyan.Graphs.Backend.CommandArgs;
+
 using Antonyan.Graphs.Backend;
 
 namespace Antonyan.Graphs.Board
@@ -14,6 +14,7 @@ namespace Antonyan.Graphs.Board
         void PostWarningMessage(string warningMessage);
         void PostErrorMessage(string errorMessage);
         void CheckUndoRedo(bool undoPossible, bool redoPossible);
+        bool AnswerTheQuestion(string question);
         //void SetFieldStatus(bool status);
         //bool MarkModel(string represantion);
         //bool UnmarkModel(string represantion);

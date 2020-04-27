@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
+using System.IO;
 
 namespace Antonyan.Graphs.Board
 {
     public enum FieldEvents { InitGraph, RemoveGraph, AddModel, RemoveModel,
-        RemoveModels
+        RemoveModels,
+        SaveGrapToFile
     }
     public class ModelFieldUpdateArgs : EventArgs
     {
@@ -19,14 +21,13 @@ namespace Antonyan.Graphs.Board
     }
     public class ModelsField<TVertex, TWeight> : IModelField
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()  
+        where TWeight : AWeight, new()
     {
         public event EventHandler<ModelFieldUpdateArgs> FieldUpdate;
-        private readonly SortedDictionary<string, GraphModel> _models;
-        private bool _status = false;
-        private UserInterface _ui;
+        private SortedDictionary<string, GraphModel> _models;
+        private readonly UserInterface _ui;
         public Graph<TVertex, TWeight> Graph { get; private set; }
-        
+
         public bool IsOrgraph { get { return Graph.IsOrgraph; } }
         public bool IsWeighted { get { return Graph.IsWeighted; } }
 
@@ -38,9 +39,26 @@ namespace Antonyan.Graphs.Board
 
         public List<GraphModel> Models => _models.Values.ToList();
 
-        public bool Status => _status;
+        public bool Status { get; private set; } = false;
 
         public UserInterface UserInterface => _ui;
+
+        public ModelsField(UserInterface ui)
+        {
+            _ui = ui;
+            _models = new SortedDictionary<string, GraphModel>();
+            FieldUpdate += _ui.FieldUpdate;
+        }
+
+        public void CreateGraph(bool oriented, bool weighted, bool raise = true)
+        {
+            Graph = new Graph<TVertex, TWeight>(oriented, weighted);
+            Status = true;
+            _models = new SortedDictionary<string, GraphModel>();
+            if (raise)
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.InitGraph));
+        }
+
 
         public GraphModel this[string key]
         {
@@ -49,16 +67,10 @@ namespace Antonyan.Graphs.Board
                 if (_models.ContainsKey(key))
                     return _models[key];
                 return null;
-            } 
+            }
         }
 
-        public ModelsField(UserInterface ui)
-        {
-            _ui = ui;
-            _models = new SortedDictionary<string, GraphModel>();
-            FieldUpdate += _ui.FieldUpdate;
-            Graph = new Graph<TVertex, TWeight>();
-        }
+
 
         public void AddVertexModel(AVertexModel vertexModel, bool raise = true)
         {
@@ -192,20 +204,14 @@ namespace Antonyan.Graphs.Board
 
         public void Clear(bool raise = true)
         {
-            _status = false;
-            _models.Clear();
-            Graph.AdjList.Clear();
+            Status = false;
+            _models = null;
+            Graph = null;
             if (raise)
                 FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.RemoveGraph));
         }
 
-        public void SetGraphOptions(bool oriented, bool weighted, bool raise = true)
-        {
-            _status = true;
-            Graph.SetOptions(oriented, weighted);
-            if (raise)
-                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.InitGraph));
-        }
+
 
         public void MoveVertexModel(string key, vec2 newPos, bool raise = true)
         {
@@ -250,7 +256,7 @@ namespace Antonyan.Graphs.Board
             foreach (var m in _models)
                 if (m.Value.PosKey(pos, r) != null)
                     return m.Value.Key;
-           return null;
+            return null;
         }
 
         public vec2 GetVertexModelPos(string key)
@@ -262,7 +268,7 @@ namespace Antonyan.Graphs.Board
             return res;
         }
 
-        
+
 
         public List<GraphModel> GetMarkedModels()
         {
@@ -282,6 +288,59 @@ namespace Antonyan.Graphs.Board
                 if (m is AVertexModel && (m.PosKey(pos, r) != null))
                     return m.Key;
             return null;
+        }
+
+        public void SaveGraphToFile(Stream stream, bool raise = true)
+        {
+            using (StreamWriter sw = new StreamWriter(stream, Encoding.UTF8))
+            {
+                string oriented = IsOrgraph ? "orgraph" : "graph";
+                string weighted = IsWeighted ? "weighted" : "nonweighted";
+                sw.WriteLine($"graphmodel {oriented} {weighted}");
+                _models.Values.ToList().ForEach(m =>
+                {
+                    var e = m as AEdgeModel;
+                    if (e == null)
+                    {
+                        var v = m as AVertexModel;
+                        sw.WriteLine($"[v] {v.Key} {v.Pos.x} {v.Pos.y}");
+                    }
+                    else
+                    {
+                        sw.WriteLine($"[e] {e.Source.VertexStr} {e.Stock.VertexStr} {e.Weight}");
+                    }
+                });
+                sw.WriteLine("graphmodel end");
+                Graph.SaveGraphInFile(sw);
+            }
+            if (raise)
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.SaveGrapToFile));
+        }
+
+        public void OpenGraphInFile(List<GraphModel> models, string graphDataText, bool raise = true)
+        {
+            bool res = true;
+            Status = false;
+            if (Graph != null)
+            {
+                res = UserInterface.AnswerTheQuestion("Граф уже создан!!! Вы действительно хотите открыть граф из файла? Текущий граф будет безвозвратно утерен.");
+            }
+            if (res)
+            {
+                _models = new SortedDictionary<string, GraphModel>();
+                models.ForEach(m => _models.Add(m.Key, m));
+                Graph = new Graph<TVertex, TWeight>(graphDataText);
+                Status = true;
+            }
+            if (raise)
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.InitGraph));
+        }
+
+        public int GetHalfLifeDegree(AVertexModel vertex)
+        {
+            TVertex v = new TVertex();
+            v.SetFromString(vertex.VertexStr);
+            return Graph.GetHalfLifeDegree(v);
         }
     }
 }

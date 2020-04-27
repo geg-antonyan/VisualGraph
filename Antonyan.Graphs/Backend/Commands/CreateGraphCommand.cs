@@ -1,4 +1,4 @@
-﻿using Antonyan.Graphs.Backend.CommandArgs;
+﻿
 using Antonyan.Graphs.Board;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,19 @@ using System.Threading.Tasks;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
+    public class CreateGraphCommandArgs : ACommandArgs
+    {
+        public CreateGraphCommandArgs(bool oriented, bool weighted)
+            : base(nameof(CreateGraphCommand))
+        {
+            Oriented = oriented;
+            Weighted = weighted;
+        }
+        public bool Oriented { get; private set; }
+        public bool Weighted { get; private set; }
+    }
+
+
     public class CreateGraphCommand : AFieldCommand, INonStoredCommand
     {
         private CreateGraphCommandArgs _args;
@@ -26,12 +39,7 @@ namespace Antonyan.Graphs.Backend.Commands
 
         public void Execute()
         {
-            Field.SetGraphOptions(_args.Oriented, _args.Weighted);
+            Field.CreateGraph(_args.Oriented, _args.Weighted);
         }
-
-        //public void Undo()
-        //{
-        //    Field.Clear();
-        //}
     }
 }

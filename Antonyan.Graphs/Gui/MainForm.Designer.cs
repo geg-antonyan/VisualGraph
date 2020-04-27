@@ -48,14 +48,18 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
             this.subShortcutBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.saveGraphFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openGraphFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.toolStripTask = new System.Windows.Forms.ToolStrip();
+            this.tsBtnHalfWayTop = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
+            this.toolStripTask.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMain
             // 
             this.toolStripMain.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.toolStripMain.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(25, 25);
+            this.toolStripMain.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.toolStripMain.ImageScalingSize = new System.Drawing.Size(22, 22);
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbtnOpen,
             this.tsbtnSaveGraph,
@@ -85,6 +89,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnOpen.Name = "tsbtnOpen";
             this.tsbtnOpen.Size = new System.Drawing.Size(29, 29);
             this.tsbtnOpen.Text = "Открыть";
+            this.tsbtnOpen.Click += new System.EventHandler(this.tsbtnOpen_Click);
             // 
             // tsbtnSaveGraph
             // 
@@ -194,7 +199,7 @@ namespace Antonyan.Graphs.Gui
             // 
             this.subDetoursBtnDFS.Image = global::Antonyan.Graphs.Properties.Resources.dfs;
             this.subDetoursBtnDFS.Name = "subDetoursBtnDFS";
-            this.subDetoursBtnDFS.Size = new System.Drawing.Size(208, 32);
+            this.subDetoursBtnDFS.Size = new System.Drawing.Size(186, 28);
             this.subDetoursBtnDFS.Text = "Обход в глубину";
             this.subDetoursBtnDFS.Click += new System.EventHandler(this.subDetoursBtnDFS_Click);
             // 
@@ -202,7 +207,7 @@ namespace Antonyan.Graphs.Gui
             // 
             this.subDetoursBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.bfs;
             this.subDetoursBtnBFS.Name = "subDetoursBtnBFS";
-            this.subDetoursBtnBFS.Size = new System.Drawing.Size(208, 32);
+            this.subDetoursBtnBFS.Size = new System.Drawing.Size(186, 28);
             this.subDetoursBtnBFS.Text = "Обход в ширину";
             this.subDetoursBtnBFS.Click += new System.EventHandler(this.subDetoursBtnBFS_Click);
             // 
@@ -214,17 +219,17 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnShortcats.Image = global::Antonyan.Graphs.Properties.Resources.shortcat4;
             this.tsbtnShortcats.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnShortcats.Name = "tsbtnShortcats";
-            this.tsbtnShortcats.Size = new System.Drawing.Size(38, 29);
+            this.tsbtnShortcats.Size = new System.Drawing.Size(33, 29);
             this.tsbtnShortcats.Text = "Кратчайшие пути";
             this.tsbtnShortcats.Click += new System.EventHandler(this.tsBtnShortcats_Click);
             // 
             // subShortcutBtnBFS
             // 
-            this.subShortcutBtnBFS.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.subShortcutBtnBFS.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.subShortcutBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.mark;
             this.subShortcutBtnBFS.Name = "subShortcutBtnBFS";
             this.subShortcutBtnBFS.ShowShortcutKeys = false;
-            this.subShortcutBtnBFS.Size = new System.Drawing.Size(454, 32);
+            this.subShortcutBtnBFS.Size = new System.Drawing.Size(418, 28);
             this.subShortcutBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
             this.subShortcutBtnBFS.Click += new System.EventHandler(this.subShortcutBtnBFS_Click);
             // 
@@ -232,11 +237,39 @@ namespace Antonyan.Graphs.Gui
             // 
             this.saveGraphFileDialog.Filter = "graph files (*.graph)|*.graph";
             // 
+            // openGraphFileDialog
+            // 
+            this.openGraphFileDialog.Filter = "graph files (*.graph)|*.graph";
+            // 
+            // toolStripTask
+            // 
+            this.toolStripTask.Dock = System.Windows.Forms.DockStyle.Right;
+            this.toolStripTask.ImageScalingSize = new System.Drawing.Size(22, 22);
+            this.toolStripTask.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsBtnHalfWayTop});
+            this.toolStripTask.Location = new System.Drawing.Point(962, 32);
+            this.toolStripTask.Name = "toolStripTask";
+            this.toolStripTask.Size = new System.Drawing.Size(32, 607);
+            this.toolStripTask.TabIndex = 1;
+            this.toolStripTask.Text = "toolStripTasks";
+            // 
+            // tsBtnHalfWayTop
+            // 
+            this.tsBtnHalfWayTop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnHalfWayTop.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tsBtnHalfWayTop.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnHalfWayTop.Image")));
+            this.tsBtnHalfWayTop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnHalfWayTop.Name = "tsBtnHalfWayTop";
+            this.tsBtnHalfWayTop.Size = new System.Drawing.Size(29, 26);
+            this.tsBtnHalfWayTop.Text = "Полуисход вершины";
+            this.tsBtnHalfWayTop.Click += new System.EventHandler(this.tsBtnHalfWayTop_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 639);
+            this.Controls.Add(this.toolStripTask);
             this.Controls.Add(this.toolStripMain);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -253,6 +286,8 @@ namespace Antonyan.Graphs.Gui
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
+            this.toolStripTask.ResumeLayout(false);
+            this.toolStripTask.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -277,6 +312,9 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.ToolStripButton tsbtnRemoveElems;
         private System.Windows.Forms.ToolStripButton tsbtnMove;
         private System.Windows.Forms.SaveFileDialog saveGraphFileDialog;
+        private System.Windows.Forms.OpenFileDialog openGraphFileDialog;
+        private System.Windows.Forms.ToolStrip toolStripTask;
+        private System.Windows.Forms.ToolStripButton tsBtnHalfWayTop;
     }
 }
 

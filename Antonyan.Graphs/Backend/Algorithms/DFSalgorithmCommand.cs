@@ -68,13 +68,13 @@ namespace Antonyan.Graphs.Backend.Algorithms
             visited[v] = true;
             foreach (var adj in  G[v])
             {
-                if (!visited[adj.Item1])
+                if (!visited[adj.Vertex])
                 {
                     Thread.Sleep(500);
-                    if (!Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Item1.ToString(), adj.Item2?.ToString())) && !G.IsOrgraph)
-                        Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(adj.Item1.ToString(), v.ToString(), adj.Item2?.ToString()));
+                    if (!Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(v.ToString(), adj.Vertex.ToString())) && !G.IsOrgraph)
+                        Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(adj.Vertex.ToString(), v.ToString()));
 
-                    DFS(G, adj.Item1, visited);
+                    DFS(G, adj.Vertex, visited);
                 }
             }
         }

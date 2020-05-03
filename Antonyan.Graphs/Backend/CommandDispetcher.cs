@@ -34,6 +34,8 @@ namespace Antonyan.Graphs.Backend
                 else
                 {
                     var cmd = CommandRepository.AllocateCommand(args.CommandName, args);
+                    if (cmd == null)
+                        throw new Exception($"Комманда {args.CommandName} не зарегистрирована");
                     _cm.CommandExecute(cmd);
                 }
                 undoRedoPossible = _cm.CheckPosiible();

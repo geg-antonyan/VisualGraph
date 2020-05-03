@@ -30,7 +30,7 @@ namespace Antonyan.Graphs.Gui
         protected Brush unmarkWeightBrush;
 
         protected Font font;
-        protected Brush brush;
+        protected SolidBrush brush;
         protected Pen pen;
 
         private static readonly Pen endPen = new Pen(Color.Black)
@@ -53,33 +53,37 @@ namespace Antonyan.Graphs.Gui
             markVertexBrush = mvb; unmarkVertexBrush = umvb;
             markWeightBrush = mwb; unmarkWeightBrush = umwb;
 
-            font = null;
-            brush = null;
-            pen = null;
+            font = new Font(FontFamily.GenericSansSerif, 12f);
+            brush = new SolidBrush(Color.Blue);
+            pen = new Pen(Color.Blue, 1);
         }
-        public void Draw(Graphics g, GraphModel model, vec2 min, vec2 max)
+        public void Draw(Graphics g, GraphModel m, vec2 min, vec2 max)
         {
-            if (model.Marked)
-            {
-                pen = markCirclePen;
-                brush = markVertexBrush;
-                font = markVertexFont;
-            }
-            else
-            {
-                pen = unmarkCirclePen;
-                brush = unmarkVertexBrush;
-                font = unmarkVertexFont;
-            }
-            var vertex = model as VertexDrawModel;
+            //if (model.Marked)
+            //{
+            //    pen = markCirclePen;
+            //    brush = markVertexBrush;
+            //    font = markVertexFont;
+            //}
+            //else
+            //{
+            //    pen = unmarkCirclePen;
+            //    brush = unmarkVertexBrush;
+            //    font = unmarkVertexFont;
+            //}
+            Color current = Color.FromArgb(m.Color.R, m.Color.G, m.Color.B);
+            pen.Color = current;
+            brush.Color = current;
+            pen.Width = m.Marked ? 2 : 1;
+            var vertex = m as VertexDrawModel;
             if (vertex != null)
                 DrawVertex(g, vertex, min, max);
             else
             {
-                var nonOrientEdge = model as NonOrientEdgeModel;
+                var nonOrientEdge = m as NonOrientEdgeModel;
                 if (nonOrientEdge != null)
                     DrawNonOrientEdge(g, nonOrientEdge, min, max);
-                else DrawOrientedEdge(g, (OrientEdgeModel)model, min, max);
+                else DrawOrientedEdge(g, (OrientEdgeModel)m, min, max);
             }
             
         }

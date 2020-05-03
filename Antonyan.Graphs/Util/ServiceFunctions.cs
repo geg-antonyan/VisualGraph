@@ -37,9 +37,9 @@ namespace Antonyan.Graphs.Util
             }
         }
 
-        public static string EdgeRepresentation(string source, string stock, string weight)
+        public static string EdgeRepresentation(string source, string stock)
         {
-            return source + "->" + stock + "=" + weight;
+            return source + "->" + stock;
         }
 
         public static void Swap<T>(ref T lhs, ref T rhs)

@@ -12,8 +12,22 @@ namespace Antonyan.Graphs.Board.Models
     public abstract class GraphModel
     {
         protected readonly string _key;
+        public static readonly RGBcolor DefaultColor = RGBcolor.Blue;
+        private RGBcolor _color = DefaultColor;
         public string StringRepresent { get; protected set; }
-
+        public RGBcolor Color
+        {
+            get
+            {
+                if (Marked)
+                    return RGBcolor.Red;
+                else return _color;
+            }
+            set
+            {
+                _color = value;
+            }
+        }
         public GraphModel(string key, bool marked = false)
         {
             _key = key;
@@ -22,6 +36,7 @@ namespace Antonyan.Graphs.Board.Models
         public string Key => _key;
        // public ModelColor { get;
         public bool Marked { get; set; }
+        
         public void SetStringPresent(string str) => StringRepresent = str;
         public abstract string PosKey(vec2 pos, float r);
     }

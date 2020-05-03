@@ -10,6 +10,7 @@ namespace Antonyan.Graphs.Data
         public abstract int CompareTo(AType other);
         public abstract bool Equals(AType other);
         public abstract override string ToString();
+        public abstract override int GetHashCode();
         public abstract void SetFromString(string str);
         public abstract void DefaultInit();
     }

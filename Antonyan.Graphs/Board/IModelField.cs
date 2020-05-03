@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antonyan.Graphs.Board.Models;
+using Antonyan.Graphs.Data;
 using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Board
@@ -25,11 +26,11 @@ namespace Antonyan.Graphs.Board
         void Clear(bool raise = true);
 
         void MoveVertexModel(string  key, vec2 newPos, bool raise = true);
-
+        bool SetColor(string key, RGBcolor color, bool raise = true);
         bool MarkGraphModel(string key, bool raise = true);
         void UnmarkGraphModels(bool raise = true);
+        void RefreshDefault(bool raise = true);
         void Refresh();
-
         void SaveGraphToFile(Stream stream, bool raise = true);
         void OpenGraphInFile(List<GraphModel> models, string graphDataText, bool raise = true);
         string GetPosKey(vec2 pos, float r);
@@ -43,9 +44,17 @@ namespace Antonyan.Graphs.Board
         int MarkedEdgeModelCount { get; }
         bool Status { get; }
 
+        string GetAdjListToString();
+
+        
 
         // Tasks
         int GetHalfLifeDegree(AVertexModel vertex);
+        string GetStoredGraphAdjList(string name);
+        void AddCurrentGraphInStoredGraphs(string name, bool raise = true);
+        void RemoveStoredGraph(string name, bool raise = true);
+        List<string> GetStoredGraphsName();
+        void UnionGraphs(string[] graphsNames, string newGraphName, bool raise = true);
 
         // !Tasks
     }

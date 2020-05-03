@@ -43,5 +43,10 @@ namespace Antonyan.Graphs.Data
         {
             return ServiceFunctions.VertexRepresentation(data.ToString());
         }
+
+        public override int GetHashCode()
+        {
+            return data.GetHashCode();
+        }
     }
 }

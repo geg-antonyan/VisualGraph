@@ -33,7 +33,7 @@ namespace Antonyan.Graphs.Gui
 
         private readonly float R = GlobalParameters.Radius;
         private readonly float left = 30f;
-        private readonly float right = 60f;
+        private readonly float right = 250f;
         private readonly float top = 50f;
         private readonly float bottom = 50f;
         private readonly vec2 max, min;
@@ -54,19 +54,14 @@ namespace Antonyan.Graphs.Gui
         private Painter _painter;
         private IModelField _field;
 
-        private event EventHandler<EventArgs> myEvent;
-
-        private void MyEventFun(object sender, EventArgs e)
-        {
-            Refresh();
-        }
         public MainForm()
         {
-            myEvent += MyEventFun;
+
+            
+
 
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
-
             _painter = new Painter(
                 new Pen(Color.Red, 2f), new Pen(Color.Blue), new Pen(Color.Green, 3f), new Pen(Color.DarkGray, 2f),
                 new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f),
@@ -74,8 +69,18 @@ namespace Antonyan.Graphs.Gui
                 new Font(FontFamily.GenericMonospace, 12f),
                 new SolidBrush(Color.Red), new SolidBrush(Color.Blue), new SolidBrush(Color.Green), new SolidBrush(Color.DarkGray));
             InitializeComponent();
+            statusStrip.Items.Add(toolStripStatusLabel);
+            statusStrip.Text = "Hello World";
+            //toolStripStatusLabel.Visible = true;
+            //toolStripStatusLabel.Text = "Hello";
             Text = header;
+
+            listBoxAdjList.MouseDoubleClick += ListBoxAdjList_MouseDoubleClick;
         }
+
+
+
+
 
         public void AttachField(IModelField field) => _field = field;
 
@@ -89,6 +94,23 @@ namespace Antonyan.Graphs.Gui
             Wc.x = left;
             W.x = max.x - left;
             W.y = max.y - top;
+
+            //txtAdjList.Location.X = (int)(max.x + 10f);
+            txtAdjList.Location = new Point((int)(max.x + 10f), (int)min.y);
+            txtAdjList.Width = (int)right - 50;
+            txtAdjList.Height = (int)max.y - 260;
+            btnSaveAdjList.Location = new Point((int)(max.x + 10f), txtAdjList.Location.Y + txtAdjList.Height + 3);
+            btnSaveAdjList.Width = txtAdjList.Width;
+            btnSaveAdjList.Height = 43;
+            btnSaveAdjList.TextAlign = ContentAlignment.MiddleCenter;
+            listBoxAdjList.Location = new Point((int)(max.x + 10f), txtAdjList.Location.Y + txtAdjList.Height + 50);
+            listBoxAdjList.Width = txtAdjList.Width - 30;
+            listBoxAdjList.Height = (int)max.y - (int)top - txtAdjList.Height - 45;
+            btnUnion.Location = new Point(listBoxAdjList.Location.X + listBoxAdjList.Width + 5, listBoxAdjList.Location.Y);
+            btnUnion.TextAlign = ContentAlignment.MiddleCenter;
+            btnRemoveAdjList.Width = btnUnion.Width = 25;
+
+            btnRemoveAdjList.Location = new Point(btnUnion.Location.X, btnUnion.Location.Y + btnUnion.Height + 5);
         }
 
         public void ModelsFieldUpdate(object obj, EventArgs e)
@@ -205,6 +227,8 @@ namespace Antonyan.Graphs.Gui
             }
         }
 
+
+
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
             if (tsbtnMove.Checked)
@@ -260,276 +284,10 @@ namespace Antonyan.Graphs.Gui
         // *************** ****************** *************** **************************** //
 
         // ----------------------------- MainToolStrip ----------------------------------- //
-        private void tsbtnOpen_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (openGraphFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    using (Stream stream = openGraphFileDialog.OpenFile())
-                    {
-                        CommandEntered?.Invoke(this, new OpenGraphInFileCommandArgs(stream));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PostErrorMessage(ex.Message);
-            }
-        }
-        private void tsbtnSaveGraph_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (saveGraphFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    using (Stream stream = saveGraphFileDialog.OpenFile())
-                    {
-                        CommandEntered?.Invoke(this, new SaveGraphToFileCommandArgs(stream));
-                        PostMessage("Граф успешно сохранен");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PostErrorMessage(ex.Message);
-            }
 
-        }
-
-        private void tsbtnUndo_Click(object sender, EventArgs e)
-        {
-            CommandEntered?.Invoke(this, new ACommandArgs("undo"));
-        }
-        private void tsbtnRedo_Click(object sender, EventArgs e)
-        {
-            CommandEntered?.Invoke(this, new ACommandArgs("redo"));
-        }
-        private void tsBtnCrtGraph_Click(object sender, EventArgs e)
-        {
-            CreateGraphForm window = new CreateGraphForm();
-            window.Owner = this;
-            window.ShowDialog();
-            if (window.Ok)
-            {
-                oriented = window.Oriented;
-                weighted = window.Weighted;
-                CommandEntered?.Invoke(this, new CreateGraphCommandArgs(oriented, weighted));
-            }
-        }
-
-        private void tsBtnDeleteGraph_Click(object sender, EventArgs e)
-        {
-            DialogResult result = MessageBox.Show(this, "Вы действительно хотите безвозвратно удалить этот граф?", "Удаление Графа", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                CommandEntered?.Invoke(null, new ACommandArgs(nameof(RemoveGraphCommand)));
-            }
-        }
-
-        private void tsbtnAddVertex_Click(object sender, EventArgs e)
-        {
-            tsBtnAddVertex.Checked = !tsBtnAddVertex.Checked;
-            if (tsBtnAddVertex.Checked)
-            {
-                Text = header + " - кликните внутри рабочего прямоугольника, чтобы добавить вершину";
-                tsbtnMove.Checked = false;
-            }
-            else Text = header;
-        }
-
-        private void tsbtnRemoveElems_Click(object sender, EventArgs e)
-        {
-            CommandEntered?.Invoke(this, new RemoveModelsCommandArgs(_field.GetMarkedModels()));
-            sourceModel = stockModel = null;
-        }
-
-
-        private void tsBtnMove_Click(object sender, EventArgs e)
-        {
-            tsbtnMove.Checked = !tsbtnMove.Checked;
-            if (tsbtnMove.Checked)
-                tsBtnAddVertex.Checked = false;
-        }
-
-
-        private void tsBtnAddEdge_Click(object sender, EventArgs e)
-        {
-            if (sourceModel == null || stockModel == null
-                || sourceModel.Key == stockModel.Key) return;
-
-            string weight = null;
-            if (_field.IsWeighted)
-            {
-                SetWeightForm window = new SetWeightForm();
-                window.Owner = this;
-                window.ShowDialog();
-                if (window.Ok)
-                {
-                    weight = window.Weight;
-                }
-            }
-            AEdgeModel edgeModel;
-            if (_field.IsOrgraph)
-                edgeModel = new OrientEdgeModel(sourceModel, stockModel, weight);
-            else edgeModel = new NonOrientEdgeModel(sourceModel, stockModel, weight);
-
-            CommandEntered?.Invoke(this, new AddModelCommandArgs(edgeModel));
-            _field.UnmarkGraphModels();
-        }
-
-
-        private void tsBtnDetours_Click(object sender, EventArgs e)
-        {
-            string dfs = "Обход в глубину", bfs = "Обход в ширину";
-            bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = _field.MarkedVertexModelCount == 1 ? true : false;
-            if (res)
-            {
-                subDetoursBtnBFS.Text = $"{bfs} начиная с вершины \"{sourceModel.StringRepresent}\"";
-                subDetoursBtnDFS.Text = $"{dfs} начиная с вершины \"{sourceModel.StringRepresent}\"";
-            }
-            else
-            {
-                subDetoursBtnBFS.Text = bfs;
-                subDetoursBtnDFS.Text = dfs;
-            }
-        }
-
-        private void subDetoursBtnDFS_Click(object sender, EventArgs e)
-        {
-            Text += " - Выполяется алгоритм обхода в глубину";
-            _field.UnmarkGraphModels();
-            new Thread(() =>
-            CommandEntered?.Invoke(this, new DFScommandArgs(sourceModel))).Start();
-            Text = header;
-        }
-
-        private void subDetoursBtnBFS_Click(object sender, EventArgs e)
-        {
-            //Text += " - Выполяется алгоритм обхода в ширину";
-            //algorithmProcessing = true;
-            //algoThread = new Thread(() =>
-            //{
-            //    BeginInvoke((MethodInvoker)(() =>
-            //    {
-            //        CommandEntered?.Invoke(this, new UIStringArgs($"algorithm bfs {source}"));
-            //        algorithmProcessing = false;
-            //        Text = header;
-            //    }));
-            //});
-            //algoThread.Start();
-        }
-
-        private void tsBtnShortcats_Click(object sender, EventArgs e)
-        {
-            subShortcutBtnBFS.Enabled = _field.MarkedVertexModelCount == 2 && !weighted;
-        }
-
-        private void subShortcutBtnBFS_Click(object sender, EventArgs e)
-        {
-            Text += " - Выполяется алгоритм нахождение кратчайшего пути с помошью построение родительского дерева";
-            new Thread(() =>
-            {
-                CommandEntered?.Invoke(this, new ShortcutBFSCommandArgs(sourceModel, stockModel));
-            }).Start();
-        }
         // -----------------------------!MainToolStrip ----------------------------------- //
 
         // ****************** *********************** ************************************ //
-
-        // ---------------------------- Override Methods --------------------------------- //
-
-        public void PostMessage(string message)
-        {
-            MessageBox.Show(message, "Информация!!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public void PostWarningMessage(string warningMessage)
-        {
-            MessageBox.Show(warningMessage, "Предупреждение!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-
-
-        public void PostErrorMessage(string errorMessage)
-        {
-            MessageBox.Show(errorMessage, "Ошибка!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-
-
-        public void CheckUndoRedo(bool undoPossible, bool redoPossible)
-        {
-            tsBtnRedo.Enabled = redoPossible;
-            tsBtnUndo.Enabled = undoPossible;
-        }
-
-        public void SetFieldStatus(bool status)
-        {
-            if (!status) i = 0;
-            tlbtnCrtGraph.Enabled = !status;
-        }
-
-
-        public void FieldUpdate(object obj, ModelFieldUpdateArgs e)
-        {
-
-            BeginInvoke((MethodInvoker)(() =>
-           {
-               try
-               {
-                   switch (e?.Event)
-                   {
-                       case FieldEvents.InitGraph:
-                           header += (_field.IsOrgraph ? " - Ориентриванный, " : " - Неориентированный, ") +
-                                   (_field.IsWeighted ? "Взвещанный." : "Невзвещанный.");
-                           Text = header;
-                           tlbtnCrtGraph.Enabled = false;
-                           tsbtnDeleteGraph.Enabled = true;
-                           tsbtnMove.Enabled = true;
-                           tsBtnAddVertex.Enabled = true;
-                           tsbtnSaveGraph.Enabled = true;
-                           break;
-                       case FieldEvents.RemoveGraph:
-                           header = "Visual Graph";
-                           Text = header;
-                           i = 0;
-                           tlbtnCrtGraph.Enabled = true;
-                           tsbtnDeleteGraph.Enabled = false;
-                           tsbtnRemoveElems.Enabled = false;
-                           tsbtnMove.Enabled = false;
-                           tsBtnAddVertex.Enabled = false;
-                           tsbtnSaveGraph.Enabled = false;
-                           break;
-                       case FieldEvents.RemoveModels:
-                       case FieldEvents.RemoveModel:
-                           _field.UnmarkGraphModels();
-                           sourceModel = stockModel = null;
-                           break;
-                       default: break;
-                   }
-                   if (_field.Status)
-                   {
-                       tsbtnRemoveElems.Enabled = _field.MarkedModelsCount > 0;
-                       tsBtnAddEdge.Enabled = _field.MarkedVertexModelCount == 2 && _field.MarkedModelsCount == 2;
-                   }
-                   Refresh();
-               }
-               catch (Exception ex)
-               {
-                   PostErrorMessage(ex.Message);
-               }
-           }));
-        }
-
-
-        public bool AnswerTheQuestion(string question)
-        {
-            DialogResult result = MessageBox.Show(this, question, "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            return result == DialogResult.Yes ? true : false;
-        }
-
-        // ---------------------------- !Override Methods --------------------------------- //
 
     }
 

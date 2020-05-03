@@ -38,5 +38,10 @@ namespace Antonyan.Graphs.Data
                 throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
         }
 
+        public override int GetHashCode()
+        {
+            return data.GetHashCode();
+        }
+
     }
 }

@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 using Antonyan.Graphs.Data;
 using System.IO;
+using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Board
 {
-    public enum FieldEvents { InitGraph, RemoveGraph, AddModel, RemoveModel,
+    public enum FieldEvents
+    {
+        InitGraph, RemoveGraph, AddModel, RemoveModel,
         RemoveModels,
-        SaveGrapToFile
+        SaveGrapToFile,
+        UpdateStoredGraphs
     }
     public class ModelFieldUpdateArgs : EventArgs
     {
@@ -24,8 +28,9 @@ namespace Antonyan.Graphs.Board
         where TWeight : AWeight, new()
     {
         public event EventHandler<ModelFieldUpdateArgs> FieldUpdate;
+
         private SortedDictionary<string, GraphModel> _models;
-        private readonly UserInterface _ui;
+        private Dictionary<string, Graph<TVertex, TWeight>> _storedGraphs;
         public Graph<TVertex, TWeight> Graph { get; private set; }
 
         public bool IsOrgraph { get { return Graph.IsOrgraph; } }
@@ -41,13 +46,14 @@ namespace Antonyan.Graphs.Board
 
         public bool Status { get; private set; } = false;
 
-        public UserInterface UserInterface => _ui;
+        public UserInterface UserInterface { get; private set; }
 
         public ModelsField(UserInterface ui)
         {
-            _ui = ui;
+            _storedGraphs = new Dictionary<string, Graph<TVertex, TWeight>>();
+            UserInterface = ui;
             _models = new SortedDictionary<string, GraphModel>();
-            FieldUpdate += _ui.FieldUpdate;
+            FieldUpdate += ui.FieldUpdate;
         }
 
         public void CreateGraph(bool oriented, bool weighted, bool raise = true)
@@ -88,7 +94,7 @@ namespace Antonyan.Graphs.Board
         public void AddEdgeModel(AEdgeModel edgeModel, bool raise = true)
         {
             var weight = new TWeight();
-            if (edgeModel.Weight != null)
+            if (edgeModel.Weight != null && edgeModel.Weight != "")
                 weight.SetFromString(edgeModel.Weight);
             var source = new TVertex();
             var stock = new TVertex();
@@ -277,9 +283,12 @@ namespace Antonyan.Graphs.Board
                 .ToList();
         }
 
-        public void Refresh()
+        public void RefreshDefault(bool raise = true)
         {
-            FieldUpdate?.Invoke(null, null);
+            UnmarkGraphModels(false);
+            _models.Values.ToList().ForEach(m => m.Color = GraphModel.DefaultColor);
+            if (raise)
+                FieldUpdate?.Invoke(null, null);
         }
 
         public string GetVertexPosKey(vec2 pos, float r)
@@ -311,7 +320,7 @@ namespace Antonyan.Graphs.Board
                     }
                 });
                 sw.WriteLine("graphmodel end");
-                Graph.SaveGraphInFile(sw);
+                Graph.SaveGraphToFile(sw);
             }
             if (raise)
                 FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.SaveGrapToFile));
@@ -341,6 +350,81 @@ namespace Antonyan.Graphs.Board
             TVertex v = new TVertex();
             v.SetFromString(vertex.VertexStr);
             return Graph.GetHalfLifeDegree(v);
+        }
+
+        public string GetAdjListToString()
+        {
+            return Graph.GetAdjListToString();
+        }
+
+        public void AddCurrentGraphInStoredGraphs(string name, bool raise = true)
+        {
+            if (Graph == null) throw new Exception("Текущий граф еще не создан");
+            _storedGraphs.Add(name, new Graph<TVertex, TWeight>(Graph));
+            if (raise)
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.UpdateStoredGraphs));
+        }
+
+        public List<string> GetStoredGraphsName()
+        {
+            return _storedGraphs.Keys.ToList();
+        }
+
+        public void UnionGraphs(string[] graphsNames, string newGrapName, bool raise = true)
+        {
+            if (graphsNames.Length < 2)
+                throw new Exception("количество графов для соединении должно быть не меньше двух");
+            if (!_storedGraphs.ContainsKey(graphsNames[0]) || !_storedGraphs.ContainsKey(graphsNames[1]))
+            {
+                throw new Exception("Некорректное имя/имена грфа");
+            }
+            var res = _storedGraphs[graphsNames[0]].Union(_storedGraphs[graphsNames[1]]);
+            for (int i = 2; i < graphsNames.Length; i++)
+            {
+                if (!_storedGraphs.ContainsKey(graphsNames[i]))
+                    throw new Exception("Некорректное имя/имена грфа");
+                res = res.Union(_storedGraphs[graphsNames[i]]);
+            }
+            _storedGraphs.Add(newGrapName, res);
+            if (raise)
+                FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.UpdateStoredGraphs));
+        }
+
+        public void RemoveStoredGraph(string name, bool raise = true)
+        {
+            if (_storedGraphs.ContainsKey(name))
+            {
+                _storedGraphs.Remove(name);
+                if (raise)
+                    FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.UpdateStoredGraphs));
+            }
+        }
+
+        public string GetStoredGraphAdjList(string name)
+        {
+            if (_storedGraphs.ContainsKey(name))
+            {
+                return _storedGraphs[name].GetAdjListToString();
+            }
+            else return null;
+        }
+
+        public bool SetColor(string key, RGBcolor color, bool raise = true)
+        {
+            GraphModel m;
+            if (_models.ContainsKey(key) && !(m = _models[key]).Marked)
+            {
+                m.Color = color;
+                if (raise)
+                    FieldUpdate?.Invoke(null, null);
+                return true;
+            }
+            return false;
+        }
+
+        public void Refresh()
+        {
+            FieldUpdate?.Invoke(null, null);
         }
     }
 }

@@ -86,12 +86,12 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 var x = Q.Dequeue();
                 foreach (var w in G[x])
                 {
-                    if (!visited[w.Item1])
+                    if (!visited[w.Vertex])
                     {
-                        visited[w.Item1] = true;
-                        Q.Enqueue(w.Item1);
-                        parents[w.Item1] = x;
-                        Q.Enqueue(w.Item1);
+                        visited[w.Vertex] = true;
+                        Q.Enqueue(w.Vertex);
+                        parents[w.Vertex] = x;
+                        Q.Enqueue(w.Vertex);
                     }
                 }
             }
@@ -102,12 +102,12 @@ namespace Antonyan.Graphs.Backend.Algorithms
         {
             if (stock.Equals(source))
             {
-                Field.MarkGraphModel(source.GetRepresentation());
+                Field.SetColor(source.GetRepresentation(), RGBcolor.DarkGreen);
                 Thread.Sleep(500);
             }
             else if (parents[stock] == null)
             {
-                Field.UnmarkGraphModels();
+                //Field.UnmarkGraphModels();
                 Field.UserInterface.PostMessage($"Путь из {source} в {stock} не существует");
                 return;
             }
@@ -116,10 +116,10 @@ namespace Antonyan.Graphs.Backend.Algorithms
                 FindPath(G, source, parents[stock], parents);
                 Thread.Sleep(500);
                 var tmp = parents[stock];
-                if (!Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(tmp?.ToString(), stock.ToString(), null)) && !G.IsOrgraph)
-                    Field.MarkGraphModel(ServiceFunctions.EdgeRepresentation(stock.ToString(), tmp?.ToString(), null));
+                if (!Field.SetColor(ServiceFunctions.EdgeRepresentation(tmp?.ToString(), stock.ToString()), RGBcolor.DarkGreen) && !G.IsOrgraph)
+                    Field.SetColor(ServiceFunctions.EdgeRepresentation(tmp?.ToString(), stock.ToString()), RGBcolor.DarkGreen);
                 Thread.Sleep(500);
-                Field.MarkGraphModel(stock.GetRepresentation());
+                Field.SetColor(stock.GetRepresentation(), RGBcolor.DarkGreen);
 
             }
         }

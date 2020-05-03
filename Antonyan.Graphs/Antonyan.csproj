@@ -60,6 +60,12 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -74,22 +80,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Algorithms\Algorithm.cs" />
-    <Compile Include="Backend\Algorithms\AlgorithmRepository.cs" />
+    <Compile Include="Backend\Algorithms\ConnectedComponentsCommand.cs" />
     <Compile Include="Backend\Algorithms\DFSalgorithmCommand.cs" />
     <Compile Include="Backend\Algorithms\ShortcutBFSalgorithmCommand.cs" />
     <Compile Include="Backend\CommandArgs.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
     <Compile Include="Backend\CommandManager.cs" />
     <Compile Include="Backend\CommandRepository.cs" />
+    <Compile Include="Backend\Commands\AddCurrentGraphInStoredGraphsCommand.cs" />
     <Compile Include="Backend\Commands\AddModelCommand.cs" />
     <Compile Include="Backend\Commands\CreateGraphCommand.cs" />
     <Compile Include="Backend\Commands\AFieldCommand.cs" />
+    <Compile Include="Backend\Commands\GraphsUnionCommand.cs" />
     <Compile Include="Backend\Commands\HalfLifeDegreeCommand.cs" />
     <Compile Include="Backend\Commands\MoveVertexModelCommand.cs" />
     <Compile Include="Backend\Commands\OpenGraphInFile.cs" />
     <Compile Include="Backend\Commands\RemoveGraphCommand.cs" />
     <Compile Include="Backend\Commands\RemoveModelsCommand.cs" />
+    <Compile Include="Backend\Commands\RemoveStoredGraphCommand.cs" />
     <Compile Include="Backend\Commands\SaveGraphToFileCommand.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Board\IModelField.cs" />
@@ -114,6 +122,15 @@
     <Compile Include="Gui\Forms\CreateGraphForm.Designer.cs">
       <DependentUpon>CreateGraphForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\Forms\StoredGraphNameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\Forms\StoredGraphNameForm.Designer.cs">
+      <DependentUpon>StoredGraphNameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\MainForm.MainToolStrip.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Gui\MainForm.Tasks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,11 +146,15 @@
     <Compile Include="Gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Gui\MainForm.UiOverrides.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Gui\Painter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\GlobalParameters.cs" />
     <Compile Include="Util\Repository.cs" />
+    <Compile Include="Util\RGBcolor.cs" />
     <Compile Include="Util\ServiceFunctions.cs" />
     <Compile Include="Board\UserInterface.cs" />
     <EmbeddedResource Include="Gui\Forms\CreateGraphForm.resx">
@@ -141,6 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\Forms\SetWeightForm.resx">
       <DependentUpon>SetWeightForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Forms\StoredGraphNameForm.resx">
+      <DependentUpon>StoredGraphNameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -283,6 +307,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\refresh2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon\current\refresh3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -64,7 +64,7 @@ namespace Antonyan.Graphs.Backend.Commands
         {
             _vertices.ForEach(v => Field.AddVertexModel(v, false));
             _edges.ForEach(e => Field.AddEdgeModel(e, false));
-            Field.Refresh();
+            Field.RefreshDefault();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Antonyan.Graphs.Board.Models
         public AVertexModel Stock { get; private set; }
         public string Weight { get; protected set; }
         public AEdgeModel(AVertexModel source, AVertexModel stock, string weight)
-            : base(ServiceFunctions.EdgeRepresentation(source.VertexStr, stock.VertexStr, weight))
+            : base(ServiceFunctions.EdgeRepresentation(source.VertexStr, stock.VertexStr))
         {
             StringRepresent = weight;
             Source = source;

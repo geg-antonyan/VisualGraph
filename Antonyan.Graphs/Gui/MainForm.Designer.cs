@@ -36,6 +36,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnSaveGraph = new System.Windows.Forms.ToolStripButton();
             this.tsBtnUndo = new System.Windows.Forms.ToolStripButton();
             this.tsBtnRedo = new System.Windows.Forms.ToolStripButton();
+            this.tsBtnRefresh = new System.Windows.Forms.ToolStripButton();
             this.tlbtnCrtGraph = new System.Windows.Forms.ToolStripButton();
             this.tsbtnDeleteGraph = new System.Windows.Forms.ToolStripButton();
             this.tsBtnAddVertex = new System.Windows.Forms.ToolStripButton();
@@ -51,8 +52,17 @@ namespace Antonyan.Graphs.Gui
             this.openGraphFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.toolStripTask = new System.Windows.Forms.ToolStrip();
             this.tsBtnHalfWayTop = new System.Windows.Forms.ToolStripButton();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txtAdjList = new System.Windows.Forms.RichTextBox();
+            this.listBoxAdjList = new System.Windows.Forms.ListBox();
+            this.btnSaveAdjList = new System.Windows.Forms.Button();
+            this.btnUnion = new System.Windows.Forms.Button();
+            this.btnRemoveAdjList = new System.Windows.Forms.Button();
+            this.tsBtnExplorerConnComponent = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             this.toolStripTask.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripMain
@@ -65,6 +75,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnSaveGraph,
             this.tsBtnUndo,
             this.tsBtnRedo,
+            this.tsBtnRefresh,
             this.tlbtnCrtGraph,
             this.tsbtnDeleteGraph,
             this.tsBtnAddVertex,
@@ -77,7 +88,7 @@ namespace Antonyan.Graphs.Gui
             this.toolStripMain.Margin = new System.Windows.Forms.Padding(2, 4, 0, 0);
             this.toolStripMain.Name = "toolStripMain";
             this.toolStripMain.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.toolStripMain.Size = new System.Drawing.Size(994, 32);
+            this.toolStripMain.Size = new System.Drawing.Size(994, 29);
             this.toolStripMain.TabIndex = 0;
             this.toolStripMain.Text = "Меню";
             // 
@@ -87,7 +98,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnOpen.Image = global::Antonyan.Graphs.Properties.Resources.open;
             this.tsbtnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnOpen.Name = "tsbtnOpen";
-            this.tsbtnOpen.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnOpen.Size = new System.Drawing.Size(26, 26);
             this.tsbtnOpen.Text = "Открыть";
             this.tsbtnOpen.Click += new System.EventHandler(this.tsbtnOpen_Click);
             // 
@@ -97,7 +108,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnSaveGraph.Image = global::Antonyan.Graphs.Properties.Resources.save;
             this.tsbtnSaveGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnSaveGraph.Name = "tsbtnSaveGraph";
-            this.tsbtnSaveGraph.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnSaveGraph.Size = new System.Drawing.Size(26, 26);
             this.tsbtnSaveGraph.Text = "Сохранить";
             this.tsbtnSaveGraph.Click += new System.EventHandler(this.tsbtnSaveGraph_Click);
             // 
@@ -107,7 +118,7 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnUndo.Image = global::Antonyan.Graphs.Properties.Resources.Undo;
             this.tsBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsBtnUndo.Name = "tsBtnUndo";
-            this.tsBtnUndo.Size = new System.Drawing.Size(29, 29);
+            this.tsBtnUndo.Size = new System.Drawing.Size(26, 26);
             this.tsBtnUndo.Text = "Назад";
             this.tsBtnUndo.Click += new System.EventHandler(this.tsbtnUndo_Click);
             // 
@@ -117,9 +128,19 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnRedo.Image = global::Antonyan.Graphs.Properties.Resources.redo;
             this.tsBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsBtnRedo.Name = "tsBtnRedo";
-            this.tsBtnRedo.Size = new System.Drawing.Size(29, 29);
+            this.tsBtnRedo.Size = new System.Drawing.Size(26, 26);
             this.tsBtnRedo.Text = "Вперед";
             this.tsBtnRedo.Click += new System.EventHandler(this.tsbtnRedo_Click);
+            // 
+            // tsBtnRefresh
+            // 
+            this.tsBtnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnRefresh.Image = global::Antonyan.Graphs.Properties.Resources.refresh;
+            this.tsBtnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnRefresh.Name = "tsBtnRefresh";
+            this.tsBtnRefresh.Size = new System.Drawing.Size(26, 26);
+            this.tsBtnRefresh.Text = "Обнавить";
+            this.tsBtnRefresh.Click += new System.EventHandler(this.tsBtnRefresh_Click);
             // 
             // tlbtnCrtGraph
             // 
@@ -127,7 +148,7 @@ namespace Antonyan.Graphs.Gui
             this.tlbtnCrtGraph.Image = global::Antonyan.Graphs.Properties.Resources.AddGraph;
             this.tlbtnCrtGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tlbtnCrtGraph.Name = "tlbtnCrtGraph";
-            this.tlbtnCrtGraph.Size = new System.Drawing.Size(29, 29);
+            this.tlbtnCrtGraph.Size = new System.Drawing.Size(26, 26);
             this.tlbtnCrtGraph.Text = "Создать граф";
             this.tlbtnCrtGraph.Click += new System.EventHandler(this.tsBtnCrtGraph_Click);
             // 
@@ -137,7 +158,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnDeleteGraph.Image = global::Antonyan.Graphs.Properties.Resources.removeGraph3;
             this.tsbtnDeleteGraph.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDeleteGraph.Name = "tsbtnDeleteGraph";
-            this.tsbtnDeleteGraph.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnDeleteGraph.Size = new System.Drawing.Size(26, 26);
             this.tsbtnDeleteGraph.Text = "tsBtnRemoveGraph";
             this.tsbtnDeleteGraph.ToolTipText = "Удалить Граф";
             this.tsbtnDeleteGraph.Click += new System.EventHandler(this.tsBtnDeleteGraph_Click);
@@ -148,7 +169,7 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnAddVertex.Image = global::Antonyan.Graphs.Properties.Resources.AddVertex;
             this.tsBtnAddVertex.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsBtnAddVertex.Name = "tsBtnAddVertex";
-            this.tsBtnAddVertex.Size = new System.Drawing.Size(29, 29);
+            this.tsBtnAddVertex.Size = new System.Drawing.Size(26, 26);
             this.tsBtnAddVertex.Text = "Добаить вершины";
             this.tsBtnAddVertex.Click += new System.EventHandler(this.tsbtnAddVertex_Click);
             // 
@@ -158,7 +179,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnRemoveElems.Image = global::Antonyan.Graphs.Properties.Resources.removeElems;
             this.tsbtnRemoveElems.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnRemoveElems.Name = "tsbtnRemoveElems";
-            this.tsbtnRemoveElems.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnRemoveElems.Size = new System.Drawing.Size(26, 26);
             this.tsbtnRemoveElems.Text = "Удалить выбранные элементы";
             this.tsbtnRemoveElems.Click += new System.EventHandler(this.tsbtnRemoveElems_Click);
             // 
@@ -168,7 +189,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnMove.Image = global::Antonyan.Graphs.Properties.Resources.move;
             this.tsbtnMove.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnMove.Name = "tsbtnMove";
-            this.tsbtnMove.Size = new System.Drawing.Size(29, 29);
+            this.tsbtnMove.Size = new System.Drawing.Size(26, 26);
             this.tsbtnMove.Text = "Перемещение";
             this.tsbtnMove.Click += new System.EventHandler(this.tsBtnMove_Click);
             // 
@@ -178,7 +199,7 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnAddEdge.Image = global::Antonyan.Graphs.Properties.Resources.AddEdge2;
             this.tsBtnAddEdge.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsBtnAddEdge.Name = "tsBtnAddEdge";
-            this.tsBtnAddEdge.Size = new System.Drawing.Size(29, 29);
+            this.tsBtnAddEdge.Size = new System.Drawing.Size(26, 26);
             this.tsBtnAddEdge.Text = "Соединить вершины";
             this.tsBtnAddEdge.Click += new System.EventHandler(this.tsBtnAddEdge_Click);
             // 
@@ -191,7 +212,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnDetours.Image = global::Antonyan.Graphs.Properties.Resources.detours1;
             this.tsbtnDetours.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDetours.Name = "tsbtnDetours";
-            this.tsbtnDetours.Size = new System.Drawing.Size(38, 29);
+            this.tsbtnDetours.Size = new System.Drawing.Size(35, 26);
             this.tsbtnDetours.Text = "Обходы";
             this.tsbtnDetours.Click += new System.EventHandler(this.tsBtnDetours_Click);
             // 
@@ -199,7 +220,7 @@ namespace Antonyan.Graphs.Gui
             // 
             this.subDetoursBtnDFS.Image = global::Antonyan.Graphs.Properties.Resources.dfs;
             this.subDetoursBtnDFS.Name = "subDetoursBtnDFS";
-            this.subDetoursBtnDFS.Size = new System.Drawing.Size(186, 28);
+            this.subDetoursBtnDFS.Size = new System.Drawing.Size(182, 28);
             this.subDetoursBtnDFS.Text = "Обход в глубину";
             this.subDetoursBtnDFS.Click += new System.EventHandler(this.subDetoursBtnDFS_Click);
             // 
@@ -207,7 +228,7 @@ namespace Antonyan.Graphs.Gui
             // 
             this.subDetoursBtnBFS.Image = global::Antonyan.Graphs.Properties.Resources.bfs;
             this.subDetoursBtnBFS.Name = "subDetoursBtnBFS";
-            this.subDetoursBtnBFS.Size = new System.Drawing.Size(186, 28);
+            this.subDetoursBtnBFS.Size = new System.Drawing.Size(182, 28);
             this.subDetoursBtnBFS.Text = "Обход в ширину";
             this.subDetoursBtnBFS.Click += new System.EventHandler(this.subDetoursBtnBFS_Click);
             // 
@@ -219,7 +240,7 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnShortcats.Image = global::Antonyan.Graphs.Properties.Resources.shortcat4;
             this.tsbtnShortcats.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnShortcats.Name = "tsbtnShortcats";
-            this.tsbtnShortcats.Size = new System.Drawing.Size(33, 29);
+            this.tsbtnShortcats.Size = new System.Drawing.Size(35, 26);
             this.tsbtnShortcats.Text = "Кратчайшие пути";
             this.tsbtnShortcats.Click += new System.EventHandler(this.tsBtnShortcats_Click);
             // 
@@ -246,10 +267,11 @@ namespace Antonyan.Graphs.Gui
             this.toolStripTask.Dock = System.Windows.Forms.DockStyle.Right;
             this.toolStripTask.ImageScalingSize = new System.Drawing.Size(22, 22);
             this.toolStripTask.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsBtnHalfWayTop});
-            this.toolStripTask.Location = new System.Drawing.Point(962, 32);
+            this.tsBtnHalfWayTop,
+            this.tsBtnExplorerConnComponent});
+            this.toolStripTask.Location = new System.Drawing.Point(962, 29);
             this.toolStripTask.Name = "toolStripTask";
-            this.toolStripTask.Size = new System.Drawing.Size(32, 607);
+            this.toolStripTask.Size = new System.Drawing.Size(32, 610);
             this.toolStripTask.TabIndex = 1;
             this.toolStripTask.Text = "toolStripTasks";
             // 
@@ -264,11 +286,106 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnHalfWayTop.Text = "Полуисход вершины";
             this.tsBtnHalfWayTop.Click += new System.EventHandler(this.tsBtnHalfWayTop_Click);
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 617);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(962, 22);
+            this.statusStrip.TabIndex = 2;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
+            // txtAdjList
+            // 
+            this.txtAdjList.BackColor = System.Drawing.Color.LightGray;
+            this.txtAdjList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtAdjList.Cursor = System.Windows.Forms.Cursors.Default;
+            this.txtAdjList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtAdjList.HideSelection = false;
+            this.txtAdjList.Location = new System.Drawing.Point(800, 50);
+            this.txtAdjList.Name = "txtAdjList";
+            this.txtAdjList.ReadOnly = true;
+            this.txtAdjList.Size = new System.Drawing.Size(150, 399);
+            this.txtAdjList.TabIndex = 3;
+            this.txtAdjList.Text = "";
+            this.txtAdjList.WordWrap = false;
+            // 
+            // listBoxAdjList
+            // 
+            this.listBoxAdjList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listBoxAdjList.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBoxAdjList.FormattingEnabled = true;
+            this.listBoxAdjList.ItemHeight = 18;
+            this.listBoxAdjList.Location = new System.Drawing.Point(800, 492);
+            this.listBoxAdjList.Name = "listBoxAdjList";
+            this.listBoxAdjList.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.listBoxAdjList.Size = new System.Drawing.Size(121, 92);
+            this.listBoxAdjList.TabIndex = 4;
+            // 
+            // btnSaveAdjList
+            // 
+            this.btnSaveAdjList.BackColor = System.Drawing.SystemColors.Menu;
+            this.btnSaveAdjList.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnSaveAdjList.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSaveAdjList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveAdjList.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnSaveAdjList.Location = new System.Drawing.Point(800, 451);
+            this.btnSaveAdjList.Name = "btnSaveAdjList";
+            this.btnSaveAdjList.Size = new System.Drawing.Size(150, 35);
+            this.btnSaveAdjList.TabIndex = 5;
+            this.btnSaveAdjList.Text = "Сохранить список смежностей";
+            this.btnSaveAdjList.UseVisualStyleBackColor = false;
+            this.btnSaveAdjList.Click += new System.EventHandler(this.btnSaveAdjList_Click);
+            // 
+            // btnUnion
+            // 
+            this.btnUnion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUnion.Location = new System.Drawing.Point(928, 493);
+            this.btnUnion.Name = "btnUnion";
+            this.btnUnion.Size = new System.Drawing.Size(22, 27);
+            this.btnUnion.TabIndex = 6;
+            this.btnUnion.Text = "U";
+            this.btnUnion.UseVisualStyleBackColor = true;
+            this.btnUnion.Click += new System.EventHandler(this.btnUnion_Click);
+            // 
+            // btnRemoveAdjList
+            // 
+            this.btnRemoveAdjList.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnRemoveAdjList.Location = new System.Drawing.Point(927, 526);
+            this.btnRemoveAdjList.Name = "btnRemoveAdjList";
+            this.btnRemoveAdjList.Size = new System.Drawing.Size(22, 27);
+            this.btnRemoveAdjList.TabIndex = 7;
+            this.btnRemoveAdjList.Text = "X";
+            this.btnRemoveAdjList.UseVisualStyleBackColor = true;
+            this.btnRemoveAdjList.Click += new System.EventHandler(this.btnRemoveAdjList_Click);
+            // 
+            // tsBtnExplorerConnComponent
+            // 
+            this.tsBtnExplorerConnComponent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnExplorerConnComponent.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnExplorerConnComponent.Image")));
+            this.tsBtnExplorerConnComponent.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnExplorerConnComponent.Name = "tsBtnExplorerConnComponent";
+            this.tsBtnExplorerConnComponent.Size = new System.Drawing.Size(29, 26);
+            this.tsBtnExplorerConnComponent.Text = "Иследование связного компонента";
+            this.tsBtnExplorerConnComponent.Click += new System.EventHandler(this.tsBtnExplorerConnComponent_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 639);
+            this.Controls.Add(this.btnRemoveAdjList);
+            this.Controls.Add(this.btnUnion);
+            this.Controls.Add(this.btnSaveAdjList);
+            this.Controls.Add(this.listBoxAdjList);
+            this.Controls.Add(this.txtAdjList);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStripTask);
             this.Controls.Add(this.toolStripMain);
             this.DoubleBuffered = true;
@@ -288,6 +405,8 @@ namespace Antonyan.Graphs.Gui
             this.toolStripMain.PerformLayout();
             this.toolStripTask.ResumeLayout(false);
             this.toolStripTask.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -315,6 +434,15 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.OpenFileDialog openGraphFileDialog;
         private System.Windows.Forms.ToolStrip toolStripTask;
         private System.Windows.Forms.ToolStripButton tsBtnHalfWayTop;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.RichTextBox txtAdjList;
+        private System.Windows.Forms.ListBox listBoxAdjList;
+        private System.Windows.Forms.Button btnSaveAdjList;
+        private System.Windows.Forms.Button btnUnion;
+        private System.Windows.Forms.Button btnRemoveAdjList;
+        private System.Windows.Forms.ToolStripButton tsBtnRefresh;
+        private System.Windows.Forms.ToolStripButton tsBtnExplorerConnComponent;
     }
 }
 

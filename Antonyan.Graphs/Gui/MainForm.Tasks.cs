@@ -95,5 +95,25 @@ namespace Antonyan.Graphs.Gui
             
         }
 
+
+
+        private void tsBtnMST_Click(object sender, EventArgs e)
+        {
+            if (_field.Status == false) return;
+            var args = new MSTCommandArgs(2000);
+            new Thread(() =>
+            {
+                CommandEntered?.Invoke(this, args);
+                if (args.SuccsessOut)
+                {
+                    occupyInfoList = true;
+                    StringBuilder mst = new StringBuilder();
+                    mst.AppendLine($"Алгоритм: \"{args.AlgorithmNameOut}\"");
+                    args.MstOut.ForEach(str => mst.AppendLine(str));
+                    MessageBox.Show(mst.ToString(), "Минимальное оставное дерево", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    occupyInfoList = false;
+                }
+            }).Start();
+        }
     }
 }

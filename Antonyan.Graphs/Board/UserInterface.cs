@@ -19,6 +19,7 @@ namespace Antonyan.Graphs.Board
         //bool MarkModel(string represantion);
         //bool UnmarkModel(string represantion);
         //void UnmarkAll();
+        void PostStatusMessage(string message);
         void FieldUpdate(object obj, ModelFieldUpdateArgs e);
     }
 

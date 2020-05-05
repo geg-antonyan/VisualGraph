@@ -182,6 +182,7 @@ namespace Antonyan.Graphs.Data
                 if (adj.Vertex.Equals(e))
                     return ReturnValue.EdgeExist;
             }
+            e = AdjList.Keys.ToList().Find(v_ => v_.Equals(e));
             if (IsOrgraph)
             {
                 AdjList[v].Add(new VertexWeightPair<TVertex, TWeight>(e, w));

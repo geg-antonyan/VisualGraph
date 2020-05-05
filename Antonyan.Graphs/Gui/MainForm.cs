@@ -96,16 +96,16 @@ namespace Antonyan.Graphs.Gui
             W.y = max.y - top;
 
             //txtAdjList.Location.X = (int)(max.x + 10f);
-            txtAdjList.Location = new Point((int)(max.x + 10f), (int)min.y);
-            txtAdjList.Width = (int)right - 50;
-            txtAdjList.Height = (int)max.y - 260;
-            btnSaveAdjList.Location = new Point((int)(max.x + 10f), txtAdjList.Location.Y + txtAdjList.Height + 3);
-            btnSaveAdjList.Width = txtAdjList.Width;
+            txtInfoList.Location = new Point((int)(max.x + 10f), (int)min.y);
+            txtInfoList.Width = (int)right - 50;
+            txtInfoList.Height = (int)max.y - 260;
+            btnSaveAdjList.Location = new Point((int)(max.x + 10f), txtInfoList.Location.Y + txtInfoList.Height + 3);
+            btnSaveAdjList.Width = txtInfoList.Width;
             btnSaveAdjList.Height = 43;
             btnSaveAdjList.TextAlign = ContentAlignment.MiddleCenter;
-            listBoxAdjList.Location = new Point((int)(max.x + 10f), txtAdjList.Location.Y + txtAdjList.Height + 50);
-            listBoxAdjList.Width = txtAdjList.Width - 30;
-            listBoxAdjList.Height = (int)max.y - (int)top - txtAdjList.Height - 45;
+            listBoxAdjList.Location = new Point((int)(max.x + 10f), txtInfoList.Location.Y + txtInfoList.Height + 50);
+            listBoxAdjList.Width = txtInfoList.Width - 30;
+            listBoxAdjList.Height = (int)max.y - (int)top - txtInfoList.Height - 45;
             btnUnion.Location = new Point(listBoxAdjList.Location.X + listBoxAdjList.Width + 5, listBoxAdjList.Location.Y);
             btnUnion.TextAlign = ContentAlignment.MiddleCenter;
             btnRemoveAdjList.Width = btnUnion.Width = 25;
@@ -226,9 +226,6 @@ namespace Antonyan.Graphs.Gui
                 PostErrorMessage(ex.Message);
             }
         }
-
-
-
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
             if (tsbtnMove.Checked)
@@ -277,6 +274,7 @@ namespace Antonyan.Graphs.Gui
         {
 
         }
+
 
 
         // ----------------------------- !Mouse Events ----------------------------------- //

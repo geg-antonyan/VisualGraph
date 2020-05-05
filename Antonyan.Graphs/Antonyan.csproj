@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Backend\Algorithms\ConnectedComponentsCommand.cs" />
     <Compile Include="Backend\Algorithms\DFSalgorithmCommand.cs" />
+    <Compile Include="Backend\Algorithms\MSTCommand.cs" />
     <Compile Include="Backend\Algorithms\ShortcutBFSalgorithmCommand.cs" />
     <Compile Include="Backend\CommandArgs.cs" />
     <Compile Include="Backend\CommandDispetcher.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\GlobalParameters.cs" />
+    <Compile Include="Util\GPen.cs" />
     <Compile Include="Util\Repository.cs" />
     <Compile Include="Util\RGBcolor.cs" />
     <Compile Include="Util\ServiceFunctions.cs" />

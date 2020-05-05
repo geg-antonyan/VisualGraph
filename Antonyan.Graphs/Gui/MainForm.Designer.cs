@@ -52,14 +52,15 @@ namespace Antonyan.Graphs.Gui
             this.openGraphFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.toolStripTask = new System.Windows.Forms.ToolStrip();
             this.tsBtnHalfWayTop = new System.Windows.Forms.ToolStripButton();
+            this.tsBtnExplorerConnComponent = new System.Windows.Forms.ToolStripButton();
+            this.tsBtnMST = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.txtAdjList = new System.Windows.Forms.RichTextBox();
+            this.txtInfoList = new System.Windows.Forms.RichTextBox();
             this.listBoxAdjList = new System.Windows.Forms.ListBox();
             this.btnSaveAdjList = new System.Windows.Forms.Button();
             this.btnUnion = new System.Windows.Forms.Button();
             this.btnRemoveAdjList = new System.Windows.Forms.Button();
-            this.tsBtnExplorerConnComponent = new System.Windows.Forms.ToolStripButton();
             this.toolStripMain.SuspendLayout();
             this.toolStripTask.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -268,10 +269,11 @@ namespace Antonyan.Graphs.Gui
             this.toolStripTask.ImageScalingSize = new System.Drawing.Size(22, 22);
             this.toolStripTask.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsBtnHalfWayTop,
-            this.tsBtnExplorerConnComponent});
-            this.toolStripTask.Location = new System.Drawing.Point(962, 29);
+            this.tsBtnExplorerConnComponent,
+            this.tsBtnMST});
+            this.toolStripTask.Location = new System.Drawing.Point(967, 29);
             this.toolStripTask.Name = "toolStripTask";
-            this.toolStripTask.Size = new System.Drawing.Size(32, 610);
+            this.toolStripTask.Size = new System.Drawing.Size(27, 610);
             this.toolStripTask.TabIndex = 1;
             this.toolStripTask.Text = "toolStripTasks";
             // 
@@ -282,17 +284,38 @@ namespace Antonyan.Graphs.Gui
             this.tsBtnHalfWayTop.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnHalfWayTop.Image")));
             this.tsBtnHalfWayTop.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsBtnHalfWayTop.Name = "tsBtnHalfWayTop";
-            this.tsBtnHalfWayTop.Size = new System.Drawing.Size(29, 26);
+            this.tsBtnHalfWayTop.Size = new System.Drawing.Size(24, 26);
             this.tsBtnHalfWayTop.Text = "Полуисход вершины";
             this.tsBtnHalfWayTop.Click += new System.EventHandler(this.tsBtnHalfWayTop_Click);
             // 
+            // tsBtnExplorerConnComponent
+            // 
+            this.tsBtnExplorerConnComponent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnExplorerConnComponent.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnExplorerConnComponent.Image")));
+            this.tsBtnExplorerConnComponent.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnExplorerConnComponent.Name = "tsBtnExplorerConnComponent";
+            this.tsBtnExplorerConnComponent.Size = new System.Drawing.Size(24, 26);
+            this.tsBtnExplorerConnComponent.Text = "Иследование связного компонента";
+            this.tsBtnExplorerConnComponent.Click += new System.EventHandler(this.tsBtnExplorerConnComponent_Click);
+            // 
+            // tsBtnMST
+            // 
+            this.tsBtnMST.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsBtnMST.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnMST.Image")));
+            this.tsBtnMST.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsBtnMST.Name = "tsBtnMST";
+            this.tsBtnMST.Size = new System.Drawing.Size(24, 26);
+            this.tsBtnMST.Text = "Минимальное остовное дерево";
+            this.tsBtnMST.Click += new System.EventHandler(this.tsBtnMST_Click);
+            // 
             // statusStrip
             // 
+            this.statusStrip.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 617);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(962, 22);
+            this.statusStrip.Size = new System.Drawing.Size(967, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -301,20 +324,20 @@ namespace Antonyan.Graphs.Gui
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
             // 
-            // txtAdjList
+            // txtInfoList
             // 
-            this.txtAdjList.BackColor = System.Drawing.Color.LightGray;
-            this.txtAdjList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtAdjList.Cursor = System.Windows.Forms.Cursors.Default;
-            this.txtAdjList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtAdjList.HideSelection = false;
-            this.txtAdjList.Location = new System.Drawing.Point(800, 50);
-            this.txtAdjList.Name = "txtAdjList";
-            this.txtAdjList.ReadOnly = true;
-            this.txtAdjList.Size = new System.Drawing.Size(150, 399);
-            this.txtAdjList.TabIndex = 3;
-            this.txtAdjList.Text = "";
-            this.txtAdjList.WordWrap = false;
+            this.txtInfoList.BackColor = System.Drawing.Color.LightGray;
+            this.txtInfoList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtInfoList.Cursor = System.Windows.Forms.Cursors.Default;
+            this.txtInfoList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtInfoList.HideSelection = false;
+            this.txtInfoList.Location = new System.Drawing.Point(800, 50);
+            this.txtInfoList.Name = "txtInfoList";
+            this.txtInfoList.ReadOnly = true;
+            this.txtInfoList.Size = new System.Drawing.Size(150, 399);
+            this.txtInfoList.TabIndex = 3;
+            this.txtInfoList.Text = "";
+            this.txtInfoList.WordWrap = false;
             // 
             // listBoxAdjList
             // 
@@ -365,16 +388,6 @@ namespace Antonyan.Graphs.Gui
             this.btnRemoveAdjList.UseVisualStyleBackColor = true;
             this.btnRemoveAdjList.Click += new System.EventHandler(this.btnRemoveAdjList_Click);
             // 
-            // tsBtnExplorerConnComponent
-            // 
-            this.tsBtnExplorerConnComponent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsBtnExplorerConnComponent.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnExplorerConnComponent.Image")));
-            this.tsBtnExplorerConnComponent.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsBtnExplorerConnComponent.Name = "tsBtnExplorerConnComponent";
-            this.tsBtnExplorerConnComponent.Size = new System.Drawing.Size(29, 26);
-            this.tsBtnExplorerConnComponent.Text = "Иследование связного компонента";
-            this.tsBtnExplorerConnComponent.Click += new System.EventHandler(this.tsBtnExplorerConnComponent_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -384,7 +397,7 @@ namespace Antonyan.Graphs.Gui
             this.Controls.Add(this.btnUnion);
             this.Controls.Add(this.btnSaveAdjList);
             this.Controls.Add(this.listBoxAdjList);
-            this.Controls.Add(this.txtAdjList);
+            this.Controls.Add(this.txtInfoList);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStripTask);
             this.Controls.Add(this.toolStripMain);
@@ -436,13 +449,14 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.ToolStripButton tsBtnHalfWayTop;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.RichTextBox txtAdjList;
+        private System.Windows.Forms.RichTextBox txtInfoList;
         private System.Windows.Forms.ListBox listBoxAdjList;
         private System.Windows.Forms.Button btnSaveAdjList;
         private System.Windows.Forms.Button btnUnion;
         private System.Windows.Forms.Button btnRemoveAdjList;
         private System.Windows.Forms.ToolStripButton tsBtnRefresh;
         private System.Windows.Forms.ToolStripButton tsBtnExplorerConnComponent;
+        private System.Windows.Forms.ToolStripButton tsBtnMST;
     }
 }
 

@@ -286,7 +286,7 @@ namespace Antonyan.Graphs.Board
         public void RefreshDefault(bool raise = true)
         {
             UnmarkGraphModels(false);
-            _models.Values.ToList().ForEach(m => m.Color = GraphModel.DefaultColor);
+            _models.Values.ToList().ForEach(m => { m.Color = GraphModel.DefaultColor; m.Width = GraphModel.DefaultWidth; });
             if (raise)
                 FieldUpdate?.Invoke(null, null);
         }
@@ -425,6 +425,47 @@ namespace Antonyan.Graphs.Board
         public void Refresh()
         {
             FieldUpdate?.Invoke(null, null);
+        }
+
+        public bool SetWidth(string key, int width, bool raise = true)
+        {
+            GraphModel m;
+            if (_models.ContainsKey(key) && !(m = _models[key]).Marked)
+            {
+                m.Width = width;
+                if (raise)
+                    FieldUpdate?.Invoke(null, null);
+                return true;
+            }
+            return false;
+        }
+
+        public bool SetColorAndWidth(string key, RGBcolor color, int width, bool raise = true)
+        {
+            GraphModel m;
+            if (_models.ContainsKey(key) && !(m = _models[key]).Marked)
+            {
+                m.Color = color;
+                m.Width = width;
+                if (raise)
+                    FieldUpdate?.Invoke(null, null);
+                return true;
+            }
+            return false;
+        }
+
+        public bool SetModelDefaultOptions(string key, bool raise = true)
+        {
+            GraphModel m;
+            if (_models.ContainsKey(key) && !(m = _models[key]).Marked)
+            {
+                m.Color = GraphModel.DefaultColor;
+                m.Width = GraphModel.DefaultWidth;
+                if (raise)
+                    FieldUpdate?.Invoke(null, null);
+                return true;
+            }
+            return false;
         }
     }
 }

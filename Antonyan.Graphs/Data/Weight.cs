@@ -10,7 +10,10 @@ namespace Antonyan.Graphs.Data
         private int data;
         public Weight() : base() { }
         public Weight(string str) : base(str) { }
-        
+        public Weight(int value)
+        {
+            data = value;
+        }
 
         public override int CompareTo(AType other)
         {
@@ -35,7 +38,7 @@ namespace Antonyan.Graphs.Data
         public override void SetFromString(string str)
         {
             if (!int.TryParse(str, out data))
-                throw new Exception($"Don't convert {str} to int in method Vertex.StringInit()");
+                throw new Exception($"Don't convert {str} to int in method Weight.SetFromString()");
         }
 
         public override int GetHashCode()
@@ -43,5 +46,24 @@ namespace Antonyan.Graphs.Data
             return data.GetHashCode();
         }
 
+        public override AWeight Plus(AWeight other)
+        {
+            return new Weight(data + ((Weight)other).data);
+        }
+
+        public override AWeight Minus(AWeight other)
+        {
+            return new Weight(data - ((Weight)other).data);
+        }
+
+        public override bool LessThan(AWeight other)
+        {
+            return CompareTo(other) < 0;
+        }
+
+        public override bool MoreThan(AWeight other)
+        {
+            return CompareTo(other) > 0;
+        }
     }
 }

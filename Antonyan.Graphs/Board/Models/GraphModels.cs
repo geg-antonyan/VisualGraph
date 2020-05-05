@@ -13,6 +13,8 @@ namespace Antonyan.Graphs.Board.Models
     {
         protected readonly string _key;
         public static readonly RGBcolor DefaultColor = RGBcolor.Blue;
+        public static readonly int DefaultWidth = 1;
+        private int _width = DefaultWidth;
         private RGBcolor _color = DefaultColor;
         public string StringRepresent { get; protected set; }
         public RGBcolor Color
@@ -26,6 +28,19 @@ namespace Antonyan.Graphs.Board.Models
             set
             {
                 _color = value;
+            }
+        }
+
+        public int Width
+        {
+            get { return _width; }
+            set 
+            {
+                if (value > 4)
+                    _width = 4;
+                else if (value < 1)
+                    _width = 1;
+                else _width = value;
             }
         }
         public GraphModel(string key, bool marked = false)

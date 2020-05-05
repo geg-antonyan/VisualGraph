@@ -10,5 +10,7 @@ namespace Antonyan.Graphs.Backend
     {
         public ACommandArgs(string commandName) => CommandName = commandName;
         public string CommandName { get; private set; }
+        public bool SuccsessOut { get; set; }
     }
+
 }

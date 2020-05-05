@@ -27,6 +27,9 @@ namespace Antonyan.Graphs.Board
 
         void MoveVertexModel(string  key, vec2 newPos, bool raise = true);
         bool SetColor(string key, RGBcolor color, bool raise = true);
+        bool SetWidth(string key, int width, bool raise = true);
+        bool SetColorAndWidth(string key, RGBcolor color, int width, bool raise = true);
+        bool SetModelDefaultOptions(string key, bool raise = true);
         bool MarkGraphModel(string key, bool raise = true);
         void UnmarkGraphModels(bool raise = true);
         void RefreshDefault(bool raise = true);

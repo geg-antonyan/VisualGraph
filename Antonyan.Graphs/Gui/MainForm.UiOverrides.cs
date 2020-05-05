@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Media;
 
 using Antonyan.Graphs.Board;
+using System.Drawing;
 
 namespace Antonyan.Graphs.Gui
 {
     partial class MainForm
     {
-
+        private bool occupyInfoList = false;
         public void PostMessage(string message)
         {
             MessageBox.Show(message, "Информация!!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -26,6 +28,16 @@ namespace Antonyan.Graphs.Gui
             MessageBox.Show(errorMessage, "Ошибка!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+
+        public void PostStatusMessage(string message)
+        {
+            BeginInvoke((MethodInvoker)(() =>
+            {
+                // SystemSounds.Exclamation.Play();
+                toolStripStatusLabel.ForeColor = Color.Red;
+                toolStripStatusLabel.Text = message;
+            }));
+        }
 
 
         public void CheckUndoRedo(bool undoPossible, bool redoPossible)
@@ -70,7 +82,7 @@ namespace Antonyan.Graphs.Gui
                             tsbtnMove.Enabled = false;
                             tsBtnAddVertex.Enabled = false;
                             tsbtnSaveGraph.Enabled = false;
-                            txtAdjList.Text = "";
+                            txtInfoList.Text = "";
                             break;
                         case FieldEvents.RemoveModels:
                         case FieldEvents.RemoveModel:
@@ -87,7 +99,8 @@ namespace Antonyan.Graphs.Gui
                     }
                     if (_field.Status)
                     {
-                        txtAdjList.Text = _field.GetAdjListToString();
+                        if (!occupyInfoList)
+                            txtInfoList.Text = _field.GetAdjListToString();
                         tsbtnRemoveElems.Enabled = _field.MarkedModelsCount > 0;
                         tsBtnAddEdge.Enabled = _field.MarkedVertexModelCount == 2 && _field.MarkedModelsCount == 2;
                     }

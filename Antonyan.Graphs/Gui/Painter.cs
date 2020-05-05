@@ -74,7 +74,7 @@ namespace Antonyan.Graphs.Gui
             Color current = Color.FromArgb(m.Color.R, m.Color.G, m.Color.B);
             pen.Color = current;
             brush.Color = current;
-            pen.Width = m.Marked ? 2 : 1;
+            pen.Width = m.Marked ? 2 : m.Width;
             var vertex = m as VertexDrawModel;
             if (vertex != null)
                 DrawVertex(g, vertex, min, max);

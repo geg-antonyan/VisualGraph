@@ -77,6 +77,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
                     DFS(G, adj.Vertex, visited);
                 }
             }
+            Field.UserInterface.PostStatusMessage("Выполниение обхода в глубину закончен!");
         }
 
         //public override RepositoryItem Clone(RepositoryArgs args)

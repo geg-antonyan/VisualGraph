@@ -100,7 +100,7 @@ namespace Antonyan.Graphs.Gui
         private void tsBtnMST_Click(object sender, EventArgs e)
         {
             if (_field.Status == false) return;
-            var args = new MSTCommandArgs(2000);
+            var args = new MSTCommandArgs(500);
             new Thread(() =>
             {
                 CommandEntered?.Invoke(this, args);

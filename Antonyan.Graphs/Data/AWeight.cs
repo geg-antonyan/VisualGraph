@@ -11,6 +11,7 @@ namespace Antonyan.Graphs.Data
 
         public abstract AWeight Plus(AWeight other);
         public abstract AWeight Minus(AWeight other);
+        public abstract AWeight NULL();
         public abstract bool LessThan(AWeight other);
         public abstract bool MoreThan(AWeight other);
     }

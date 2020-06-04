@@ -63,7 +63,7 @@ namespace Antonyan.Graphs.Gui
                     switch (e?.Event)
                     {
                         case FieldEvents.InitGraph:
-                            header += (_field.IsOrgraph ? " - Ориентриванный, " : " - Неориентированный, ") +
+                            header = "Visual Graph " + (_field.IsOrgraph ? " - Ориентриванный, " : " - Неориентированный, ") +
                                     (_field.IsWeighted ? "Взвещанный." : "Невзвещанный.");
                             Text = header;
                             tlbtnCrtGraph.Enabled = false;

@@ -56,23 +56,11 @@ namespace Antonyan.Graphs.Gui
 
         public MainForm()
         {
-
-            
-
-
             min = new vec2(); max = new vec2();
             Wc = new vec2(); W = new vec2();
-            _painter = new Painter(
-                new Pen(Color.Red, 2f), new Pen(Color.Blue), new Pen(Color.Green, 3f), new Pen(Color.DarkGray, 2f),
-                new Font(FontFamily.GenericSansSerif, 14f), new Font(FontFamily.GenericSansSerif, 12f),
-                new Font(FontFamily.GenericMonospace, 14f),
-                new Font(FontFamily.GenericMonospace, 12f),
-                new SolidBrush(Color.Red), new SolidBrush(Color.Blue), new SolidBrush(Color.Green), new SolidBrush(Color.DarkGray));
+            _painter = new Painter();
             InitializeComponent();
             statusStrip.Items.Add(toolStripStatusLabel);
-            statusStrip.Text = "Hello World";
-            //toolStripStatusLabel.Visible = true;
-            //toolStripStatusLabel.Text = "Hello";
             Text = header;
 
             listBoxAdjList.MouseDoubleClick += ListBoxAdjList_MouseDoubleClick;
@@ -140,7 +128,7 @@ namespace Antonyan.Graphs.Gui
             {
                 var g = e.Graphics;
                 if (_field.Status)
-                    _field.Models.ForEach(m => _painter.Draw(g, m, min, max));
+                    _field.Models?.ForEach(m => _painter.Draw(g, m, min, max));
                 Pen rectPen = new Pen(Color.Black, 2);
                 g.DrawRectangle(rectPen, left, top, W.x, W.y);
             }

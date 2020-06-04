@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Backend\Algorithms\ConnectedComponentsCommand.cs" />
     <Compile Include="Backend\Algorithms\DFSalgorithmCommand.cs" />
+    <Compile Include="Backend\Algorithms\DijkstraAlgorithm.cs" />
     <Compile Include="Backend\Algorithms\MSTCommand.cs" />
     <Compile Include="Backend\Algorithms\ShortcutBFSalgorithmCommand.cs" />
     <Compile Include="Backend\CommandArgs.cs" />

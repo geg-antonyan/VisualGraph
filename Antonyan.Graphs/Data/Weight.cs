@@ -65,5 +65,10 @@ namespace Antonyan.Graphs.Data
         {
             return CompareTo(other) > 0;
         }
+
+        public override AWeight NULL()
+        {
+            return new Weight(0);
+        }
     }
 }

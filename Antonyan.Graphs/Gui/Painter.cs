@@ -14,21 +14,6 @@ namespace Antonyan.Graphs.Gui
 {
     public class Painter
     {
-        protected Pen markCirclePen;
-        protected Pen unmarkCirclePen;
-        protected Pen markEdgePen;
-        protected Pen unmarkEdgePen;
-
-        protected Font markVertexFont;
-        protected Font unmarkVertexFont;
-        protected Font markWeightFont;
-        protected Font unmarkWeightFont;
-
-        protected Brush markVertexBrush;
-        protected Brush unmarkVertexBrush;
-        protected Brush markWeightBrush;
-        protected Brush unmarkWeightBrush;
-
         protected Font font;
         protected SolidBrush brush;
         protected Pen pen;
@@ -42,35 +27,14 @@ namespace Antonyan.Graphs.Gui
         protected static readonly Matrix mirrorX = new Matrix(-1f, 0f, 0f, 1f, 0f, 0f);
         protected static readonly Matrix mirrorY = new Matrix(1f, 0f, 0f, -1f, 0f, 0f);
 
-        public Painter(Pen mcp, Pen umcp, Pen me, Pen ume,
-            Font mv, Font umv, Font mw, Font umw,
-            Brush mvb, Brush umvb, Brush mwb, Brush umwb)
+        public Painter()
         {
-            markCirclePen = mcp; unmarkCirclePen = umcp;
-            markEdgePen = me; unmarkEdgePen = ume;
-            markVertexFont = mv; unmarkVertexFont = umv;
-            markWeightFont = mw; unmarkWeightFont = umw;
-            markVertexBrush = mvb; unmarkVertexBrush = umvb;
-            markWeightBrush = mwb; unmarkWeightBrush = umwb;
-
             font = new Font(FontFamily.GenericSansSerif, 12f);
             brush = new SolidBrush(Color.Blue);
             pen = new Pen(Color.Blue, 1);
         }
         public void Draw(Graphics g, GraphModel m, vec2 min, vec2 max)
         {
-            //if (model.Marked)
-            //{
-            //    pen = markCirclePen;
-            //    brush = markVertexBrush;
-            //    font = markVertexFont;
-            //}
-            //else
-            //{
-            //    pen = unmarkCirclePen;
-            //    brush = unmarkVertexBrush;
-            //    font = unmarkVertexFont;
-            //}
             Color current = Color.FromArgb(m.Color.R, m.Color.G, m.Color.B);
             pen.Color = current;
             brush.Color = current;

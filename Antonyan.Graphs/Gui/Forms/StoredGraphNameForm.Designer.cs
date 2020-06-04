@@ -83,7 +83,7 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.lblName);
-            this.ListName = "StoredGraphNameForm";
+  //          this.ListName = "StoredGraphNameForm";
             this.Text = "Название списка смежности";
             this.ResumeLayout(false);
             this.PerformLayout();

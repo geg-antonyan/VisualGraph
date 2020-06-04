@@ -141,6 +141,7 @@ namespace Antonyan.Graphs.Gui
 
         private void tsBtnDetours_Click(object sender, EventArgs e)
         {
+            if (!_field.Status) return;
             string dfs = "Обход в глубину", bfs = "Обход в ширину";
             bool res = subDetoursBtnBFS.Enabled = subDetoursBtnDFS.Enabled = _field.MarkedVertexModelCount == 1 ? true : false;
             if (res)
@@ -157,14 +158,10 @@ namespace Antonyan.Graphs.Gui
 
         private void subDetoursBtnDFS_Click(object sender, EventArgs e)
         {
-            // Text += " - Выполяется алгоритм обхода в глубину";
             toolStripStatusLabel.Text = "Выполяется алгоритм обхода в глубину";
-            //statusStrip.
             _field.UnmarkGraphModels();
             new Thread(() =>
             CommandEntered?.Invoke(this, new DFScommandArgs(sourceModel))).Start();
-            //Text = header;
-            //toolStripStatusLabel.Text = "";
         }
 
         private void subDetoursBtnBFS_Click(object sender, EventArgs e)

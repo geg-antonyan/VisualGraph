@@ -11,5 +11,9 @@ namespace Antonyan.Graphs.Data
         public AVertex() { DefaultInit(); }
         public AVertex(string str) { SetFromString(str); }
         public abstract string GetRepresentation();
+
+        // для Дейыктра
+        public AWeight d;
+        public AVertex p;
     }
 }

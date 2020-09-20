@@ -8,22 +8,24 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
 {
+
     public interface IGraph
     {
 
     }
-    public class VertexWeightPair<TVertex, TWeight> : IEquatable<VertexWeightPair<TVertex, TWeight>>
+    
+    public class VertexWeightPair<TVertex> : IEquatable<VertexWeightPair<TVertex>>
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
-        public VertexWeightPair(TVertex v, TWeight w)
-        {
+        
+        public VertexWeightPair(TVertex v, int w)
+        { 
             Vertex = v;
             Weight = w;
         }
         public TVertex Vertex { get; private set; }
-        public TWeight Weight { get; private set; }
-        public bool Equals(VertexWeightPair<TVertex, TWeight> other)
+        public int Weight { get; private set; }
+        public bool Equals(VertexWeightPair<TVertex> other)
         {
             return Vertex.Equals(other.Vertex) && (Weight != null ? Weight.Equals(other.Weight) : true);
         }
@@ -36,9 +38,8 @@ namespace Antonyan.Graphs.Data
 
 
     public enum ReturnValue { VertexExist, VertexDontExist, EdgeExist, EdgeDontExist, Succsess };
-    public class Graph<TVertex, TWeight> : IGraph
+    public class Graph<TVertex> : IGraph
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         public bool IsOrgraph { get; private set; }
         public bool IsWeighted { get; private set; }
@@ -48,13 +49,13 @@ namespace Antonyan.Graphs.Data
         {
             IsOrgraph = false;
             IsWeighted = false;
-            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>>();
+            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>>();
         }
         public Graph(bool orgraph, bool weighted)
         {
             IsOrgraph = orgraph;
             IsWeighted = weighted;
-            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>>();
+            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>>();
         }
 
         public Graph(Stream stream)
@@ -76,7 +77,7 @@ namespace Antonyan.Graphs.Data
 
             IsOrgraph = (lines.Length >= 1 && lines[0].TrimEnd(' ').ToLower() == "orgraph") ? true : false;
             IsWeighted = (lines.Length >= 2 && lines[1].TrimEnd(' ').ToLower() == "weighted") ? true : false;
-            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>>();
+            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>>();
             for (int i = 2; i < lines.Length; i++)
             {
                 if (lines[i].Length == 0) continue;
@@ -97,12 +98,12 @@ namespace Antonyan.Graphs.Data
                 for (int j = 1; j < elem.Length; j++)
                 {
                     var e = new TVertex();
-                    var w = new TWeight();
+                    int w = 0;
                     if (IsWeighted)
                     {
                         string[] pair = elem[j].Split('/');
                         e.SetFromString(pair[0]);
-                        w.SetFromString(pair[1]);
+                        w = int.Parse(pair[1]);
                     }
                     else e.SetFromString(elem[j]);
                     AddEdge(v, e, w);
@@ -135,14 +136,18 @@ namespace Antonyan.Graphs.Data
         }
 
 
-        public Graph(Graph<TVertex, TWeight> other)
+        public Graph(Graph<TVertex> other)
         {
-            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>>();
+            AdjList = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>>();
             foreach (var pair in other.AdjList)
             {
-                AdjList.Add(pair.Key, new List<VertexWeightPair<TVertex, TWeight>>());
+                AdjList.Add(pair.Key, new List<VertexWeightPair<TVertex>>());
                 foreach (var adj in pair.Value)
-                    AdjList[pair.Key].Add(new VertexWeightPair<TVertex, TWeight>(adj.Vertex, adj.Weight));
+                {
+                    var v = new TVertex();
+                    v.SetFromString(adj.Vertex.ToString());
+                    AdjList[pair.Key].Add(new VertexWeightPair<TVertex>(v, adj.Weight));
+                }
             }
             IsWeighted = other.IsWeighted;
             IsOrgraph = other.IsOrgraph;
@@ -150,9 +155,9 @@ namespace Antonyan.Graphs.Data
 
 
         public int Count { get { return AdjList.Count; } }
-        public SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>> AdjList { get; private set; }
+        public SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>> AdjList { get; private set; }
 
-        public List<VertexWeightPair<TVertex, TWeight>> this[TVertex v]
+        public List<VertexWeightPair<TVertex>> this[TVertex v]
         {
             get
             {
@@ -167,12 +172,12 @@ namespace Antonyan.Graphs.Data
         {
             if (AdjList.ContainsKey(v))
                 return ReturnValue.VertexExist;
-            AdjList.Add(v, new List<VertexWeightPair<TVertex, TWeight>>());
+            AdjList.Add(v, new List<VertexWeightPair<TVertex>>());
             return ReturnValue.Succsess;
         }
-        public ReturnValue AddEdge(TVertex v, TVertex e, TWeight w = null)
+        public ReturnValue AddEdge(TVertex v, TVertex e, int w = 0)
         {
-            if (!IsWeighted) w = null;
+            if (!IsWeighted) w = 0;
             bool find_v = AdjList.ContainsKey(v);
             bool find_e = AdjList.ContainsKey(e);
             if (!find_v || !find_e)
@@ -185,14 +190,15 @@ namespace Antonyan.Graphs.Data
             e = AdjList.Keys.ToList().Find(v_ => v_.Equals(e));
             if (IsOrgraph)
             {
-                AdjList[v].Add(new VertexWeightPair<TVertex, TWeight>(e, w));
+                AdjList[v].Add(new VertexWeightPair<TVertex>(e, w));
                 return ReturnValue.Succsess;
             }
             else
             {
-                AdjList[v].Add(new VertexWeightPair<TVertex, TWeight>(e, w));
+                v = AdjList.Keys.Where(u => u.Equals(v)).First();
+                AdjList[v].Add(new VertexWeightPair<TVertex>(e, w));
                 if (!v.Equals(e)) // если не петля
-                    AdjList[e].Add(new VertexWeightPair<TVertex, TWeight>(v, w));
+                    AdjList[e].Add(new VertexWeightPair<TVertex>(v, w));
                 return ReturnValue.Succsess;
             }
 
@@ -256,14 +262,14 @@ namespace Antonyan.Graphs.Data
         }
 
 
-        public Graph<TVertex, TWeight> Union(Graph<TVertex, TWeight> other)
+        public Graph<TVertex> Union(Graph<TVertex> other)
         {
             if (IsOrgraph != other.IsOrgraph || IsWeighted != other.IsWeighted)
                 throw new Exception("Нельзя соединить разные по свойству графы");
-            var union = new Graph<TVertex, TWeight>(other);
+            var union = new Graph<TVertex>(other);
             var pats = new SortedDictionary<TVertex, bool>();
 
-            var tmp = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex, TWeight>>>();
+            var tmp = new SortedDictionary<TVertex, List<VertexWeightPair<TVertex>>>();
 
 
             AdjList.ToList().ForEach(v =>
@@ -284,15 +290,15 @@ namespace Antonyan.Graphs.Data
             });
             union.AdjList.ToList().ForEach(v => tmp.Add(v.Key, v.Value));
 
-            var res = new Graph<TVertex, TWeight>(IsOrgraph, IsWeighted);
+            var res = new Graph<TVertex>(IsOrgraph, IsWeighted);
             res.AdjList = tmp;
             return res;
         }
 
-        public Graph<TVertex, TWeight> Transpose()
+        public Graph<TVertex> Transpose()
         {
-            if (!IsOrgraph) return new Graph<TVertex, TWeight>(this);
-            var trans = new Graph<TVertex, TWeight>(true, IsWeighted);
+            if (!IsOrgraph) return new Graph<TVertex>(this);
+            var trans = new Graph<TVertex>(true, IsWeighted);
             AdjList.Keys.ToList().ForEach(v => trans.AddVertex(v));
             AdjList.ToList().ForEach(pair =>
             {

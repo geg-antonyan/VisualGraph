@@ -64,6 +64,7 @@ namespace Antonyan.Graphs.Gui
         {
             if (_field.Status)
                 _field.RefreshDefault();
+            toolStripStatusLabel.Text = "";
         }
         private void tsBtnCrtGraph_Click(object sender, EventArgs e)
         {

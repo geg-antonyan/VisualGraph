@@ -49,7 +49,7 @@ namespace Antonyan.Graphs.Backend
         public bool[] CommandExecute(ICommand command)
         {
             command.Execute();
-            if (command is CreateGraphCommand || command is RemoveGraphCommand)
+            if (command is CreateGraphCommand || command is RemoveGraphCommand || command is OpenGraphInFileCommand)
             {
                 undoStore.Clear();
                 redoStore.Clear();

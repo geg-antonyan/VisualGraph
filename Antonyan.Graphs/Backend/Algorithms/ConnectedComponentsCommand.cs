@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Antonyan.Graphs.Backend.Algorithms
 {
 
-    public class ConnectedComponentsCommandArgs : ACommandArgs
+    public class ConnectedComponentsCommandArgs : AlgorithmCommandArgs
     {
         public ConnectedComponentsCommandArgs()
             : base("ConnectedComponentsCommand")
@@ -21,13 +21,11 @@ namespace Antonyan.Graphs.Backend.Algorithms
         }
 
         public string ConnectedTypeOut { get; set; }
-        public string AlgorithmNameOut { get; set; }
         public List<List<string>> ComponentsOut { get; set; }
     }
 
-    public class ConnectedComponentsCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class ConnectedComponentsCommand<TVertex> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         private ConnectedComponentsCommandArgs _args;
         public ConnectedComponentsCommand(IModelField field)
@@ -43,13 +41,13 @@ namespace Antonyan.Graphs.Backend.Algorithms
         }
         public ICommand Clone(ACommandArgs args)
         {
-            return new ConnectedComponentsCommand<TVertex, TWeight>(
+            return new ConnectedComponentsCommand<TVertex>(
                 (ConnectedComponentsCommandArgs)args, Field);
         }
 
         public void Execute()
         {
-            var G = ((ModelsField<TVertex, TWeight>)Field).Graph;
+            var G = ((ModelsField<TVertex>)Field).Graph;
             SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
             G.AdjList.Keys.ToList().ForEach(el => visited[el] = false);
             List<List<TVertex>> components = new List<List<TVertex>>();
@@ -144,7 +142,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
         }
 
-        private void BFS(Graph<TVertex, TWeight> G, TVertex v, SortedDictionary<TVertex, bool> visited, List<TVertex> components, RGBcolor color)
+        private void BFS(Graph<TVertex> G, TVertex v, SortedDictionary<TVertex, bool> visited, List<TVertex> components, RGBcolor color)
         {
             visited[v] = true;
             components.Add(v);
@@ -169,7 +167,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
             }
         }
 
-        private void DFS_G(Graph<TVertex, TWeight> G, TVertex v, SortedDictionary<TVertex, bool> visited, Stack<TVertex> orders)
+        private void DFS_G(Graph<TVertex> G, TVertex v, SortedDictionary<TVertex, bool> visited, Stack<TVertex> orders)
         {
             visited[v] = true;
             foreach (var adj in G[v])
@@ -182,7 +180,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
             orders.Push(v);
         }
 
-        private void DFS_Gt(Graph<TVertex, TWeight> G, TVertex v, SortedDictionary<TVertex, bool> visited, List<TVertex> components, RGBcolor color)
+        private void DFS_Gt(Graph<TVertex> G, TVertex v, SortedDictionary<TVertex, bool> visited, List<TVertex> components, RGBcolor color)
         {
             visited[v] = true;
             Field.SetColor(v.GetRepresentation(), color);

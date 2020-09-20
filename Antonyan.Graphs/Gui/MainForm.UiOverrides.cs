@@ -34,7 +34,7 @@ namespace Antonyan.Graphs.Gui
             BeginInvoke((MethodInvoker)(() =>
             {
                 // SystemSounds.Exclamation.Play();
-                toolStripStatusLabel.ForeColor = Color.Red;
+                toolStripStatusLabel.ForeColor = Color.Blue;
                 toolStripStatusLabel.Text = message;
             }));
         }

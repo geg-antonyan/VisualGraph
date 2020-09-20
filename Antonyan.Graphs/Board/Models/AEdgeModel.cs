@@ -19,6 +19,7 @@ namespace Antonyan.Graphs.Board.Models
         public AVertexModel Source { get; private set; }
         public AVertexModel Stock { get; private set; }
         public string Weight { get; protected set; }
+        public string AddMark { get; set; } = null;
         public AEdgeModel(AVertexModel source, AVertexModel stock, string weight)
             : base(ServiceFunctions.EdgeRepresentation(source.VertexStr, stock.VertexStr))
         {

@@ -22,7 +22,7 @@ namespace Antonyan.Graphs.Util
 
         public static List<RGBcolor> Collection = new List<RGBcolor>()
         {
-            DarkGreen, DeepPink, Olive, Orange, SaddleBrown
+             Green, SaddleBrown, DeepPink, Red, DarkGreen,  Orange, Olive, 
         };
         public RGBcolor()
         {

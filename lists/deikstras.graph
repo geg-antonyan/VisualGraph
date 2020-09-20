@@ -1,0 +1,16 @@
+﻿graphmodel orgraph weighted
+[v] 0 264 329
+[e] 0 1 23
+[v] 1 437 243
+[e] 1 2 34
+[v] 2 547 412
+[v] 3 333 487
+[e] 3 1 44
+[e] 3 2 34
+graphmodel end
+orgraph
+weighted
+0 1/23 
+1 2/34 
+2 
+3 2/34 1/44 

@@ -214,6 +214,8 @@ namespace Antonyan.Graphs.Gui
                 PostErrorMessage(ex.Message);
             }
         }
+
+
         private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
             if (tsbtnMove.Checked)

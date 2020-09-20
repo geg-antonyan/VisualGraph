@@ -28,17 +28,13 @@ namespace Antonyan.Graphs
             Application.SetCompatibleTextRenderingDefault(false);
 
             var GUI = new MainForm();
-            var field = new ModelsField<Vertex, Weight>(GUI);
+            var field = new ModelsField<Vertex>(GUI);
             GUI.AttachField(field);
-
 
             CommandRepository.AddCommand(nameof(HalfLifeDegreeCommand), new HalfLifeDegreeCommand(field));
             CommandRepository.AddCommand(nameof(AddCurrentGraphInStoredGraphsCommand), new AddCurrentGraphInStoredGraphsCommand(field));
             CommandRepository.AddCommand(nameof(GraphsUnionCommand), new GraphsUnionCommand(field));
             CommandRepository.AddCommand(nameof(RemoveStoredGraphCommand), new RemoveStoredGraphCommand(field));
-            CommandRepository.AddCommand("ConnectedComponentsCommand", new ConnectedComponentsCommand<Vertex, Weight>(field));
-            CommandRepository.AddCommand("MSTCommand", new MSTCommand<Vertex, Weight>(field));
-
             CommandRepository.AddCommand(nameof(SaveGraphToFileCommand), new SaveGraphToFileCommand(field));
             CommandRepository.AddCommand(nameof(OpenGraphInFileCommand), new OpenGraphInFileCommand(field));
 
@@ -47,9 +43,16 @@ namespace Antonyan.Graphs
             CommandRepository.AddCommand(nameof(MoveVertexModelCommand), new MoveVertexModelCommand(field));
             CommandRepository.AddCommand(nameof(RemoveModelsCommand), new RemoveModelsCommand(field));
             CommandRepository.AddCommand(nameof(RemoveGraphCommand), new RemoveGraphCommand(field));
+            CommandRepository.AddCommand(nameof(SaveAlgorithmResultCommand), new SaveAlgorithmResultCommand(field));
 
-            CommandRepository.AddCommand("DFSalgorithm", new DFSalgorithmCommand<Vertex, Weight>(field));
-            CommandRepository.AddCommand("ShortcutBFSalgorithm", new ShortcutBFSalgorithmCommand<Vertex, Weight>(field));
+            CommandRepository.AddCommand("DFSalgorithm", new DFSalgorithmCommand<Vertex>(field));
+            CommandRepository.AddCommand("ShortcutBFSalgorithm", new ShortcutBFSalgorithmCommand<Vertex>(field));
+            CommandRepository.AddCommand("ConnectedComponentsCommand", new ConnectedComponentsCommand<Vertex>(field));
+            CommandRepository.AddCommand("MSTCommand", new MSTCommand<Vertex>(field));
+            CommandRepository.AddCommand("DijkstraAlgorithm", new DijkstraAlgorithm<Vertex>(field));
+            CommandRepository.AddCommand("WayNoMoreThenLCommand", new WayNoMoreThenLCommand<Vertex>(field));
+            CommandRepository.AddCommand("EdmondsKarpAlgorithm", new EdmondsKarpAlgorithm<Vertex>(field));
+            CommandRepository.AddCommand("NPeripheryCommand", new NPeripheryCommand<Vertex>(field));
 
             _ = new CommandDispetcher(GUI);
             Application.Run(GUI);

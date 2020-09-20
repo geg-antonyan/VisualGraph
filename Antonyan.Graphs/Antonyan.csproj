@@ -83,6 +83,9 @@
     <Compile Include="Backend\Algorithms\ConnectedComponentsCommand.cs" />
     <Compile Include="Backend\Algorithms\DFSalgorithmCommand.cs" />
     <Compile Include="Backend\Algorithms\DijkstraAlgorithm.cs" />
+    <Compile Include="Backend\Algorithms\EdmondsKarpAlgorithm.cs" />
+    <Compile Include="Backend\Algorithms\NPeripheryCommand.cs" />
+    <Compile Include="Backend\Algorithms\WayNoMoreThenLCommand.cs" />
     <Compile Include="Backend\Algorithms\MSTCommand.cs" />
     <Compile Include="Backend\Algorithms\ShortcutBFSalgorithmCommand.cs" />
     <Compile Include="Backend\CommandArgs.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="Backend\CommandRepository.cs" />
     <Compile Include="Backend\Commands\AddCurrentGraphInStoredGraphsCommand.cs" />
     <Compile Include="Backend\Commands\AddModelCommand.cs" />
+    <Compile Include="Backend\Commands\AlgorithmCommandArgs.cs" />
     <Compile Include="Backend\Commands\CreateGraphCommand.cs" />
     <Compile Include="Backend\Commands\AFieldCommand.cs" />
     <Compile Include="Backend\Commands\GraphsUnionCommand.cs" />
@@ -101,6 +105,7 @@
     <Compile Include="Backend\Commands\RemoveModelsCommand.cs" />
     <Compile Include="Backend\Commands\RemoveStoredGraphCommand.cs" />
     <Compile Include="Backend\Commands\SaveGraphToFileCommand.cs" />
+    <Compile Include="Backend\Commands\SaveAlgorithmResultCommand.cs" />
     <Compile Include="Backend\ICommand.cs" />
     <Compile Include="Board\IModelField.cs" />
     <Compile Include="Board\ModelField.cs" />
@@ -108,12 +113,10 @@
     <Compile Include="Board\Models\OrientEdgeModel.cs" />
     <Compile Include="Board\Models\VertexDrawModel.cs" />
     <Compile Include="Data\AEdge.cs" />
-    <Compile Include="Data\AType.cs" />
     <Compile Include="Data\AVertex.cs" />
-    <Compile Include="Data\AWeight.cs" />
     <Compile Include="Data\Graph.cs" />
+    <Compile Include="Data\SVertex.cs" />
     <Compile Include="Data\Vertex.cs" />
-    <Compile Include="Data\Weight.cs" />
     <Compile Include="Board\Geometry.cs" />
     <Compile Include="Board\Models\AEdgeModel.cs" />
     <Compile Include="Board\Models\GraphModels.cs" />
@@ -123,6 +126,12 @@
     </Compile>
     <Compile Include="Gui\Forms\CreateGraphForm.Designer.cs">
       <DependentUpon>CreateGraphForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Forms\ResultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\Forms\ResultForm.Designer.cs">
+      <DependentUpon>ResultForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Gui\Forms\StoredGraphNameForm.cs">
       <SubType>Form</SubType>
@@ -154,6 +163,7 @@
     <Compile Include="Gui\Painter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\GGF.cs" />
     <Compile Include="Util\GlobalParameters.cs" />
     <Compile Include="Util\GPen.cs" />
     <Compile Include="Util\Repository.cs" />
@@ -162,6 +172,9 @@
     <Compile Include="Board\UserInterface.cs" />
     <EmbeddedResource Include="Gui\Forms\CreateGraphForm.resx">
       <DependentUpon>CreateGraphForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\Forms\ResultForm.resx">
+      <DependentUpon>ResultForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\Forms\SetWeightForm.resx">
       <DependentUpon>SetWeightForm.cs</DependentUpon>

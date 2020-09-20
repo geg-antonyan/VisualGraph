@@ -18,8 +18,14 @@ namespace Antonyan.Graphs.Gui.Forms
         public string Weight { get; private set; }
         public SetWeightForm()
         {
-
             InitializeComponent();
+        }
+
+        public SetWeightForm(string lbl, string btn)
+        {
+            InitializeComponent();
+            lblWeight.Text = lbl;
+            btnEnter.Text = btn;
         }
 
         private void btnEnter_Click(object sender, EventArgs e)

@@ -27,9 +27,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
         public AVertexModel StockModel { get; private set; }
     }
 
-    public class ShortcutBFSalgorithmCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class ShortcutBFSalgorithmCommand<TVertex> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         private readonly ShortcutBFSCommandArgs _args;
 
@@ -45,7 +44,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
         }
         public ICommand Clone(ACommandArgs args)
         {
-            return new ShortcutBFSalgorithmCommand<TVertex, TWeight>((ShortcutBFSCommandArgs)args, Field);
+            return new ShortcutBFSalgorithmCommand<TVertex>((ShortcutBFSCommandArgs)args, Field);
         }
 
         public void Execute()
@@ -54,12 +53,12 @@ namespace Antonyan.Graphs.Backend.Algorithms
             TVertex stock = new TVertex();
             source.SetFromString(_args.SourceModel.VertexStr);
             stock.SetFromString(_args.StockModel.VertexStr);
-            var graph = ((ModelsField<TVertex, TWeight>)Field).Graph;
+            var graph = ((ModelsField<TVertex>)Field).Graph;
             Field.UnmarkGraphModels();
             ShortcutBFS(graph, source, stock);
         }
 
-        public void ShortcutBFS(Graph<TVertex, TWeight> G,
+        public void ShortcutBFS(Graph<TVertex> G,
             TVertex soruce, TVertex stock)
         {
             SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
@@ -73,7 +72,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
             FindPath(G, soruce, stock, parents);
         }
         private void ParentsBFS(
-          Graph<TVertex, TWeight> G, TVertex v,
+          Graph<TVertex> G, TVertex v,
           SortedDictionary<TVertex, bool> visited,
           ref SortedDictionary<TVertex, TVertex> parents)
         {
@@ -97,7 +96,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
             }
         }
 
-        private void FindPath(Graph<TVertex, TWeight> G,
+        private void FindPath(Graph<TVertex> G,
             TVertex source, TVertex stock, SortedDictionary<TVertex, TVertex> parents)
         {
             if (stock.Equals(source))

@@ -29,10 +29,11 @@ namespace Antonyan.Graphs.Board
         bool SetColor(string key, RGBcolor color, bool raise = true);
         bool SetWidth(string key, int width, bool raise = true);
         bool SetColorAndWidth(string key, RGBcolor color, int width, bool raise = true);
+        bool SetWeightMark(string key, string mark, bool raise = true);
         bool SetModelDefaultOptions(string key, bool raise = true);
         bool MarkGraphModel(string key, bool raise = true);
         void UnmarkGraphModels(bool raise = true);
-        void RefreshDefault(bool raise = true);
+        void RefreshDefault(bool removeAddMark = true, bool raise = true);
         void Refresh();
         void SaveGraphToFile(Stream stream, bool raise = true);
         void OpenGraphInFile(List<GraphModel> models, string graphDataText, bool raise = true);

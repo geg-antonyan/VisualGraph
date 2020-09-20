@@ -43,7 +43,7 @@ namespace Antonyan.Graphs.Backend
             }
             catch (Exception ex)
             {
-                _ui.PostErrorMessage(ex.Message);
+                _ui.PostErrorMessage(ex.StackTrace);
             }
         }
 

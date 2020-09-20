@@ -116,7 +116,8 @@ namespace Antonyan.Graphs.Gui
                 matrix.Multiply(mirrorX);
             }
             g.MultiplyTransform(matrix);
-            g.DrawString(edge.StringRepresent, font, brush, 0, 0, stringFormat);
+            string res = edge.AddMark + edge.StringRepresent;
+            g.DrawString(res, font, brush, 0, 0, stringFormat);
             matrix.Reset();
             if (edge.WeightAngle > 90f)
             {

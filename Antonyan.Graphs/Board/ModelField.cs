@@ -23,15 +23,14 @@ namespace Antonyan.Graphs.Board
         public ModelFieldUpdateArgs(FieldEvents e) => Event = e;
         public FieldEvents Event { get; private set; }
     }
-    public class ModelsField<TVertex, TWeight> : IModelField
+    public class ModelsField<TVertex> : IModelField
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         public event EventHandler<ModelFieldUpdateArgs> FieldUpdate;
 
         private SortedDictionary<string, GraphModel> _models;
-        private Dictionary<string, Graph<TVertex, TWeight>> _storedGraphs;
-        public Graph<TVertex, TWeight> Graph { get; private set; }
+        private Dictionary<string, Graph<TVertex>> _storedGraphs;
+        public Graph<TVertex> Graph { get; private set; }
 
         public bool IsOrgraph { get { return Graph.IsOrgraph; } }
         public bool IsWeighted { get { return Graph.IsWeighted; } }
@@ -50,7 +49,7 @@ namespace Antonyan.Graphs.Board
 
         public ModelsField(UserInterface ui)
         {
-            _storedGraphs = new Dictionary<string, Graph<TVertex, TWeight>>();
+            _storedGraphs = new Dictionary<string, Graph<TVertex>>();
             UserInterface = ui;
             _models = new SortedDictionary<string, GraphModel>();
             FieldUpdate += ui.FieldUpdate;
@@ -58,7 +57,7 @@ namespace Antonyan.Graphs.Board
 
         public void CreateGraph(bool oriented, bool weighted, bool raise = true)
         {
-            Graph = new Graph<TVertex, TWeight>(oriented, weighted);
+            Graph = new Graph<TVertex>(oriented, weighted);
             Status = true;
             _models = new SortedDictionary<string, GraphModel>();
             if (raise)
@@ -93,9 +92,9 @@ namespace Antonyan.Graphs.Board
 
         public void AddEdgeModel(AEdgeModel edgeModel, bool raise = true)
         {
-            var weight = new TWeight();
+            var weight = 0;
             if (edgeModel.Weight != null && edgeModel.Weight != "")
-                weight.SetFromString(edgeModel.Weight);
+                weight = int.Parse(edgeModel.Weight);
             var source = new TVertex();
             var stock = new TVertex();
             source.SetFromString(edgeModel.Source.VertexStr);
@@ -153,11 +152,10 @@ namespace Antonyan.Graphs.Board
 
         public GraphModel RemoveEdgeModel(AEdgeModel edgeModel, bool raise = true)
         {
-            TWeight weight = null;
+            int weight = 0;
             if (edgeModel.Weight != null)
             {
-                weight = new TWeight();
-                weight.SetFromString(edgeModel.Weight);
+                weight = int.Parse(edgeModel.Weight);
             }
             var source = new TVertex();
             var stock = new TVertex();
@@ -283,10 +281,17 @@ namespace Antonyan.Graphs.Board
                 .ToList();
         }
 
-        public void RefreshDefault(bool raise = true)
+        public void RefreshDefault(bool removeAddMark = true, bool raise = true)
         {
             UnmarkGraphModels(false);
-            _models.Values.ToList().ForEach(m => { m.Color = GraphModel.DefaultColor; m.Width = GraphModel.DefaultWidth; });
+            _models.Values.ToList().ForEach(m => 
+            { 
+                m.Color = GraphModel.DefaultColor;
+                m.Width = GraphModel.DefaultWidth;
+                var e = m as AEdgeModel;
+                if (e != null && removeAddMark)
+                    e.AddMark = null;
+            });
             if (raise)
                 FieldUpdate?.Invoke(null, null);
         }
@@ -338,7 +343,7 @@ namespace Antonyan.Graphs.Board
             {
                 _models = new SortedDictionary<string, GraphModel>();
                 models.ForEach(m => _models.Add(m.Key, m));
-                Graph = new Graph<TVertex, TWeight>(graphDataText);
+                Graph = new Graph<TVertex>(graphDataText);
                 Status = true;
             }
             if (raise)
@@ -360,7 +365,7 @@ namespace Antonyan.Graphs.Board
         public void AddCurrentGraphInStoredGraphs(string name, bool raise = true)
         {
             if (Graph == null) throw new Exception("Текущий граф еще не создан");
-            _storedGraphs.Add(name, new Graph<TVertex, TWeight>(Graph));
+            _storedGraphs.Add(name, new Graph<TVertex>(Graph));
             if (raise)
                 FieldUpdate?.Invoke(this, new ModelFieldUpdateArgs(FieldEvents.UpdateStoredGraphs));
         }
@@ -461,6 +466,19 @@ namespace Antonyan.Graphs.Board
             {
                 m.Color = GraphModel.DefaultColor;
                 m.Width = GraphModel.DefaultWidth;
+                if (raise)
+                    FieldUpdate?.Invoke(null, null);
+                return true;
+            }
+            return false;
+        }
+
+        public bool SetWeightMark(string key, string mark, bool raise = true)
+        {
+            AEdgeModel edge;
+            if (_models.ContainsKey(key) && (edge = _models[key] as AEdgeModel) != null)
+            {
+                edge.AddMark = mark;
                 if (raise)
                     FieldUpdate?.Invoke(null, null);
                 return true;

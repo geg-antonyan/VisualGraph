@@ -7,15 +7,15 @@ using Antonyan.Graphs.Util;
 
 namespace Antonyan.Graphs.Data
 {
-    public class Vertex : AVertex
+    public class SVertex : AVertex
     {
         private int data;
-        public Vertex() : base() { }
-        public Vertex(string str) : base(str) { }
+        public SVertex() : base() { }
+        public SVertex(string str) : base(str) { }
 
         public override int CompareTo(AVertex other)
         {
-            return data.CompareTo(((Vertex)other).data);
+            return data.CompareTo(((SVertex)other).data);
         }
 
         public override bool Equals(AVertex other)

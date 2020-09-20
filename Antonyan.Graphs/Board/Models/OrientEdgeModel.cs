@@ -76,7 +76,8 @@ namespace Antonyan.Graphs.Board.Models
                 var ln = delta.Length();
                 delta = delta.Normalize();
                 float charPX = 5f;
-                float strLength = charPX * StringRepresent.Length;
+                int correcting = AddMark == null ? 0 : AddMark.Length;
+                float strLength = charPX * (StringRepresent.Length + correcting);
                 if (sourcePos.x < stockPos.x)
                 {
                     strLength *= -1f;

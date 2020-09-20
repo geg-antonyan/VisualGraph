@@ -48,12 +48,19 @@ namespace Antonyan.Graphs.Gui
             this.subDetoursBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
             this.tsbtnShortcats = new System.Windows.Forms.ToolStripDropDownButton();
             this.subShortcutBtnBFS = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsddBtnTasks = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tsmiPowVertex = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiConnectedComponents = new System.Windows.Forms.ToolStripMenuItem();
+            this.мОДКаркасToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiKruskalAlgorithm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShortestPaths = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDijkstraAlgorithm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiFordBellmanAlgorithm = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiNPeriohery = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMaxFlow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEdmondsKarp = new System.Windows.Forms.ToolStripMenuItem();
             this.saveGraphFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openGraphFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.toolStripTask = new System.Windows.Forms.ToolStrip();
-            this.tsBtnHalfWayTop = new System.Windows.Forms.ToolStripButton();
-            this.tsBtnExplorerConnComponent = new System.Windows.Forms.ToolStripButton();
-            this.tsBtnMST = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtInfoList = new System.Windows.Forms.RichTextBox();
@@ -62,7 +69,6 @@ namespace Antonyan.Graphs.Gui
             this.btnUnion = new System.Windows.Forms.Button();
             this.btnRemoveAdjList = new System.Windows.Forms.Button();
             this.toolStripMain.SuspendLayout();
-            this.toolStripTask.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,7 +90,8 @@ namespace Antonyan.Graphs.Gui
             this.tsbtnMove,
             this.tsBtnAddEdge,
             this.tsbtnDetours,
-            this.tsbtnShortcats});
+            this.tsbtnShortcats,
+            this.tsddBtnTasks});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Margin = new System.Windows.Forms.Padding(2, 4, 0, 0);
             this.toolStripMain.Name = "toolStripMain";
@@ -255,6 +262,96 @@ namespace Antonyan.Graphs.Gui
             this.subShortcutBtnBFS.Text = "Кратчайшый путь методом построение родительского дерево";
             this.subShortcutBtnBFS.Click += new System.EventHandler(this.subShortcutBtnBFS_Click);
             // 
+            // tsddBtnTasks
+            // 
+            this.tsddBtnTasks.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsddBtnTasks.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiPowVertex,
+            this.tsmiConnectedComponents,
+            this.мОДКаркасToolStripMenuItem,
+            this.tsmiShortestPaths,
+            this.tsmiMaxFlow});
+            this.tsddBtnTasks.Image = ((System.Drawing.Image)(resources.GetObject("tsddBtnTasks.Image")));
+            this.tsddBtnTasks.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsddBtnTasks.Name = "tsddBtnTasks";
+            this.tsddBtnTasks.Size = new System.Drawing.Size(70, 26);
+            this.tsddBtnTasks.Text = "Задание";
+            // 
+            // tsmiPowVertex
+            // 
+            this.tsmiPowVertex.Name = "tsmiPowVertex";
+            this.tsmiPowVertex.Size = new System.Drawing.Size(205, 22);
+            this.tsmiPowVertex.Text = "Степень вершины";
+            this.tsmiPowVertex.Click += new System.EventHandler(this.tsmiPowVertex_Click);
+            // 
+            // tsmiConnectedComponents
+            // 
+            this.tsmiConnectedComponents.Name = "tsmiConnectedComponents";
+            this.tsmiConnectedComponents.Size = new System.Drawing.Size(205, 22);
+            this.tsmiConnectedComponents.Text = "Связные компоненты";
+            this.tsmiConnectedComponents.Click += new System.EventHandler(this.tsmiConnectedComponents_Click);
+            // 
+            // мОДКаркасToolStripMenuItem
+            // 
+            this.мОДКаркасToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiKruskalAlgorithm});
+            this.мОДКаркасToolStripMenuItem.Name = "мОДКаркасToolStripMenuItem";
+            this.мОДКаркасToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.мОДКаркасToolStripMenuItem.Text = "МОД (Каркас)";
+            // 
+            // tsmiKruskalAlgorithm
+            // 
+            this.tsmiKruskalAlgorithm.Name = "tsmiKruskalAlgorithm";
+            this.tsmiKruskalAlgorithm.Size = new System.Drawing.Size(192, 22);
+            this.tsmiKruskalAlgorithm.Text = "Алгоритм Крускала";
+            this.tsmiKruskalAlgorithm.Click += new System.EventHandler(this.tsmiKruskalAlgorithm_Click);
+            // 
+            // tsmiShortestPaths
+            // 
+            this.tsmiShortestPaths.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiDijkstraAlgorithm,
+            this.tsmiFordBellmanAlgorithm,
+            this.tsmiNPeriohery});
+            this.tsmiShortestPaths.Name = "tsmiShortestPaths";
+            this.tsmiShortestPaths.Size = new System.Drawing.Size(205, 22);
+            this.tsmiShortestPaths.Text = "Кратчайшие пути";
+            // 
+            // tsmiDijkstraAlgorithm
+            // 
+            this.tsmiDijkstraAlgorithm.Name = "tsmiDijkstraAlgorithm";
+            this.tsmiDijkstraAlgorithm.Size = new System.Drawing.Size(194, 22);
+            this.tsmiDijkstraAlgorithm.Text = "Алгоритм Дейкстры";
+            this.tsmiDijkstraAlgorithm.Click += new System.EventHandler(this.tsmiDijkstraAlgorithm_Click);
+            // 
+            // tsmiFordBellmanAlgorithm
+            // 
+            this.tsmiFordBellmanAlgorithm.Name = "tsmiFordBellmanAlgorithm";
+            this.tsmiFordBellmanAlgorithm.Size = new System.Drawing.Size(194, 22);
+            this.tsmiFordBellmanAlgorithm.Text = "Путь не больше L";
+            this.tsmiFordBellmanAlgorithm.Click += new System.EventHandler(this.tsmiFordBellmanAlgorithm_Click);
+            // 
+            // tsmiNPeriohery
+            // 
+            this.tsmiNPeriohery.Name = "tsmiNPeriohery";
+            this.tsmiNPeriohery.Size = new System.Drawing.Size(194, 22);
+            this.tsmiNPeriohery.Text = "N-периферия";
+            this.tsmiNPeriohery.Click += new System.EventHandler(this.tsmiNPeriohery_Click);
+            // 
+            // tsmiMaxFlow
+            // 
+            this.tsmiMaxFlow.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiEdmondsKarp});
+            this.tsmiMaxFlow.Name = "tsmiMaxFlow";
+            this.tsmiMaxFlow.Size = new System.Drawing.Size(205, 22);
+            this.tsmiMaxFlow.Text = "Максимальный поток";
+            // 
+            // tsmiEdmondsKarp
+            // 
+            this.tsmiEdmondsKarp.Name = "tsmiEdmondsKarp";
+            this.tsmiEdmondsKarp.Size = new System.Drawing.Size(238, 22);
+            this.tsmiEdmondsKarp.Text = "Алгоритм Эдмондса-Карпа";
+            this.tsmiEdmondsKarp.Click += new System.EventHandler(this.tsmiEdmondsKarp_Click);
+            // 
             // saveGraphFileDialog
             // 
             this.saveGraphFileDialog.Filter = "graph files (*.graph)|*.graph";
@@ -263,59 +360,15 @@ namespace Antonyan.Graphs.Gui
             // 
             this.openGraphFileDialog.Filter = "graph files (*.graph)|*.graph";
             // 
-            // toolStripTask
-            // 
-            this.toolStripTask.Dock = System.Windows.Forms.DockStyle.Right;
-            this.toolStripTask.ImageScalingSize = new System.Drawing.Size(22, 22);
-            this.toolStripTask.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsBtnHalfWayTop,
-            this.tsBtnExplorerConnComponent,
-            this.tsBtnMST});
-            this.toolStripTask.Location = new System.Drawing.Point(967, 29);
-            this.toolStripTask.Name = "toolStripTask";
-            this.toolStripTask.Size = new System.Drawing.Size(27, 610);
-            this.toolStripTask.TabIndex = 1;
-            this.toolStripTask.Text = "toolStripTasks";
-            // 
-            // tsBtnHalfWayTop
-            // 
-            this.tsBtnHalfWayTop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsBtnHalfWayTop.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tsBtnHalfWayTop.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnHalfWayTop.Image")));
-            this.tsBtnHalfWayTop.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsBtnHalfWayTop.Name = "tsBtnHalfWayTop";
-            this.tsBtnHalfWayTop.Size = new System.Drawing.Size(24, 26);
-            this.tsBtnHalfWayTop.Text = "Полуисход вершины";
-            this.tsBtnHalfWayTop.Click += new System.EventHandler(this.tsBtnHalfWayTop_Click);
-            // 
-            // tsBtnExplorerConnComponent
-            // 
-            this.tsBtnExplorerConnComponent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsBtnExplorerConnComponent.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnExplorerConnComponent.Image")));
-            this.tsBtnExplorerConnComponent.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsBtnExplorerConnComponent.Name = "tsBtnExplorerConnComponent";
-            this.tsBtnExplorerConnComponent.Size = new System.Drawing.Size(24, 26);
-            this.tsBtnExplorerConnComponent.Text = "Иследование связного компонента";
-            this.tsBtnExplorerConnComponent.Click += new System.EventHandler(this.tsBtnExplorerConnComponent_Click);
-            // 
-            // tsBtnMST
-            // 
-            this.tsBtnMST.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsBtnMST.Image = ((System.Drawing.Image)(resources.GetObject("tsBtnMST.Image")));
-            this.tsBtnMST.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsBtnMST.Name = "tsBtnMST";
-            this.tsBtnMST.Size = new System.Drawing.Size(24, 26);
-            this.tsBtnMST.Text = "Минимальное остовное дерево";
-            this.tsBtnMST.Click += new System.EventHandler(this.tsBtnMST_Click);
-            // 
             // statusStrip
             // 
             this.statusStrip.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 617);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(967, 22);
+            this.statusStrip.Size = new System.Drawing.Size(994, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -348,7 +401,7 @@ namespace Antonyan.Graphs.Gui
             this.listBoxAdjList.Location = new System.Drawing.Point(800, 492);
             this.listBoxAdjList.Name = "listBoxAdjList";
             this.listBoxAdjList.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.listBoxAdjList.Size = new System.Drawing.Size(121, 92);
+            this.listBoxAdjList.Size = new System.Drawing.Size(121, 56);
             this.listBoxAdjList.TabIndex = 4;
             // 
             // btnSaveAdjList
@@ -362,7 +415,7 @@ namespace Antonyan.Graphs.Gui
             this.btnSaveAdjList.Name = "btnSaveAdjList";
             this.btnSaveAdjList.Size = new System.Drawing.Size(150, 35);
             this.btnSaveAdjList.TabIndex = 5;
-            this.btnSaveAdjList.Text = "Сохранить список смежностей";
+            this.btnSaveAdjList.Text = "Сохранить список смежности";
             this.btnSaveAdjList.UseVisualStyleBackColor = false;
             this.btnSaveAdjList.Click += new System.EventHandler(this.btnSaveAdjList_Click);
             // 
@@ -399,11 +452,10 @@ namespace Antonyan.Graphs.Gui
             this.Controls.Add(this.listBoxAdjList);
             this.Controls.Add(this.txtInfoList);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.toolStripTask);
             this.Controls.Add(this.toolStripMain);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MainForm";
             this.Text = "Visual Graph";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -416,8 +468,6 @@ namespace Antonyan.Graphs.Gui
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.toolStripMain.ResumeLayout(false);
             this.toolStripMain.PerformLayout();
-            this.toolStripTask.ResumeLayout(false);
-            this.toolStripTask.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -445,8 +495,6 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.ToolStripButton tsbtnMove;
         private System.Windows.Forms.SaveFileDialog saveGraphFileDialog;
         private System.Windows.Forms.OpenFileDialog openGraphFileDialog;
-        private System.Windows.Forms.ToolStrip toolStripTask;
-        private System.Windows.Forms.ToolStripButton tsBtnHalfWayTop;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.RichTextBox txtInfoList;
@@ -455,8 +503,17 @@ namespace Antonyan.Graphs.Gui
         private System.Windows.Forms.Button btnUnion;
         private System.Windows.Forms.Button btnRemoveAdjList;
         private System.Windows.Forms.ToolStripButton tsBtnRefresh;
-        private System.Windows.Forms.ToolStripButton tsBtnExplorerConnComponent;
-        private System.Windows.Forms.ToolStripButton tsBtnMST;
+        private System.Windows.Forms.ToolStripDropDownButton tsddBtnTasks;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPowVertex;
+        private System.Windows.Forms.ToolStripMenuItem tsmiConnectedComponents;
+        private System.Windows.Forms.ToolStripMenuItem мОДКаркасToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiKruskalAlgorithm;
+        private System.Windows.Forms.ToolStripMenuItem tsmiShortestPaths;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDijkstraAlgorithm;
+        private System.Windows.Forms.ToolStripMenuItem tsmiFordBellmanAlgorithm;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMaxFlow;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEdmondsKarp;
+        private System.Windows.Forms.ToolStripMenuItem tsmiNPeriohery;
     }
 }
 

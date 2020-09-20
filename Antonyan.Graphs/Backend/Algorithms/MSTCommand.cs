@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Antonyan.Graphs.Backend.Algorithms
 {
-    internal class Edge<TVertex, TWeight>
+
+    internal class Edge<TVertex>
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
-        internal Edge(TVertex source, TVertex stock, TWeight weight)
+        internal Edge(TVertex source, TVertex stock, int weight)
         {
             Source = source;
             Stock = stock;
@@ -23,9 +23,9 @@ namespace Antonyan.Graphs.Backend.Algorithms
         }
         internal TVertex Source { get; private set; }
         internal TVertex Stock { get; private set; }
-        internal TWeight Weight { get; private set; }
+        internal int Weight { get; private set; }
 
-        public bool IsReverseEdge(Edge<TVertex, TWeight> other)
+        public bool IsReverseEdge(Edge<TVertex> other)
         {
             return Source.Equals(other.Stock) && Stock.Equals(other.Source);
         }
@@ -36,10 +36,10 @@ namespace Antonyan.Graphs.Backend.Algorithms
         internal Set P { get; set; }
     }
 
-    public class MSTCommandArgs : ACommandArgs
+    public class MSTCommandArgs : AlgorithmCommandArgs
     {
         public List<string> MstOut { get; internal set; }
-        public string AlgorithmNameOut { get; internal set; }
+        public int SummWeightOut { get; internal set; } = 0;
         public int TimeOutMSec { get; private set; }
         public MSTCommandArgs(int timout)
             : base("MSTCommand")
@@ -47,9 +47,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
             TimeOutMSec = timout;
         }
     }
-    public class MSTCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class MSTCommand<TVertex> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         private MSTCommandArgs _args;
 
@@ -64,12 +63,12 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
         public ICommand Clone(ACommandArgs args)
         {
-            return new MSTCommand<TVertex, TWeight>((MSTCommandArgs)args, Field);
+            return new MSTCommand<TVertex>((MSTCommandArgs)args, Field);
         }
 
         public void Execute()
         {
-            var G = ((ModelsField<TVertex, TWeight>)Field).Graph;
+            var G = ((ModelsField<TVertex>)Field).Graph;
             if (G.IsOrgraph || !G.IsWeighted)
             {
                 _args.SuccsessOut = false;
@@ -77,18 +76,20 @@ namespace Antonyan.Graphs.Backend.Algorithms
             }
             var res = MstKruskal(G);
             _args.AlgorithmNameOut = "Крускал";
+            _args.TaskNameOut = "Найти минмальное остовное дерево!";
             var outs = _args.MstOut = new List<string>();
             res.ForEach(edge =>
             {
-                outs.Add($"{edge.Source} - {edge.Stock} = {edge.Weight}");
+                outs.Add($"{edge.Source} <> {edge.Stock} = {edge.Weight}");
+                _args.SummWeightOut += edge.Weight;
             });
             _args.SuccsessOut = true;
         }
 
 
-        List<Edge<TVertex, TWeight>> Distinct(List<Edge<TVertex, TWeight>> list)
+        List<Edge<TVertex>> Distinct(List<Edge<TVertex>> list)
         {
-            var res = new List<Edge<TVertex, TWeight>>();
+            var res = new List<Edge<TVertex>>();
             list.ForEach(el =>
             {
                 if (res.Find(m => m.IsReverseEdge(el)) == null)
@@ -115,11 +116,11 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
 
 
-        private List<Edge<TVertex, TWeight>> MstKruskal(Graph<TVertex, TWeight> G)
+        private List<Edge<TVertex>> MstKruskal(Graph<TVertex> G)
         {
             SendMessage("Создаем массив, где будем хранить минимальный каркас графа");
 
-            var mst = new List<Edge<TVertex, TWeight>>();
+            var mst = new List<Edge<TVertex>>();
 
             SendMessage("Создаем непересикающие множества для каждой вершины");
 
@@ -130,13 +131,13 @@ namespace Antonyan.Graphs.Backend.Algorithms
             });
 
 
-            List<Edge<TVertex, TWeight>> edges = new List<Edge<TVertex, TWeight>>();
+            List<Edge<TVertex>> edges = new List<Edge<TVertex>>();
 
             SendMessage("Сортируем ребра по возрастанию веса");
 
             G.AdjList.ToList().ForEach(v =>
             {
-                v.Value.ForEach(e => edges.Add(new Edge<TVertex, TWeight>(v.Key, e.Vertex, e.Weight)));
+                v.Value.ForEach(e => edges.Add(new Edge<TVertex>(v.Key, e.Vertex, e.Weight)));
             });
             var sortEdges = Distinct(edges).OrderBy(e => e.Weight).ToList();
 

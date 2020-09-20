@@ -14,7 +14,7 @@ using Antonyan.Graphs.Backend.Commands;
 namespace Antonyan.Graphs.Backend.Algorithms
 {
 
-    public class DFScommandArgs : ACommandArgs
+    public class DFScommandArgs : AlgorithmCommandArgs
     {
         public DFScommandArgs(AVertexModel model)
             : base("DFSalgorithm")
@@ -25,9 +25,8 @@ namespace Antonyan.Graphs.Backend.Algorithms
         public AVertexModel VertexModel { get; private set; }
     }
 
-    public class DFSalgorithmCommand<TVertex, TWeight> : AFieldCommand, INonStoredCommand
+    public class DFSalgorithmCommand<TVertex> : AFieldCommand, INonStoredCommand
         where TVertex : AVertex, new()
-        where TWeight : AWeight, new()
     {
         private readonly DFScommandArgs _args;
         public DFSalgorithmCommand(IModelField field)
@@ -41,12 +40,12 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
         public ICommand Clone(ACommandArgs args)
         {
-            return new DFSalgorithmCommand<TVertex, TWeight>((DFScommandArgs)args, Field);
+            return new DFSalgorithmCommand<TVertex>((DFScommandArgs)args, Field);
         }
 
         public void Execute()
         {
-            var graph = ((ModelsField<TVertex, TWeight>)Field).Graph;
+            var graph = ((ModelsField<TVertex>)Field).Graph;
             TVertex vertex = new TVertex();
             vertex.SetFromString(_args.VertexModel.VertexStr);
             SortedDictionary<TVertex, bool> visited = new SortedDictionary<TVertex, bool>();
@@ -62,7 +61,7 @@ namespace Antonyan.Graphs.Backend.Algorithms
 
 
         }
-        private void DFS(Graph<TVertex, TWeight> G,  TVertex v, SortedDictionary<TVertex, bool> visited)
+        private void DFS(Graph<TVertex> G,  TVertex v, SortedDictionary<TVertex, bool> visited)
         {
             Visit(v);
             visited[v] = true;

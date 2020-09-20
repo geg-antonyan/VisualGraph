@@ -1,15 +1,9 @@
 ﻿
 using Antonyan.Graphs.Board;
-using Antonyan.Graphs.Data;
-
-
 using System.IO;
-using System.Text;
-using System;
 
 namespace Antonyan.Graphs.Backend.Commands
 {
-
     public class SaveGraphToFileCommandArgs : ACommandArgs
     {
         public Stream Stream { get; private set; }
